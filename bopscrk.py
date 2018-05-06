@@ -1,0 +1,439 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+# r3nt0n 25/10/2017
+
+"""
+Before Outset PaSsword CRacKing is a tool to assist in the previous process of
+cracking passwords. By now, it's able to generate smart and powerful wordlists.
+"""
+
+global name, __author__,  __version__
+name =  'bopscrk.py'
+__author__ = 'r3nt0n'
+__version__ = '1.2'
+__status__ = 'Development'
+
+
+
+import os
+import sys
+import datetime
+import itertools
+import argparse
+from random import randint
+from collections import OrderedDict
+from multiprocessing.dummy import Pool as ThreadPool
+
+
+
+class color:
+    PURPLE = '\033[95m'
+    CYAN = '\033[96m'
+    DARKCYAN = '\033[36m'
+    BLUE = '\033[94m'
+    GREEN = '\033[92m'
+    YELLOW = '\033[93m'
+    RED = '\033[91m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
+    ORANGE = '\033[33m'
+    ORANGEBG = '\033[48;2;255;165;0m'
+    END = '\033[0m'
+
+
+################################################################################
+# ARGS DEFINITION
+################################################################################
+parser = argparse.ArgumentParser(description='Generates smart and powerful wordlists.')
+
+parser.add_argument('-i', '--interactive', action="store_true",
+                    help='interactive mode, the script will ask you about target')
+
+parser.add_argument('-w', action="store", metavar='', type=str, dest='words',
+                    help='words to combine comma-separated (non-interactive mode)')
+
+parser.add_argument('--min', action="store", metavar='', type=int, dest='min',
+                    default=4, help='min length for the words to generate '
+                                    '(default: 4)')
+parser.add_argument('--max', action="store", metavar='', type=int, dest='max',
+                    default=32, help='max length for the words to generate '
+                                     '(default: 32)')
+
+parser.add_argument('-c', '--case', action="store_true",
+                    help='enable case transformations')
+parser.add_argument('-l', '--leet', action="store_true",
+                    help='enable leet transformations')
+
+parser.add_argument('-n', action="store", metavar='', type=int, dest='nWords',
+                    default=2, help='max amount of words to combine each time '
+                                    '(default: 2)')
+
+parser.add_argument('-o', '--output', action="store", metavar='', type=str,
+                    dest='outfile', default='tmp.txt',
+                    help='output file to save the wordlist (default: tmp.txt)')
+
+
+################################################################################
+def banner():
+    name_rand_leet = leet_transforms(name)
+    name_rand_leet = name_rand_leet[randint(0, (len(name_rand_leet) - 1))]
+    name_rand_case = case_transforms(name)
+    name_rand_case = name_rand_case[randint((len(name_rand_case) - 3), (len(name_rand_case) - 1))]
+
+    print u'\n  ,----------------------------------------------------,  ,------------,'
+    print u'  | [][][][][]  [][][][][]  [][][][]  [][__]  [][][][] |  |    v{}{}{}    |'.format(color.BLUE, __version__, color.END)
+    print u'  |                                                    |  |------------|'
+    print u'  |  [][][][][][][][][][][][][][_]    [][][]  [][][][] |  | {}{}{} |'.format(color.RED, name_rand_leet, color.END)
+    print u'  |  [_][][][][][][][][][][][][][ |   [][][]  [][][][] |  | {}{}{}{} |'.format(color.BOLD, color.RED, name, color.END)
+    print u'  | [][_][][][][][][][][][][][][]||     []    [][][][] |  | {}{}{} |'.format(color.RED, name_rand_case, color.END)
+    print u'  | [__][][][][][][][][][][][][__]    [][][]  [][][]|| |  |------------|'
+    print u'  |   [__][________________][__]              [__][]|| |  |{}   {}   {}|'.format(color.GREEN, __author__, color.END)
+    print u'  `----------------------------------------------------´  `------------´\n'
+    # print u'  +--------------------------------------------------------------------+'
+    # print u'  | Names have to be written without accents, just normal characters.  |'
+    # print u'  | If you enable case transforms, doesn\'t matter the lower/uppercases |'
+    # print u'  | in your input.                                                     |'
+    # print u'  |                                                                    |'
+    # print u'  | In the others field you can write several words comma-separated.   |'
+    # print u'  | Example: 2C,Flipper                                                |'
+    # print u'  |                                                                    |'
+    # print u'  | Fields can be left empty.                                          |'
+    # print u'  +--------------------------------------------------------------------+\n'
+
+
+################################################################################
+def clear():
+    """Clear the screen. Works on Windows and Linux."""
+    os.system(['clear', 'cls'][os.name == 'nt'])
+
+
+################################################################################
+def isEmpty(variable):
+    """
+    Check if a variable is empty.
+    :param date_str: var to check
+    :return: True or False
+    """
+    empty = False
+    if len(str(variable)) == 0:
+        empty = True
+    return empty
+
+
+################################################################################
+def is_valid_date(date_str):
+    """
+    Check if a string corresponds to a valid date.
+    :param date_str: date to check
+    :return: True or False
+    """
+    try:
+        datetime.datetime.strptime(date_str, '%d/%m/%Y')
+        return True
+    except ValueError:
+        return False
+
+
+################################################################################
+def add_common_separators(wordlist):
+    """
+    Take a wordlist and generate all possible combinations between the words
+    contained and another wordlist which contains common separator (e.g. _ ).
+
+    :param wordlist: the base wordlist to combine
+    :return: a new wordlist with all the combinations
+    """
+    common_separators = ['.', '_', '-', '123']
+    words = wordlist[:]
+    new_wordlist = []
+
+    for word in words:
+        for sep in common_separators:
+            new_wordlist.append(word + sep)
+            new_wordlist.append(sep + word)
+
+    base_wordlist_with_seps = new_wordlist[:]
+
+    for word in words:
+        for wordsep in base_wordlist_with_seps:
+            if word not in wordsep:
+                new_wordlist.append(wordsep + word)
+                new_wordlist.append(word + wordsep)
+
+    return list(OrderedDict.fromkeys(new_wordlist))
+
+
+################################################################################
+def combinator(wordlist, nWords):
+    new_wordlist = wordlist[:]  # I need copy to use itertools properly
+    wlist_combined = itertools.permutations(new_wordlist, nWords)
+    for combination in wlist_combined:
+        word = ''
+        for i in combination:
+            word += i
+        if word not in new_wordlist: new_wordlist.append(word)
+    return new_wordlist
+
+
+################################################################################
+def remove_by_lengths(wordlist, minLength, maxLength):
+    for word in wordlist:
+        if (len(word) < minLength) or (len(word) > maxLength): wordlist.remove(word)
+    return wordlist
+
+
+################################################################################
+def case_transforms(word):
+    new_wordlist = []
+
+    # Make each one upper (hello => Hello, hEllo, heLlo, helLo, hellO)
+    i=0
+    for char in word:
+        new_word = word[:i] + char.upper() + word[i+1:]
+        i += 1
+        if new_word not in new_wordlist: new_wordlist.append(new_word)
+
+    # Make pairs upper (hello => HeLlO)
+    i=0
+    new_word = ''
+    for char in word:
+        if i % 2 == 0: new_word += char.upper()
+        else: new_word += char
+        i += 1
+    if new_word not in new_wordlist: new_wordlist.append(new_word)
+
+    # Make odds upper (hello => hElLo)
+    i=0
+    new_word = ''
+    for char in word:
+        if i % 2 != 0: new_word += char.upper()
+        else: new_word += char
+        i += 1
+    if new_word not in new_wordlist: new_wordlist.append(new_word)
+
+    # Make consonants upper (hello => HeLLo)
+    vowels = 'aeiou'
+    new_word = ''
+    for char in word:
+        if char not in vowels: new_word += char.upper()
+        else: new_word += char
+    if new_word not in new_wordlist: new_wordlist.append(new_word)
+
+    # Make vowels upper (hello => hEllO)
+    new_word = ''
+    for char in word:
+        if char in vowels: new_word += char.upper()
+        else: new_word += char
+    if new_word not in new_wordlist: new_wordlist.append(new_word)
+
+    return new_wordlist
+
+
+################################################################################
+def leet_transforms(word):
+    new_wordlist = []
+    i=0
+    for char in word:
+        if char in ('a', 'A'):
+            char = '4'
+        elif char in ('i', 'I'):
+            char = '1'
+        elif char in ('e', 'E'):
+            char = '3'
+        elif char in ('s', 'S'):
+            char = '5'
+        elif char in ('b', 'B'):
+            char = '8'
+        elif char in ('o', 'O'):
+            char = '0'
+        word = word[:i] + char + word[i + 1:]
+        i += 1
+        if word not in new_wordlist: new_wordlist.append(word)
+    return new_wordlist
+
+
+################################################################################
+def asks():
+    while True:
+        minLength = raw_input(u'  {}[?]{} Password\'s min length [1] >>> '.format(color.BLUE, color.END))
+        if isEmpty(minLength): minLength = 1; break
+        else:
+            try:
+                minLength = int(minLength); break
+            except ValueError:
+                print u'  {}[!]{} Min length should be an integer'.format(color.RED, color.END)
+    while True:
+        maxLength = raw_input(u'  {}[?]{} Password\'s max length [99] >>> '.format(color.BLUE, color.END))
+        if isEmpty(maxLength): maxLength = 99; break
+        else:
+            try:
+                maxLength = int(maxLength)
+                if maxLength < minLength: print u'  {}[!]{} Max should be greater or equal than min'.format(color.RED, color.END)
+                else: break
+            except ValueError:
+                print u'  {}[!]{} Max length should be an integer'.format(color.RED, color.END)
+
+    firstname = raw_input(u'  {}[?]{} First name >>> '.format(color.BLUE, color.END))
+    surname = raw_input(u'  {}[?]{} Surname >>> '.format(color.BLUE, color.END))
+    lastname = raw_input(u'  {}[?]{} Last name >>> '.format(color.BLUE, color.END))
+
+    while True:
+        birth = raw_input(u'  {}[?]{} Birth date (DD/MM/YYYY) >>> '.format(color.BLUE, color.END))
+        if not isEmpty(birth) and not is_valid_date(birth):
+            print u'  {}[!]{} Birthdate wrong format'.format(color.RED, color.END)
+        else:
+            break
+
+    others = raw_input(u'  {}[?]{} Some other relevant words (comma-separated) >>> '.format(color.BLUE, color.END))
+
+    leet = raw_input(u'  {}[?]{} Do yo want to make leet transforms? [y/n] >>> '.format(color.BLUE, color.END))
+    case = raw_input(u'  {}[?]{} Do yo want to make case transforms? [y/n] >>> '.format(color.BLUE, color.END))
+
+    if leet.lower() == 'y': leet = True
+    else: leet = False
+
+    if case.lower() == 'y': case = True
+    else: case = False
+
+    while True:
+        nWords = raw_input(u'  {}[?]{} How much words do you want to combine at most [2] >>> '.format(color.BLUE, color.END))
+        if isEmpty(nWords): nWords = 2; break
+        else:
+            try:
+                nWords = int(nWords)
+                if nWords < 1:
+                    print u'  {}[!]{} Should be greater or equal than 1'.format(color.RED, color.END)
+                else:
+                    break
+            except ValueError:
+                print u'  {}[!]{} Should be an integer'.format(color.RED, color.END)
+
+    outfile = raw_input(u'  {}[?]{} Output file [tmp.txt] >>> '.format(color.BLUE, color.END))
+    if isEmpty(outfile): outfile = u'tmp.txt'
+
+    wordlist = []
+
+    if not isEmpty(firstname):
+        firstname = firstname.lower()
+        wordlist.append(firstname)
+    if not isEmpty(surname):
+        surname = surname.lower()
+        wordlist.append(surname)
+    if not isEmpty(lastname):
+        lastname = lastname.lower()
+        wordlist.append(lastname)
+    if not isEmpty(birth):
+        birth = birth.split('/')
+        for i in birth:
+            wordlist.append(i)
+        wordlist.append((birth[2])[-2:])  # Also add two last digits of the year
+    if not isEmpty(others):
+        others = others.split(',')
+        for i in others:
+            wordlist.append(i.lower())
+
+    return wordlist, minLength, maxLength, leet, case, nWords, outfile
+
+
+################################################################################
+def main():
+    args = parser.parse_args()
+    interactive = args.interactive
+    if len(sys.argv) == 1: parser.print_help(sys.stdout); sys.exit(2)  # Print help and exit when runs without args
+
+
+    # SETTINGS
+    ############################################################################
+    if interactive:
+        clear()
+        banner()
+        base_wordlist, minLength, maxLength, case, leet, nWords, outfile = asks()
+        #base_wordlist, minLength, maxLength, case, leet, nWords, outfile = (['john', 'doe', 'foo', '01', '01', '1970', '70', 'bar', 'python'], 6, 12, True, True, 2, 'tmp.txt')
+
+    else:
+        raw_wordlist = (args.words).split(',')
+        base_wordlist = []
+        for word in raw_wordlist:
+            base_wordlist.append(word.lower())
+        minLength = args.min
+        maxLength = args.max
+        case = args.case
+        leet = args.leet
+        nWords = args.nWords
+        outfile = args.outfile
+
+    start_time = datetime.datetime.now().time().strftime('%H:%M:%S')  # Initial timestamp
+    wordlist = base_wordlist[:]  # Copy to preserve the original
+
+
+    # WORD COMBINATIONS
+    ############################################################################
+    if nWords > 1:
+        wordlist = combinator(base_wordlist, 2)
+        i = 2
+        while i < nWords:
+            i += 1
+            wordlist += combinator(base_wordlist, i)
+
+    wordlist += add_common_separators(base_wordlist)
+
+    wordlist = list(OrderedDict.fromkeys(wordlist))  # Check for duplicates
+
+    # Remove words which doesn't match the min-max range established
+    wordlist = remove_by_lengths(wordlist, minLength, maxLength)
+
+
+    # UPPER/LOWER TRANSFORMS
+    ############################################################################
+    if case:
+        pool = ThreadPool(16)
+        # process each word in their own thread and return the results
+        new_wordlist = pool.map(case_transforms, wordlist)
+        pool.close()
+        pool.join()
+        for lists in new_wordlist:
+            wordlist += lists
+        del new_wordlist
+
+
+    # LEET TRANSFORMS
+    ############################################################################
+    if leet:
+        pool = ThreadPool(16)
+        # process each word in their own thread and return the results
+        new_wordlist = pool.map(leet_transforms, wordlist)
+        pool.close()
+        pool.join()
+        for lists in new_wordlist:
+            wordlist += lists
+        del new_wordlist
+
+
+    wordlist = list(OrderedDict.fromkeys(wordlist))  # Check for duplicates
+
+
+    # SAVE WORDLIST TO FILE
+    ############################################################################
+    with open(outfile, 'wb') as f:
+        for word in wordlist:
+            f.write(word + '\n')
+
+    # PRINT RESULTS
+    ############################################################################
+    end_time = datetime.datetime.now().time().strftime('%H:%M:%S')  # Final timestamp
+    total_time = (datetime.datetime.strptime(end_time, '%H:%M:%S') -
+                  datetime.datetime.strptime(start_time, '%H:%M:%S'))
+
+    print u'\n  {}[+]{} Time elapsed:\t{}'.format(color.GREEN, color.END, total_time)
+    print u'  {}[+]{} Output file:\t{}{}{}{}'.format(color.GREEN, color.END, color.BOLD, color.BLUE, outfile, color.END)
+    print u'  {}[+]{} Words generated:\t{}{}{}\n'.format(color.GREEN, color.END, color.RED, len(wordlist), color.END)
+    sys.exit(0)
+
+
+################################################################################
+################################################################################
+
+if __name__ == '__main__':
+    try: main()
+    except KeyboardInterrupt: print u'\n\n  {}[!]{} Exiting...\n'.format(color.RED, color.END); sys.exit(3)
+
