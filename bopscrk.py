@@ -68,6 +68,11 @@ parser.add_argument('-n', action="store", metavar='', type=int, dest='nWords',
                     default=2, help='max amount of words to combine each time '
                                     '(default: 2)')
 
+parser.add_argument('-x', action="store", metavar='wordlist', type=str,
+                    dest='exclude',
+                    help='exclude all the words included in other wordlists '
+                         '(several wordlists should be comma-separated)')
+
 parser.add_argument('-o', '--output', action="store", metavar='', type=str,
                     dest='outfile', default='tmp.txt',
                     help='output file to save the wordlist (default: tmp.txt)')
@@ -180,6 +185,16 @@ def remove_by_lengths(wordlist, minLength, maxLength):
     for word in wordlist:
         if (len(word) < minLength) or (len(word) > maxLength): wordlist.remove(word)
     return wordlist
+
+def thread_transforms(transform_type, wordlist):
+    pool = ThreadPool(16)
+    # process each word in their own thread and return the results
+    new_wordlist = pool.map(transform_type, wordlist)
+    pool.close()
+    pool.join()
+    for lists in new_wordlist:
+        wordlist += lists
+    return new_wordlist
 
 
 ################################################################################
@@ -308,6 +323,22 @@ def asks():
             except ValueError:
                 print u'  {}[!]{} Should be an integer'.format(color.RED, color.END)
 
+    while True:
+        exclude = raw_input(u'  {}[?]{} Exclude words from other wordlist? >>> '.format(color.BLUE, color.END))
+        if isEmpty(exclude):
+            exclude = False;
+            break
+        else:
+            exclude = exclude.split(',')
+            valid_paths = True
+            for wl_path in exclude:
+                if not os.path.isfile(wl_path):
+                    valid_paths = False
+                    print u'  {}[!]{} {} not found'.format(color.RED, color.END, wl_path)
+
+            if valid_paths:
+                break
+
     outfile = raw_input(u'  {}[?]{} Output file [tmp.txt] >>> '.format(color.BLUE, color.END))
     if isEmpty(outfile): outfile = u'tmp.txt'
 
@@ -332,7 +363,7 @@ def asks():
         for i in others:
             wordlist.append(i.lower())
 
-    return wordlist, minLength, maxLength, leet, case, nWords, outfile
+    return wordlist, minLength, maxLength, leet, case, nWords, exclude, outfile
 
 
 ################################################################################
@@ -347,8 +378,8 @@ def main():
     if interactive:
         clear()
         banner()
-        base_wordlist, minLength, maxLength, case, leet, nWords, outfile = asks()
-        #base_wordlist, minLength, maxLength, case, leet, nWords, outfile = (['john', 'doe', 'foo', '01', '01', '1970', '70', 'bar', 'python'], 6, 12, True, True, 2, 'tmp.txt')
+        base_wordlist, minLength, maxLength, case, leet, nWords, exclude, outfile = asks()
+        #base_wordlist, minLength, maxLength, case, leet, nWords, outfile = (['john', 'doe', 'foo', '01', '01', '1970', '70', 'bar', 'python'], 6, 12, True, True, 2, False, 'tmp.txt')
 
     else:
         raw_wordlist = (args.words).split(',')
@@ -361,6 +392,14 @@ def main():
         leet = args.leet
         nWords = args.nWords
         outfile = args.outfile
+
+        exclude = args.exclude
+        if exclude:
+            exclude = exclude.split(',')
+            for wl_path in exclude:
+                if not os.path.isfile(wl_path):
+                    print u'  {}[!]{} {} not found'.format(color.RED, color.END, wl_path)
+                    sys.exit(4)
 
     start_time = datetime.datetime.now().time().strftime('%H:%M:%S')  # Initial timestamp
     wordlist = base_wordlist[:]  # Copy to preserve the original
@@ -386,27 +425,31 @@ def main():
     # UPPER/LOWER TRANSFORMS
     ############################################################################
     if case:
-        pool = ThreadPool(16)
-        # process each word in their own thread and return the results
-        new_wordlist = pool.map(case_transforms, wordlist)
-        pool.close()
-        pool.join()
-        for lists in new_wordlist:
-            wordlist += lists
-        del new_wordlist
+        thread_transforms(case_transforms, wordlist)
 
 
     # LEET TRANSFORMS
     ############################################################################
     if leet:
-        pool = ThreadPool(16)
-        # process each word in their own thread and return the results
-        new_wordlist = pool.map(leet_transforms, wordlist)
-        pool.close()
-        pool.join()
-        for lists in new_wordlist:
-            wordlist += lists
-        del new_wordlist
+        thread_transforms(leet_transforms, wordlist)
+
+
+    # EXCLUDE FROM OTHER WORDLISTS
+    if exclude:
+        new_wordlist = []
+
+        words_to_exclude = []
+        for wl_path in exclude:
+            with open(wl_path, 'rb') as wlist_file:
+                wl = wlist_file.read()
+                wl = wl.split('\n')
+                words_to_exclude += wl
+
+        for word in wordlist:
+            if word not in words_to_exclude:
+                new_wordlist.append(word)
+
+        wordlist = new_wordlist
 
 
     wordlist = list(OrderedDict.fromkeys(wordlist))  # Check for duplicates
