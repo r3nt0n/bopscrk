@@ -16,11 +16,7 @@ The first idea was inspired by **Cupp** and **Crunch**. We could say that bopscr
 * The tool will generate **all possible combinations** between them.
 * To generate more combinations, it will add some **common separators** (e.g. "-", "_", "."), **random numbers** and **special chars**.
 * You can enable **leet** and **case transforms** to increase your chances.
-<<<<<<< HEAD
 * If you enable **lyricpass mode**, the tool will ask you about **artists** and it will download all his **songs' lyrics**. Each line will be added as a new word. Then it will be **transform in several ways** (leet, case, only first letters, with and without spaces...). Artist names will be added too. 
-=======
-If you enable **lyricpass mode**, the tool will ask you about **artists** and it will download all his **songs' lyrics**. Each line will be added as a new word. Then it will be **transform in several ways** (leet, case, only first letters, with and without spaces...). Artist names will be added too. 
->>>>>>> origin/master
  
 
 ## Requirements
