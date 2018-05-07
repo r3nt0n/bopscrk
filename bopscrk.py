@@ -20,7 +20,7 @@ import sys
 import datetime
 import itertools
 import argparse
-from random import randint
+from random import randint, choice
 from collections import OrderedDict
 from multiprocessing.dummy import Pool as ThreadPool
 
@@ -37,8 +37,11 @@ class color:
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
     ORANGE = '\033[33m'
-    ORANGEBG = '\033[48;2;255;165;0m'
+    #ORANGEBG = '\033[48;2;255;165;0m'
     END = '\033[0m'
+
+    RAND_KEY_COLOR = [PURPLE, CYAN, DARKCYAN, YELLOW, ORANGE]
+    KEY_HIGHL = choice(RAND_KEY_COLOR)
 
 
 ################################################################################
@@ -89,9 +92,9 @@ def banner():
     print u'  | [][][][][]  [][][][][]  [][][][]  [][__]  [][][][] |  |    v{}{}{}    |'.format(color.BLUE, __version__, color.END)
     print u'  |                                                    |  |------------|'
     print u'  |  [][][][][][][][][][][][][][_]    [][][]  [][][][] |  | {}{}{} |'.format(color.RED, name_rand_leet, color.END)
-    print u'  |  [_][][][][][][][][][][][][][ |   [][][]  [][][][] |  | {}{}{}{} |'.format(color.BOLD, color.RED, name, color.END)
-    print u'  | [][_][][][][][][][][][][][][]||     []    [][][][] |  | {}{}{} |'.format(color.RED, name_rand_case, color.END)
-    print u'  | [__][][][][][][][][][][][][__]    [][][]  [][][]|| |  |------------|'
+    print u'  |  [_][][][]{}[]{}[][][][]{}[][]{}[][][ |   [][][]  [][][][] |  | {}{}{}{} |'.format(color.KEY_HIGHL, color.END, color.KEY_HIGHL, color.END, color.BOLD, color.RED, name, color.END)
+    print u'  | [][_][]{}[]{}[][][][][]{}[]{}[][][][]||     []    [][][][] |  | {}{}{} |'.format(color.KEY_HIGHL, color.END, color.KEY_HIGHL, color.END, color.RED, name_rand_case, color.END)
+    print u'  | [__][][][]{}[]{}[]{}[]{}[][][][][][__]    [][][]  [][][]|| |  |------------|'.format(color.KEY_HIGHL, color.END, color.KEY_HIGHL, color.END)
     print u'  |   [__][________________][__]              [__][]|| |  |{}   {}   {}|'.format(color.GREEN, __author__, color.END)
     print u'  `----------------------------------------------------´  `------------´\n'
     # print u'  +--------------------------------------------------------------------+'
