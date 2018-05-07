@@ -51,8 +51,8 @@ The first idea was inspired by **Cupp** and **Crunch**. We could say that bopscr
 
 
 ## Experimental features
-* Lyricpass integration is cooming soon.
-* Excluded wordlists needs some improvements, with huge wordlists could be too slow (I would appreaciate any help).
+* **Lyricpass** was integrated, but still needs some tweaks to speed up the search process (I would appreciate any help).
+* **Excluded wordlists** needs some improvements, with huge wordlists could be too slow (I would appreciate any help).
 
 
 ### Lyricpass 
