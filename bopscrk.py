@@ -73,6 +73,9 @@ parser.add_argument('-a', '--artists', action="store", metavar='', type=str,
                     dest='artists', default=False,
                     help='artists to search song lyrics (comma-separated)')
 
+parser.add_argument('--lyrics-all', action="store_true", default=False, dest='lyrics_all',
+                    help='make all the possible transforms with lyrics (not recommended)')
+
 parser.add_argument('-x', action="store", metavar='wordlist', type=str,
                     dest='exclude', default=False,
                     help='exclude all the words included in other wordlists '
@@ -191,6 +194,8 @@ def remove_by_lengths(wordlist, minLength, maxLength):
         if (len(word) < minLength) or (len(word) > maxLength): wordlist.remove(word)
     return wordlist
 
+
+################################################################################
 def thread_transforms(transform_type, wordlist):
     pool = ThreadPool(16)
     # process each word in their own thread and return the results
@@ -210,6 +215,16 @@ def space_transforms(word):
     new_wordlist.append(word.replace(' ', '_'))
     new_wordlist.append(word.replace(' ', '-'))
     return new_wordlist
+
+
+################################################################################
+def take_initials(word):
+    splitted = word.split(' ')
+    initials = ''
+    for char in splitted:
+        try: initials += char[0]
+        except IndexError: continue
+    return initials
 
 
 ################################################################################
@@ -341,6 +356,10 @@ def asks():
     artists = raw_input(u'  {}[?]{} Artist names to search song lyrics (comma-separated) >>> '.format(color.BLUE, color.END))
     if isEmpty(artists): artists = False
 
+    ly_all_transforms = raw_input(u'  {}[?]{} Do yo want to make all posible transforms with lyrics? (not recommended) [y/n] >>> '.format(color.BLUE, color.END))
+    if ly_all_transforms.lower() == 'y': ly_all_transforms = True
+    else: ly_all_transforms = False
+
     while True:
         exclude = raw_input(u'  {}[?]{} Exclude words from other wordlist? >>> '.format(color.BLUE, color.END))
         if isEmpty(exclude): exclude = False; break
@@ -379,7 +398,7 @@ def asks():
         for i in others:
             wordlist.append(i.lower())
 
-    return wordlist, minLength, maxLength, leet, case, nWords, artists, exclude, outfile
+    return wordlist, minLength, maxLength, leet, case, nWords, artists, ly_all_transforms, exclude, outfile
 
 
 ################################################################################
@@ -394,7 +413,7 @@ def main():
     if interactive:
         clear()
         banner()
-        base_wordlist, minLength, maxLength, case, leet, nWords, artists, exclude, outfile = asks()
+        base_wordlist, minLength, maxLength, case, leet, nWords, artists, ly_all_transforms, exclude, outfile = asks()
 
     else:
         base_wordlist = []
@@ -409,6 +428,7 @@ def main():
         nWords = args.nWords
         artists = args.artists
         outfile = args.outfile
+        ly_all_transforms = args.lyrics_all
 
         exclude = args.exclude
         if exclude:
@@ -440,11 +460,6 @@ def main():
     ############################################################################
     wordlist += add_common_separators(base_wordlist)
 
-    # Check for duplicates
-    wordlist = list(OrderedDict.fromkeys(wordlist))
-    # Remove words which doesn't match the min-max range established
-    wordlist = remove_by_lengths(wordlist, minLength, maxLength)
-
 
     # SEARCH FOR LYRICS
     ############################################################################
@@ -466,12 +481,30 @@ def main():
                 lyrics = lyfinder.lyrics
                 print u'  {}[*] {}{}{} phrases found'.format(color.CYAN, color.GREEN, len(lyrics), color.END)
 
-                #print(lyrics)
+                # First we remove all the parenthesis in the phrases
+                lyrics = ([s.replace('(', '') for s in lyrics])
+                lyrics = ([s.replace(')', '') for s in lyrics])
+
+                # Now take just the initials
+                base_lyrics = lyrics[:]
+                ly_initials_wl = thread_transforms(take_initials, base_lyrics)
+                for phrase in ly_initials_wl:
+                    wordlist.append(phrase)
+
+                # Make all possible transforms taking the song's phrases as base (leet, case and spaces)
+                if ly_all_transforms:
+                    # Add the raw phrases to main wordlist
+                    wordlist += lyrics
+                    # Make space transforms and add it too
+                    lyrics = thread_transforms(space_transforms, lyrics)
+                    for phrase in lyrics:
+                        wordlist += phrase
 
 
-
-
-
+    # Check for duplicates
+    wordlist = list(OrderedDict.fromkeys(wordlist))
+    # Remove words which doesn't match the min-max range established
+    wordlist = remove_by_lengths(wordlist, minLength, maxLength)
 
 
     # UPPER/LOWER TRANSFORMS
