@@ -11,6 +11,8 @@ Bopscrk (**Before Outset PaSsword CRacKing**) is a tool to **assist** in all the
 
 The first idea was inspired by **Cupp** and **Crunch**. We could say that bopscrk is a wordlist generator **situated between them**, taking the best of each one. The challenge was try to apply the Cupp's idea to more generic-situations and amplify the shoot-range of the resultant wordlist, without loosing this custom-wordlist-profiler feature.
 
+**NEW FEATURE**: Lyrics searching related to artists to increase the wordlist chances. 
+
 
 ## How it works
 * You have to **provide** some **words** which will act as a **base**.
@@ -58,4 +60,8 @@ The first idea was inspired by **Cupp** and **Crunch**. We could say that bopscr
 ### Lyricpass 
 This feature is based in a modified version of a [tool](https://github.com/initstring/lyricpass) developed originally by [initstring](https://github.com/initstring/).
 
-Still under development.
+It will retrieve all lyrics from all songs which belongs to artists that you provide. As this feature can make the wordlist grow too much, **by default it will store each phrase reduced to its initials** (which will be transformed later if you have activated leet and case transforms). As one the main methods to use lyrics as a password is to use just the initials, It should be usually enough.
+
+With **--lyrics-all**, it will store the raw phrases too and apply some transforms over them (like convert spaces into dots and other special chars). This method is **strongly unrecommended**, because 5000 phrases could become 5.000.000 easily.
+
+If you want to make an extensive and accurate lyrics-wordlist related to your target, the better choice is to use it without any other words added (and maybe without leet and case transforms). 
