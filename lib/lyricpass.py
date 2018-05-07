@@ -10,11 +10,13 @@
 # Included in:       bopscrk (https://github.com/R3nt0n/bopscrk)
 
 
-import argparse
+#import argparse
 from bs4 import BeautifulSoup
 import requests
-import sys
+#import sys
 import string
+
+from multiprocessing.dummy import Pool as ThreadPool
 
 
 # Creating a class for the parser to gracefully handle errors:
@@ -46,21 +48,30 @@ class LyricsFinder:
         artist = artist.title()
 
         lyrics = []
-        print('Looking for lyrics from ' + artist)
 
         artisturl = self.create_artist_url(artist)  # create a workable URL
         songlinks = self.get_songs(artisturl, artist)  # find all the songs for this artist
         for s in songlinks:
-            print("Getting lyrics for " + s)
             for l in self.get_lyrics(s):  # get a list of lyric lines
                 try:
                     lyrics.append(l)  # append found lines to master list
                 except:
                     continue
+
+        ########################################################################
+        # [!] r3nt0n   =>   Tried with threads to speed up, no lucky
+        ########################################################################
+        # pool = ThreadPool(16)
+        # # process each word in their own thread and return the results
+        # lyricsLists = pool.map(self.get_lyrics, songlinks)
+        # pool.close()
+        # pool.join()
+        # for lst in lyricsLists:
+        #     try: lyrics += lst
+        #     except: continue
+        ########################################################################
+
         self.lyrics = self.format_lyrics(lyrics)  # format lyrics as specified in arguments
-        # print("*********************")
-        # print("Now writing output file...")
-        #write_file(lyrics, outfile)  # write the output file
 
 
     # The web site uses underscores in place of spaces. This function will format for us:
@@ -69,12 +80,14 @@ class LyricsFinder:
         url = 'http://lyrics.wikia.com/wiki/' + a
         return url
 
+
     # The site has a standard format for URLs. After we find the song names, we can use this to get the URL:
     def create_song_url(self, song, artist):
         song = song.replace(' ', '_')
         artist = artist.replace(' ', '_')
         url = 'http://lyrics.wikia.com/wiki/' + artist + ':' + song
         return url
+
 
     # This function attempts to create a list of links to songs based on the artist put in on the command line.
     # Later, we will use these song names to go looking for the lyrics:
@@ -87,6 +100,7 @@ class LyricsFinder:
             url = self.create_song_url(l.text, artist)                # Create a new link based on artist and song name
             cleanlinks.append(url)                               # Stash this song link in a list to return
         return cleanlinks
+
 
     # After we know the song names, we can use the artist name and the url function above to go find the actual lyrics.
     # This function does some basic cleaning of HTML tags out of the return strings. I found that unexpected data
@@ -105,14 +119,15 @@ class LyricsFinder:
                         l.append(line)                              # If this is good, clean text: append it to the list
                     except:
                         continue
-        print ("Found " + str(len(l)) + " lines of lyrics")
         return l                                                    # This returns a long list of lyrics to the main func
+
 
     # This function can be used to further deduplicate the list after punctuation is removed.
     def dedupe(self, seq):
         seen = set()
         seen_add = seen.add
         return [x for x in seq if not (x in seen or seen_add(x))]
+
 
     # This function cleans up the data before writing, including any optional parameters specified at launch:
     def format_lyrics(self, rawlyrics):
@@ -124,38 +139,3 @@ class LyricsFinder:
         formatted = self.dedupe(formatted)
 
         return formatted
-
-
-# This function will append the found lyrics to a file in the current directory:
-# def write_file(l, o):
-#     file = open(o, 'a')
-#     for line in l:
-#         try:
-#             file.write(str(line) + '\n')
-#         except:
-#             continue
-
-
-# def main():
-#     lyrics = []
-#     print('Looking for lyrics from ' + artist + ' and writing to file: ' + outfile)
-#
-#     artisturl = create_artist_url(artist)               # create a workable URL
-#     songlinks = get_songs(artisturl, artist)            # find all the songs for this artist
-#     for s in songlinks:
-#         print("Getting lyrics for " + s)
-#         for l in get_lyrics(s):                         # get a list of lyric lines
-#             try:
-#                 lyrics.append(l)                        # append found lines to master list
-#             except:
-#                 continue
-#     lyrics = format_lyrics(lyrics)                      # format lyrics as specified in arguments
-#     print("*********************")
-#     print("Now writing output file...")
-#     write_file(lyrics, outfile)                         # write the output file
-
-
-
-#
-# if __name__ == '__main__':
-#     main()
