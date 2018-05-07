@@ -1,11 +1,12 @@
+![Version 1.2](http://img.shields.io/badge/version-v1.2-orange.svg)
+![Python 2.7](http://img.shields.io/badge/python-2.7-blue.svg)
+![GPL-3.0 License](http://img.shields.io/badge/license-GPL%20License-brightgreen.svg)
+
 # Bopscrk
 Bopscrk (**Before Outset PaSsword CRacKing**) is a tool to **assist** in all the **previous process of password cracking**. By now, it's able to generate smart and powerful wordlists.
   
   
-  
 <p align="center"><img src="https://github.com/R3nt0n/bopscrk/blob/master/img/example.gif" /></p>
-  
-  
   
 
 The first idea was inspired by **Cupp** and **Crunch**. We could say that bopscrk is a wordlist generator **situated between them**, taking the best of each one. The challenge was try to apply the Cupp's idea to more generic-situations and amplify the shoot-range of the resultant wordlist, without loosing this custom-wordlist-profiler feature.
