@@ -62,17 +62,19 @@ parser.add_argument('--max', action="store", metavar='', type=int, dest='max',
                     default=32, help='max length for the words to generate '
                                      '(default: 32)')
 
-parser.add_argument('-c', '--case', action="store_true",
-                    help='enable case transformations')
-parser.add_argument('-l', '--leet', action="store_true",
-                    help='enable leet transformations')
+parser.add_argument('-c', '--case', action="store_true", help='enable case transformations')
+parser.add_argument('-l', '--leet', action="store_true", help='enable leet transformations')
 
 parser.add_argument('-n', action="store", metavar='', type=int, dest='nWords',
                     default=2, help='max amount of words to combine each time '
                                     '(default: 2)')
 
+parser.add_argument('-a', '--artists', action="store", metavar='', type=str,
+                    dest='artists', default=False,
+                    help='artists to search song lyrics (comma-separated)')
+
 parser.add_argument('-x', action="store", metavar='wordlist', type=str,
-                    dest='exclude',
+                    dest='exclude', default=False,
                     help='exclude all the words included in other wordlists '
                          '(several wordlists should be comma-separated)')
 
@@ -151,7 +153,7 @@ def add_common_separators(wordlist):
     :param wordlist: the base wordlist to combine
     :return: a new wordlist with all the combinations
     """
-    common_separators = ['.', '_', '-', '123']
+    common_separators = ['.', '_', '-', '123', '$', '%', '&', '#', '@']
     words = wordlist[:]
     new_wordlist = []
 
@@ -197,6 +199,16 @@ def thread_transforms(transform_type, wordlist):
     pool.join()
     for lists in new_wordlist:
         wordlist += lists
+    return new_wordlist
+
+
+################################################################################
+def space_transforms(word):
+    new_wordlist = []
+    new_wordlist.append(word.replace(' ', ''))
+    new_wordlist.append(word.replace(' ', '.'))
+    new_wordlist.append(word.replace(' ', '_'))
+    new_wordlist.append(word.replace(' ', '-'))
     return new_wordlist
 
 
@@ -326,11 +338,12 @@ def asks():
             except ValueError:
                 print u'  {}[!]{} Should be an integer'.format(color.RED, color.END)
 
+    artists = raw_input(u'  {}[?]{} Artist names to search song lyrics (comma-separated) >>> '.format(color.BLUE, color.END))
+    if isEmpty(artists): artists = False
+
     while True:
         exclude = raw_input(u'  {}[?]{} Exclude words from other wordlist? >>> '.format(color.BLUE, color.END))
-        if isEmpty(exclude):
-            exclude = False;
-            break
+        if isEmpty(exclude): exclude = False; break
         else:
             exclude = exclude.split(',')
             valid_paths = True
@@ -366,7 +379,7 @@ def asks():
         for i in others:
             wordlist.append(i.lower())
 
-    return wordlist, minLength, maxLength, leet, case, nWords, exclude, outfile
+    return wordlist, minLength, maxLength, leet, case, nWords, artists, exclude, outfile
 
 
 ################################################################################
@@ -381,19 +394,20 @@ def main():
     if interactive:
         clear()
         banner()
-        base_wordlist, minLength, maxLength, case, leet, nWords, exclude, outfile = asks()
-        #base_wordlist, minLength, maxLength, case, leet, nWords, outfile = (['john', 'doe', 'foo', '01', '01', '1970', '70', 'bar', 'python'], 6, 12, True, True, 2, False, 'tmp.txt')
+        base_wordlist, minLength, maxLength, case, leet, nWords, artists, exclude, outfile = asks()
 
     else:
-        raw_wordlist = (args.words).split(',')
         base_wordlist = []
-        for word in raw_wordlist:
-            base_wordlist.append(word.lower())
+        if args.words:
+            raw_wordlist = (args.words).split(',')
+            for word in raw_wordlist:
+                base_wordlist.append(word.lower())
         minLength = args.min
         maxLength = args.max
         case = args.case
         leet = args.leet
         nWords = args.nWords
+        artists = args.artists
         outfile = args.outfile
 
         exclude = args.exclude
@@ -404,7 +418,12 @@ def main():
                     print u'  {}[!]{} {} not found'.format(color.RED, color.END, wl_path)
                     sys.exit(4)
 
-    start_time = datetime.datetime.now().time().strftime('%H:%M:%S')  # Initial timestamp
+    if artists:
+        artists = artists.split(',')
+
+
+    # Initial timestamp
+    start_time = datetime.datetime.now().time().strftime('%H:%M:%S')
     wordlist = base_wordlist[:]  # Copy to preserve the original
 
 
@@ -417,12 +436,42 @@ def main():
             i += 1
             wordlist += combinator(base_wordlist, i)
 
+    # WORD COMBINATIONS WITH COMMON SEPARATORS
+    ############################################################################
     wordlist += add_common_separators(base_wordlist)
 
-    wordlist = list(OrderedDict.fromkeys(wordlist))  # Check for duplicates
-
+    # Check for duplicates
+    wordlist = list(OrderedDict.fromkeys(wordlist))
     # Remove words which doesn't match the min-max range established
     wordlist = remove_by_lengths(wordlist, minLength, maxLength)
+
+
+    # SEARCH FOR LYRICS
+    ############################################################################
+    if artists:
+        try:
+            from lib.lyricpass import LyricsFinder
+            searchLyrics = True
+        except ImportError:
+            print u'  {}[!]{} missing dependencies, only artist names will be added and transformed'.format(color.RED, color.END)
+            searchLyrics = False
+
+        for artist in artists:
+            wordlist.append(artist)
+            wordlist += space_transforms(artist)
+
+            if searchLyrics:
+                print u'  {}[*]{} Looking for {}\'s lyrics...'.format(color.CYAN, color.END, artist.title())
+                lyfinder = LyricsFinder(artist, False, True)
+                lyrics = lyfinder.lyrics
+                print u'  {}[*] {}{}{} phrases found'.format(color.CYAN, color.GREEN, len(lyrics), color.END)
+
+                #print(lyrics)
+
+
+
+
+
 
 
     # UPPER/LOWER TRANSFORMS
@@ -438,6 +487,7 @@ def main():
 
 
     # EXCLUDE FROM OTHER WORDLISTS
+    ############################################################################
     if exclude:
         new_wordlist = []
 
@@ -454,8 +504,8 @@ def main():
 
         wordlist = new_wordlist
 
-
-    wordlist = list(OrderedDict.fromkeys(wordlist))  # Check for duplicates
+    # Check for duplicates
+    wordlist = list(OrderedDict.fromkeys(wordlist))
 
 
     # SAVE WORDLIST TO FILE
@@ -464,12 +514,14 @@ def main():
         for word in wordlist:
             f.write(word + '\n')
 
-    # PRINT RESULTS
-    ############################################################################
-    end_time = datetime.datetime.now().time().strftime('%H:%M:%S')  # Final timestamp
+
+    # Final timestamp
+    end_time = datetime.datetime.now().time().strftime('%H:%M:%S')
     total_time = (datetime.datetime.strptime(end_time, '%H:%M:%S') -
                   datetime.datetime.strptime(start_time, '%H:%M:%S'))
 
+    # PRINT RESULTS
+    ############################################################################
     print u'\n  {}[+]{} Time elapsed:\t{}'.format(color.GREEN, color.END, total_time)
     print u'  {}[+]{} Output file:\t{}{}{}{}'.format(color.GREEN, color.END, color.BOLD, color.BLUE, outfile, color.END)
     print u'  {}[+]{} Words generated:\t{}{}{}\n'.format(color.GREEN, color.END, color.RED, len(wordlist), color.END)
