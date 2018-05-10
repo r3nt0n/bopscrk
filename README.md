@@ -1,6 +1,6 @@
 ![Version 1.2](http://img.shields.io/badge/version-v1.2-orange.svg)
 ![Python 2.7](http://img.shields.io/badge/python-2.7-blue.svg)
-![GPL-3.0 License](http://img.shields.io/badge/license-GPL-brightgreen.svg)
+![GPL-3.0 License](https://img.shields.io/badge/license-GPL%203.0-brightgreen.svg)
 
 # Bopscrk
 Bopscrk (**Before Outset PaSsword CRacKing**) is a tool to **assist** in all the **previous process of password cracking**. By now, it's able to generate smart and powerful wordlists.
@@ -29,17 +29,23 @@ The first idea was inspired by **Cupp** and **Crunch**. We could say that bopscr
 
 ## Usage
 ```
-  -h, --help         show this help message and exit  
-  -i, --interactive  interactive mode, the script will ask you about target  
-  -w                 words to combine comma-separated (non-interactive mode)  
-  --min              min length for the words to generate (default: 4)  
-  --max              max length for the words to generate (default: 32)  
-  -c, --case         enable case transformations  
-  -l, --leet         enable leet transformations  
-  -n                 max amount of words to combine each time (default: 2)  
-  -x wordlist        exclude all the words included in other wordlists  
-                     (several wordlists should be comma-separated)  
-  -o , --output      output file to save the wordlist (default: tmp.txt)  
+Generates smart and powerful wordlists.
+
+optional arguments:
+  -h, --help         show this help message and exit
+  -i, --interactive  interactive mode, the script will ask you about target
+  -w                 words to combine comma-separated (non-interactive mode)
+  --min              min length for the words to generate (default: 4)
+  --max              max length for the words to generate (default: 32)
+  -c, --case         enable case transformations
+  -l, --leet         enable leet transformations
+  -n                 max amount of words to combine each time (default: 2)
+  -a , --artists     artists to search song lyrics (comma-separated)
+  --lyrics-all       make all the possible transforms with lyrics (not
+                     recommended)
+  -x wordlist        exclude all the words included in other wordlists
+                     (several wordlists should be comma-separated)
+  -o , --output      output file to save the wordlist (default: tmp.txt)
 
 ```
  
@@ -50,7 +56,12 @@ The first idea was inspired by **Cupp** and **Crunch**. We could say that bopscr
 * In the others field you can write **several words comma-separated**. *Example*: 2C,Flipper.
 * Using the **non-interactive mode**, you should provide years in the long and short way (1970,70) to get the same result than the interactive mode.
 * You have to be careful with **-n** argument. If you set a big value, it could be result in **too huge wordlists**. I recommend values between 2 and 5.
+* To feed lyricpass with **several artists** through command line you should provides it **comma-separated** and **quotes-enclosed**. *Example*: `-a "john doe,john smith"`
 
+
+## Experimental features
+* **Lyricpass** was integrated, but still needs some tweaks to speed up the search process (I would appreciate any help).
+* **Excluded wordlists** needs some improvements, with huge wordlists could be too slow (I would appreciate any help).
 
 ### Lyricpass 
 This feature is based in a modified version of a [tool](https://github.com/initstring/lyricpass) developed originally by [initstring](https://github.com/initstring/).
@@ -60,11 +71,6 @@ It will retrieve all lyrics from all songs which belongs to artists that you pro
 With **--lyrics-all**, it will store the raw phrases too and apply some transforms over them (like convert spaces into dots and other special chars). This method is **strongly unrecommended**, because 5000 phrases could become 5.000.000 easily.
 
 If you want to make an extensive and accurate lyrics-wordlist related to a target, better choice is to use it without any other words added (and maybe without leet and case transforms). 
-
-
-## Experimental features
-* **Lyricpass** was integrated, but still needs some tweaks to speed up the search process (I would appreciate any help).
-* **Excluded wordlists** needs some improvements, with huge wordlists could be too slow (I would appreciate any help).
 
 
 ## Legal disclaimer

@@ -10,40 +10,20 @@
 # Included in:       bopscrk (https://github.com/R3nt0n/bopscrk)
 
 
-#import argparse
 from bs4 import BeautifulSoup
 import requests
-#import sys
 import string
-
-from multiprocessing.dummy import Pool as ThreadPool
-
-
-# Creating a class for the parser to gracefully handle errors:
-# class MyParser(argparse.ArgumentParser):
-#     def error(self, message):
-#         sys.stderr.write('error: %s\n' % message)
-#         self.print_help()
-#         sys.exit(2)
-
-
-# Handle the arguments before executing the main functions:
-# parser = MyParser()
-# parser.add_argument("artist", type=str, help="Define a specific artist for song lyric inclusion. Please  place \
-#                      the artist name in quotes.", action="store")
-# parser.add_argument("output", type=str, help="Output to file name in current directory.", action="store")
-# parser.add_argument("--lower", help="Switches all letters to lower case.", action='store_true')
-# parser.add_argument("--punctuation", help="Preserves punctuation, which is removed by default.", action='store_true')
-# args = parser.parse_args()
-#
-# artist = args.artist
-# outfile = args.output
 
 
 class LyricsFinder:
-    def __init__(self, artist, lower=False, punctuation=False):
+    def __init__(self, artist, lower=False, punct=False):
+        """
+        :param artist (str): string to search
+        :param lower (bool): if True, switches all letters to lower case.
+        :param punct (bool): if True, preserves punctuation (which is removed by default).
+        """
         self.lower = lower
-        self.punctuation = punctuation
+        self.punctuation = punct
 
         artist = artist.title()
 
@@ -61,6 +41,7 @@ class LyricsFinder:
         ########################################################################
         # [!] r3nt0n   =>   Tried with threads to speed up, no lucky
         ########################################################################
+        # from multiprocessing.dummy import Pool as ThreadPool
         # pool = ThreadPool(16)
         # # process each word in their own thread and return the results
         # lyricsLists = pool.map(self.get_lyrics, songlinks)
