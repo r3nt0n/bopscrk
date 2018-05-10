@@ -1,6 +1,6 @@
 ![Version 1.2](http://img.shields.io/badge/version-v1.2-orange.svg)
 ![Python 2.7](http://img.shields.io/badge/python-2.7-blue.svg)
-![GPL-3.0 License](http://img.shields.io/badge/license-GPL%20License-brightgreen.svg)
+![GPL-3.0 License](http://img.shields.io/badge/license-GPL-brightgreen.svg)
 
 # Bopscrk
 Bopscrk (**Before Outset PaSsword CRacKing**) is a tool to **assist** in all the **previous process of password cracking**. By now, it's able to generate smart and powerful wordlists.
@@ -52,16 +52,20 @@ The first idea was inspired by **Cupp** and **Crunch**. We could say that bopscr
 * You have to be careful with **-n** argument. If you set a big value, it could be result in **too huge wordlists**. I recommend values between 2 and 5.
 
 
+### Lyricpass 
+This feature is based in a modified version of a [tool](https://github.com/initstring/lyricpass) developed originally by [initstring](https://github.com/initstring/).
+
+It will retrieve all lyrics from all songs which belongs to artists that you provide. As this feature can make the wordlist grow too much, **by default it will store each phrase reduced to its initials** (which will be transformed later if you have activated leet and case transforms). As one of the main methods to use lyrics as a password is to take just initials, It should be usually enough.
+
+With **--lyrics-all**, it will store the raw phrases too and apply some transforms over them (like convert spaces into dots and other special chars). This method is **strongly unrecommended**, because 5000 phrases could become 5.000.000 easily.
+
+If you want to make an extensive and accurate lyrics-wordlist related to a target, better choice is to use it without any other words added (and maybe without leet and case transforms). 
+
+
 ## Experimental features
 * **Lyricpass** was integrated, but still needs some tweaks to speed up the search process (I would appreciate any help).
 * **Excluded wordlists** needs some improvements, with huge wordlists could be too slow (I would appreciate any help).
 
 
-### Lyricpass 
-This feature is based in a modified version of a [tool](https://github.com/initstring/lyricpass) developed originally by [initstring](https://github.com/initstring/).
-
-It will retrieve all lyrics from all songs which belongs to artists that you provide. As this feature can make the wordlist grow too much, **by default it will store each phrase reduced to its initials** (which will be transformed later if you have activated leet and case transforms). As one the main methods to use lyrics as a password is to use just the initials, It should be usually enough.
-
-With **--lyrics-all**, it will store the raw phrases too and apply some transforms over them (like convert spaces into dots and other special chars). This method is **strongly unrecommended**, because 5000 phrases could become 5.000.000 easily.
-
-If you want to make an extensive and accurate lyrics-wordlist related to your target, the better choice is to use it without any other words added (and maybe without leet and case transforms). 
+## Legal disclaimer
+This tool is created for the sole purpose of security awareness and education, it should not be used against systems that you do not have permission to test/attack. The author is not responsible for misuse or for any damage that you may cause. You agree that you use this software at your own risk.
