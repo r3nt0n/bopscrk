@@ -74,9 +74,9 @@ parser.add_argument('-a', '--artists', action="store", metavar='', type=str,
                     help='artists to search song lyrics (comma-separated)')
 
 parser.add_argument('--lyrics-all', action="store_true", default=False, dest='lyrics_all',
-                    help='make all the possible transforms with lyrics (not recommended)')
+                    help='make all the possible transforms with lyrics')
 
-parser.add_argument('-x', action="store", metavar='wordlist', type=str,
+parser.add_argument('-x', action="store", metavar='', type=str,
                     dest='exclude', default=False,
                     help='exclude all the words included in other wordlists '
                          '(several wordlists should be comma-separated)')
@@ -204,7 +204,7 @@ def thread_transforms(transform_type, wordlist):
     pool.join()
     for lists in new_wordlist:
         wordlist += lists
-    return new_wordlist
+    #return new_wordlist
 
 
 ################################################################################
@@ -361,7 +361,7 @@ def asks():
     else: ly_all_transforms = False
 
     while True:
-        exclude = raw_input(u'  {}[?]{} Exclude words from other wordlist? >>> '.format(color.BLUE, color.END))
+        exclude = raw_input(u'  {}[?]{} Exclude words from other wordlists? >>> '.format(color.BLUE, color.END))
         if isEmpty(exclude): exclude = False; break
         else:
             exclude = exclude.split(',')
@@ -523,8 +523,8 @@ def main():
     ############################################################################
     if exclude:
         new_wordlist = []
-
         words_to_exclude = []
+
         for wl_path in exclude:
             with open(wl_path, 'rb') as wlist_file:
                 wl = wlist_file.read()
