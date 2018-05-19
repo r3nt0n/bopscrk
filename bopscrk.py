@@ -228,6 +228,12 @@ def take_initials(word):
 
 
 ################################################################################
+def exclude(word):
+    if word not in words_to_exclude:
+        return word
+
+
+################################################################################
 def case_transforms(word):
     new_wordlist = []
 
@@ -413,7 +419,7 @@ def main():
     if interactive:
         clear()
         banner()
-        base_wordlist, minLength, maxLength, case, leet, nWords, artists, ly_all_transforms, exclude, outfile = asks()
+        base_wordlist, minLength, maxLength, case, leet, nWords, artists, ly_all_transforms, exclude_wordlists, outfile = asks()
 
     else:
         base_wordlist = []
@@ -430,10 +436,10 @@ def main():
         outfile = args.outfile
         ly_all_transforms = args.lyrics_all
 
-        exclude = args.exclude
-        if exclude:
-            exclude = exclude.split(',')
-            for wl_path in exclude:
+        exclude_wordlists = args.exclude
+        if exclude_wordlists:
+            exclude_wordlists = exclude_wordlists.split(',')
+            for wl_path in exclude_wordlists:
                 if not os.path.isfile(wl_path):
                     print u'  {}[!]{} {} not found'.format(color.RED, color.END, wl_path)
                     sys.exit(4)
@@ -521,21 +527,23 @@ def main():
 
     # EXCLUDE FROM OTHER WORDLISTS
     ############################################################################
-    if exclude:
-        new_wordlist = []
+    if exclude_wordlists:
+        global words_to_exclude
         words_to_exclude = []
 
-        for wl_path in exclude:
+        for wl_path in exclude_wordlists:
             with open(wl_path, 'rb') as wlist_file:
                 wl = wlist_file.read()
-                wl = wl.split('\n')
-                words_to_exclude += wl
+            wl = wl.split('\n')
+            words_to_exclude += wl
 
-        for word in wordlist:
-            if word not in words_to_exclude:
-                new_wordlist.append(word)
+        pool = ThreadPool(16)
+        final_wordlist = pool.map(exclude, wordlist)
+        pool.close()
+        pool.join()
 
-        wordlist = new_wordlist
+        wordlist = [word for word in final_wordlist if word is not None]
+
 
     # Check for duplicates
     wordlist = list(OrderedDict.fromkeys(wordlist))

@@ -13,7 +13,11 @@ Bopscrk (**Before Outset PaSsword CRacKing**) is a tool to **assist** in all the
 
 The first idea was inspired by **Cupp** and **Crunch**. We could say that bopscrk is a wordlist generator **situated between them**, taking the best of each one. The challenge was try to apply the Cupp's idea to more generic-situations and amplify the shoot-range of the resultant wordlist, without loosing this custom-wordlist-profiler feature.
 
-**NEW FEATURE**: Lyrics searching related to artists to increase the wordlist chances. 
+
+## Changelist
+
+**EXCLUDE WORDLISTS**: Speed improvement using multithreaded exclusions.  
+**NEW FEATURE**: Lyrics searching related to artists to increase the wordlist chances.
 
 
 ## How it works
@@ -21,7 +25,8 @@ The first idea was inspired by **Cupp** and **Crunch**. We could say that bopscr
 + The tool will generate **all possible combinations** between them.
 + To generate more combinations, it will add some **common separators** (e.g. "-", "_", "."), **random numbers** and **special chars**.
 + You can enable **leet** and **case transforms** to increase your chances.
-+ If you enable **lyricpass mode**, the tool will ask you about **artists** and it will download all his **songs' lyrics**. Each line will be added as a new word. Then it will be **transform in several ways** (leet, case, only first letters, with and without spaces...). Artist names will be added too. 
++ If you enable **lyricpass mode**, the tool will ask you about **artists** and it will download all his **songs' lyrics**. Each line will be added as a new word. Then it will be **transform in several ways** (leet, case, only first letters, with and without spaces...). Artist names will be added too.
++ You can provide wordlists that you already tried against the target in order to exclude all this words from the resultant wordlist (`-x`). 
  
 
 ## Requirements
@@ -69,8 +74,7 @@ If you want to make an extensive and accurate lyrics-wordlist related to a targe
 
 
 ## TO-DO list
-+ **Lyricpass** was integrated, but still needs some tweaks to speed up the search process (I would appreciate any help).
-+ **Excluded wordlists** needs some improvements, with huge wordlists could be too slow (I would appreciate any help).
++ **Lyricpass** still needs some tweaks to speed up the search process (I would appreciate any help).
 
 
 ## Legal disclaimer
