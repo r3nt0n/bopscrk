@@ -41,10 +41,11 @@ The first idea was inspired by **Cupp** and **Crunch**. We could say that bopscr
   -l, --leet         enable leet transformations
   -n                 max amount of words to combine each time (default: 2)
   -a , --artists     artists to search song lyrics (comma-separated)
-  --lyrics-all       make all the possible transforms with lyrics
-  -x                 exclude all the words included in other wordlists
+  -A, --lyrics-all   enable all possible transforms with lyrics
+  -x , --exclude     exclude all the words included in other wordlists
                      (several wordlists should be comma-separated)
   -o , --output      output file to save the wordlist (default: tmp.txt)
+
 
 ```
  
@@ -54,13 +55,8 @@ The first idea was inspired by **Cupp** and **Crunch**. We could say that bopscr
 + Words have to be written **without accents**, just normal characters.
 + In the others field you can write **several words comma-separated**. *Example*: 2C,Flipper.
 + Using the **non-interactive mode**, you should provide years in the long and short way (1970,70) to get the same result than the interactive mode.
-+ You have to be careful with **-n** argument. If you set a big value, it could be result in **too huge wordlists**. I recommend values between 2 and 5.
++ You have to be careful with **-n** argument. If you set a big value, it could result in **too huge wordlists**. I recommend values between 2 and 5.
 + To feed lyricpass with **several artists** through command line you should provides it **comma-separated** and **quotes-enclosed**. *Example*: `-a "john doe,john smith"`
-
-
-## Experimental features
-+ **Lyricpass** was integrated, but still needs some tweaks to speed up the search process (I would appreciate any help).
-+ **Excluded wordlists** needs some improvements, with huge wordlists could be too slow (I would appreciate any help).
 
 ### Lyricpass 
 This feature is based in a modified version of a [tool](https://github.com/initstring/lyricpass) developed originally by [initstring](https://github.com/initstring/).
@@ -70,6 +66,11 @@ It will retrieve all lyrics from all songs which belongs to artists that you pro
 With `--lyrics-all`, it will store the raw phrases too and apply some transforms over them (like convert spaces into dots and other special chars). This method is **strongly unrecommended**, because 5000 phrases could become 5.000.000 easily.
 
 If you want to make an extensive and accurate lyrics-wordlist related to a target, better choice is to use it without any other words added (and maybe without leet and case transforms). 
+
+
+## TO-DO list
++ **Lyricpass** was integrated, but still needs some tweaks to speed up the search process (I would appreciate any help).
++ **Excluded wordlists** needs some improvements, with huge wordlists could be too slow (I would appreciate any help).
 
 
 ## Legal disclaimer

@@ -73,10 +73,10 @@ parser.add_argument('-a', '--artists', action="store", metavar='', type=str,
                     dest='artists', default=False,
                     help='artists to search song lyrics (comma-separated)')
 
-parser.add_argument('--lyrics-all', action="store_true", default=False, dest='lyrics_all',
-                    help='make all the possible transforms with lyrics')
+parser.add_argument('-A', '--lyrics-all', action="store_true", default=False, dest='lyrics_all',
+                    help='enable all possible transforms with lyrics')
 
-parser.add_argument('-x', action="store", metavar='', type=str,
+parser.add_argument('-x', '--exclude', action="store", metavar='', type=str,
                     dest='exclude', default=False,
                     help='exclude all the words included in other wordlists '
                          '(several wordlists should be comma-separated)')
