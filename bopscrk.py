@@ -204,7 +204,7 @@ def thread_transforms(transform_type, wordlist):
     pool.join()
     for lists in new_wordlist:
         wordlist += lists
-    #return new_wordlist
+    return new_wordlist
 
 
 ################################################################################
