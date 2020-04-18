@@ -484,7 +484,7 @@ def main():
             if searchLyrics:
                 print('  {}[*]{} Looking for {}\'s lyrics...'.format(color.CYAN, color.END, artist.title()))
                 lyfinder = LyricsFinder(artist, False, True)
-                lyrics = lyfinder.lyrics
+                lyrics = [s.decode("utf-8") for s in lyfinder.lyrics]
                 print('  {}[*] {}{}{} phrases found'.format(color.CYAN, color.GREEN, len(lyrics), color.END))
 
                 # First we remove all the parenthesis in the phrases
