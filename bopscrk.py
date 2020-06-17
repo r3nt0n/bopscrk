@@ -93,15 +93,15 @@ def banner():
     name_rand_case = case_transforms(name)
     name_rand_case = name_rand_case[randint((len(name_rand_case) - 3), (len(name_rand_case) - 1))]
 
-    print u'\n  ,----------------------------------------------------,  ,------------,'
-    print u'  | [][][][][]  [][][][][]  [][][][]  [][__]  [][][][] |  |    v{}{}{}    |'.format(color.BLUE, __version__, color.END)
-    print u'  |                                                    |  |------------|'
-    print u'  |  [][][][][][][][][][][][][][_]    [][][]  [][][][] |  | {}{}{} |'.format(color.RED, name_rand_leet, color.END)
-    print u'  |  [_][][][]{}[]{}[][][][]{}[][]{}[][][ |   [][][]  [][][][] |  | {}{}{}{} |'.format(color.KEY_HIGHL, color.END, color.KEY_HIGHL, color.END, color.BOLD, color.RED, name, color.END)
-    print u'  | [][_][]{}[]{}[][][][][]{}[]{}[][][][]||     []    [][][][] |  | {}{}{} |'.format(color.KEY_HIGHL, color.END, color.KEY_HIGHL, color.END, color.RED, name_rand_case, color.END)
-    print u'  | [__][][][]{}[]{}[]{}[]{}[][][][][][__]    [][][]  [][][]|| |  |------------|'.format(color.KEY_HIGHL, color.END, color.KEY_HIGHL, color.END)
-    print u'  |   [__][________________][__]              [__][]|| |  |{}   {}   {}|'.format(color.GREEN, __author__, color.END)
-    print u'  `----------------------------------------------------´  `------------´\n'
+    print('\n  ,----------------------------------------------------,  ,------------,')
+    print('  | [][][][][]  [][][][][]  [][][][]  [][__]  [][][][] |  |    v{}{}{}    |'.format(color.BLUE, __version__, color.END))
+    print('  |                                                    |  |------------|')
+    print('  |  [][][][][][][][][][][][][][_]    [][][]  [][][][] |  | {}{}{} |'.format(color.RED, name_rand_leet, color.END))
+    print('  |  [_][][][]{}[]{}[][][][]{}[][]{}[][][ |   [][][]  [][][][] |  | {}{}{}{} |'.format(color.KEY_HIGHL, color.END, color.KEY_HIGHL, color.END, color.BOLD, color.RED, name, color.END))
+    print('  | [][_][]{}[]{}[][][][][]{}[]{}[][][][]||     []    [][][][] |  | {}{}{} |'.format(color.KEY_HIGHL, color.END, color.KEY_HIGHL, color.END, color.RED, name_rand_case, color.END))
+    print('  | [__][][][]{}[]{}[]{}[]{}[][][][][][__]    [][][]  [][][]|| |  |------------|'.format(color.KEY_HIGHL, color.END, color.KEY_HIGHL, color.END))
+    print('  |   [__][________________][__]              [__][]|| |  |{}   {}   {}|'.format(color.GREEN, __author__, color.END))
+    print('  `----------------------------------------------------´  `------------´\n')
     # print u'  +--------------------------------------------------------------------+'
     # print u'  | Names have to be written without accents, just normal characters.  |'
     # print u'  | If you enable case transforms, doesn\'t matter the lower/uppercases |'
@@ -306,39 +306,39 @@ def leet_transforms(word):
 ################################################################################
 def asks():
     while True:
-        minLength = raw_input(u'  {}[?]{} Password\'s min length [1] >>> '.format(color.BLUE, color.END))
+        minLength = input('  {}[?]{} Password\'s min length [1] >>> '.format(color.BLUE, color.END))
         if isEmpty(minLength): minLength = 1; break
         else:
             try:
                 minLength = int(minLength); break
             except ValueError:
-                print u'  {}[!]{} Min length should be an integer'.format(color.RED, color.END)
+                print('  {}[!]{} Min length should be an integer'.format(color.RED, color.END))
     while True:
-        maxLength = raw_input(u'  {}[?]{} Password\'s max length [99] >>> '.format(color.BLUE, color.END))
+        maxLength = input('  {}[?]{} Password\'s max length [99] >>> '.format(color.BLUE, color.END))
         if isEmpty(maxLength): maxLength = 99; break
         else:
             try:
                 maxLength = int(maxLength)
-                if maxLength < minLength: print u'  {}[!]{} Max should be greater or equal than min'.format(color.RED, color.END)
+                if maxLength < minLength: print('  {}[!]{} Max should be greater or equal than min'.format(color.RED, color.END))
                 else: break
             except ValueError:
-                print u'  {}[!]{} Max length should be an integer'.format(color.RED, color.END)
+                print('  {}[!]{} Max length should be an integer'.format(color.RED, color.END))
 
-    firstname = raw_input(u'  {}[?]{} First name >>> '.format(color.BLUE, color.END))
-    surname = raw_input(u'  {}[?]{} Surname >>> '.format(color.BLUE, color.END))
-    lastname = raw_input(u'  {}[?]{} Last name >>> '.format(color.BLUE, color.END))
+    firstname = input('  {}[?]{} First name >>> '.format(color.BLUE, color.END))
+    surname = input('  {}[?]{} Surname >>> '.format(color.BLUE, color.END))
+    lastname = input('  {}[?]{} Last name >>> '.format(color.BLUE, color.END))
 
     while True:
-        birth = raw_input(u'  {}[?]{} Birth date (DD/MM/YYYY) >>> '.format(color.BLUE, color.END))
+        birth = input('  {}[?]{} Birth date (DD/MM/YYYY) >>> '.format(color.BLUE, color.END))
         if not isEmpty(birth) and not is_valid_date(birth):
-            print u'  {}[!]{} Birthdate wrong format'.format(color.RED, color.END)
+            print('  {}[!]{} Birthdate wrong format'.format(color.RED, color.END))
         else:
             break
 
-    others = raw_input(u'  {}[?]{} Some other relevant words (comma-separated) >>> '.format(color.BLUE, color.END))
+    others = input('  {}[?]{} Some other relevant words (comma-separated) >>> '.format(color.BLUE, color.END))
 
-    leet = raw_input(u'  {}[?]{} Do yo want to make leet transforms? [y/n] >>> '.format(color.BLUE, color.END))
-    case = raw_input(u'  {}[?]{} Do yo want to make case transforms? [y/n] >>> '.format(color.BLUE, color.END))
+    leet = input('  {}[?]{} Do yo want to make leet transforms? [y/n] >>> '.format(color.BLUE, color.END))
+    case = input('  {}[?]{} Do yo want to make case transforms? [y/n] >>> '.format(color.BLUE, color.END))
 
     if leet.lower() == 'y': leet = True
     else: leet = False
@@ -347,27 +347,27 @@ def asks():
     else: case = False
 
     while True:
-        nWords = raw_input(u'  {}[?]{} How much words do you want to combine at most [2] >>> '.format(color.BLUE, color.END))
+        nWords = input('  {}[?]{} How much words do you want to combine at most [2] >>> '.format(color.BLUE, color.END))
         if isEmpty(nWords): nWords = 2; break
         else:
             try:
                 nWords = int(nWords)
                 if nWords < 1:
-                    print u'  {}[!]{} Should be greater or equal than 1'.format(color.RED, color.END)
+                    print('  {}[!]{} Should be greater or equal than 1'.format(color.RED, color.END))
                 else:
                     break
             except ValueError:
-                print u'  {}[!]{} Should be an integer'.format(color.RED, color.END)
+                print('  {}[!]{} Should be an integer'.format(color.RED, color.END))
 
-    artists = raw_input(u'  {}[?]{} Artist names to search song lyrics (comma-separated) >>> '.format(color.BLUE, color.END))
+    artists = input('  {}[?]{} Artist names to search song lyrics (comma-separated) >>> '.format(color.BLUE, color.END))
     if isEmpty(artists): artists = False
 
-    ly_all_transforms = raw_input(u'  {}[?]{} Do yo want to make all posible transforms with lyrics? (not recommended) [y/n] >>> '.format(color.BLUE, color.END))
+    ly_all_transforms = input('  {}[?]{} Do yo want to make all posible transforms with lyrics? (not recommended) [y/n] >>> '.format(color.BLUE, color.END))
     if ly_all_transforms.lower() == 'y': ly_all_transforms = True
     else: ly_all_transforms = False
 
     while True:
-        exclude = raw_input(u'  {}[?]{} Exclude words from other wordlists? >>> '.format(color.BLUE, color.END))
+        exclude = input('  {}[?]{} Exclude words from other wordlists? >>> '.format(color.BLUE, color.END))
         if isEmpty(exclude): exclude = False; break
         else:
             exclude = exclude.split(',')
@@ -375,13 +375,13 @@ def asks():
             for wl_path in exclude:
                 if not os.path.isfile(wl_path):
                     valid_paths = False
-                    print u'  {}[!]{} {} not found'.format(color.RED, color.END, wl_path)
+                    print('  {}[!]{} {} not found'.format(color.RED, color.END, wl_path))
 
             if valid_paths:
                 break
 
-    outfile = raw_input(u'  {}[?]{} Output file [tmp.txt] >>> '.format(color.BLUE, color.END))
-    if isEmpty(outfile): outfile = u'tmp.txt'
+    outfile = input('  {}[?]{} Output file [tmp.txt] >>> '.format(color.BLUE, color.END))
+    if isEmpty(outfile): outfile = 'tmp.txt'
 
     wordlist = []
 
@@ -441,7 +441,7 @@ def main():
             exclude_wordlists = exclude_wordlists.split(',')
             for wl_path in exclude_wordlists:
                 if not os.path.isfile(wl_path):
-                    print u'  {}[!]{} {} not found'.format(color.RED, color.END, wl_path)
+                    print('  {}[!]{} {} not found'.format(color.RED, color.END, wl_path))
                     sys.exit(4)
 
     if artists:
@@ -474,7 +474,7 @@ def main():
             from lib.lyricpass import LyricsFinder
             searchLyrics = True
         except ImportError:
-            print u'  {}[!]{} missing dependencies, only artist names will be added and transformed'.format(color.RED, color.END)
+            print('  {}[!]{} missing dependencies, only artist names will be added and transformed'.format(color.RED, color.END))
             searchLyrics = False
 
         for artist in artists:
@@ -482,10 +482,10 @@ def main():
             wordlist += space_transforms(artist)
 
             if searchLyrics:
-                print u'  {}[*]{} Looking for {}\'s lyrics...'.format(color.CYAN, color.END, artist.title())
+                print('  {}[*]{} Looking for {}\'s lyrics...'.format(color.CYAN, color.END, artist.title()))
                 lyfinder = LyricsFinder(artist, False, True)
-                lyrics = lyfinder.lyrics
-                print u'  {}[*] {}{}{} phrases found'.format(color.CYAN, color.GREEN, len(lyrics), color.END)
+                lyrics = [s.decode("utf-8") for s in lyfinder.lyrics]
+                print('  {}[*] {}{}{} phrases found'.format(color.CYAN, color.GREEN, len(lyrics), color.END))
 
                 # First we remove all the parenthesis in the phrases
                 lyrics = ([s.replace('(', '') for s in lyrics])
@@ -551,7 +551,7 @@ def main():
 
     # SAVE WORDLIST TO FILE
     ############################################################################
-    with open(outfile, 'wb') as f:
+    with open(outfile, 'w') as f:
         for word in wordlist:
             f.write(word + '\n')
 
@@ -563,9 +563,9 @@ def main():
 
     # PRINT RESULTS
     ############################################################################
-    print u'\n  {}[+]{} Time elapsed:\t{}'.format(color.GREEN, color.END, total_time)
-    print u'  {}[+]{} Output file:\t{}{}{}{}'.format(color.GREEN, color.END, color.BOLD, color.BLUE, outfile, color.END)
-    print u'  {}[+]{} Words generated:\t{}{}{}\n'.format(color.GREEN, color.END, color.RED, len(wordlist), color.END)
+    print('\n  {}[+]{} Time elapsed:\t{}'.format(color.GREEN, color.END, total_time))
+    print('  {}[+]{} Output file:\t{}{}{}{}'.format(color.GREEN, color.END, color.BOLD, color.BLUE, outfile, color.END))
+    print('  {}[+]{} Words generated:\t{}{}{}\n'.format(color.GREEN, color.END, color.RED, len(wordlist), color.END))
     sys.exit(0)
 
 
@@ -574,5 +574,5 @@ def main():
 
 if __name__ == '__main__':
     try: main()
-    except KeyboardInterrupt: print u'\n\n  {}[!]{} Exiting...\n'.format(color.RED, color.END); sys.exit(3)
+    except KeyboardInterrupt: print('\n\n  {}[!]{} Exiting...\n'.format(color.RED, color.END)); sys.exit(3)
 
