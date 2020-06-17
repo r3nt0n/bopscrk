@@ -1,8 +1,9 @@
 [![Rawsec's CyberSecurity Inventory](https://inventory.rawsec.ml/img/badges/Rawsec-inventoried-FF5050_flat.svg)](https://inventory.rawsec.ml/)
-![[Version 1.2](https://github.com/R3nt0n)](http://img.shields.io/badge/version-v1.2-orange.svg)
-![[Python 2.7](https://github.com/R3nt0n)](http://img.shields.io/badge/python-2.7-blue.svg)
+![[Version 2.0](https://github.com/R3nt0n)](http://img.shields.io/badge/version-v1.2-orange.svg)
+![[Python 3](https://github.com/R3nt0n)](http://img.shields.io/badge/python-3-blue.svg)
 ![[GPL-3.0 License](https://github.com/R3nt0n)](https://img.shields.io/badge/license-GPL%203.0-brightgreen.svg)
 ![[Date](https://github.com/R3nt0n)](http://img.shields.io/badge/date-06/05/2018-yellow.svg)
+![[Last update](https://github.com/R3nt0n)](http://img.shields.io/badge/updated-17/06/2020-purple.svg)
 
 
 
@@ -32,7 +33,7 @@ The first idea was inspired by **Cupp** and **Crunch**. We could say that bopscr
  
 
 ## Requirements
-+ Python 2.7
++ Python 3
 + requests (*optional*, only if you want to use lyricpass)
 + beautifulsoup4 (*optional*, only if you want to use lyricpass)
 

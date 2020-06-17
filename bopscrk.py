@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # r3nt0n 25/10/2017
+# last update: 17/06/2020
 
 """
 Before Outset PaSsword CRacKing is a tool to assist in the previous process of
@@ -10,7 +11,7 @@ cracking passwords. By now, it's able to generate smart and powerful wordlists.
 global name, __author__,  __version__
 name =  'bopscrk.py'
 __author__ = 'r3nt0n'
-__version__ = '1.2'
+__version__ = '2.0'
 __status__ = 'Development'
 
 
