@@ -419,7 +419,7 @@ def main():
     if interactive:
         clear()
         banner()
-        base_wordlist, minLength, maxLength, case, leet, nWords, artists, ly_all_transforms, exclude_wordlists, outfile = asks()
+        base_wordlist, minLength, maxLength, leet, case, nWords, artists, ly_all_transforms, exclude_wordlists, outfile = asks()
 
     else:
         base_wordlist = []
