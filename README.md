@@ -1,6 +1,6 @@
 [![Rawsec's CyberSecurity Inventory](https://inventory.rawsec.ml/img/badges/Rawsec-inventoried-FF5050_flat.svg)](https://inventory.rawsec.ml/)
 ![[Version 2.0](https://github.com/R3nt0n)](http://img.shields.io/badge/version-v2.0-orange.svg)
-![[Python 3](https://github.com/R3nt0n)](http://img.shields.io/badge/python-3-blue.svg)
+![[Python 3.8](https://github.com/R3nt0n)](http://img.shields.io/badge/python-3.8-blue.svg)
 ![[GPL-3.0 License](https://github.com/R3nt0n)](https://img.shields.io/badge/license-GPL%203.0-brightgreen.svg)
 ![[Date](https://github.com/R3nt0n)](http://img.shields.io/badge/date-06/05/2018-yellow.svg)
 ![[Last update](https://github.com/R3nt0n)](http://img.shields.io/badge/updated-17/06/2020-purple.svg)
@@ -17,10 +17,12 @@ Bopscrk (**Before Outset PaSsword CRacKing**) is a tool to **assist** in all the
 The first idea was inspired by **Cupp** and **Crunch**. We could say that bopscrk is a wordlist generator **situated between them**, taking the best of each one. The challenge was try to apply the Cupp's idea to more generic-situations and amplify the shoot-range of the resultant wordlist, without loosing this custom-wordlist-profiler feature.
 
 
-## Changelist
-
+## Changelist  
+`2.0/1.5 version notes (17/06/2020)`  
+**PYTHON 3 NOW IS SUPPORTED**: The master branch moves to Python 3. Secondary branch keeps Python 2.7 legacy support.  
+`0-1.2(beta) version notes`  
 **EXCLUDE WORDLISTS**: Speed improvement using multithreaded exclusions.  
-**NEW FEATURE**: Lyrics searching related to artists to increase the wordlist chances.
+**NEW FEATURE**: Lyrics searching related to artists increase the wordlist chances.  
 
 
 ## How it works
@@ -33,7 +35,7 @@ The first idea was inspired by **Cupp** and **Crunch**. We could say that bopscr
  
 
 ## Requirements
-+ Python 3
++ Python 3 (the other branch keeps Python 2.7 legacy support)
 + requests (*optional*, only if you want to use lyricpass)
 + beautifulsoup4 (*optional*, only if you want to use lyricpass)
 
