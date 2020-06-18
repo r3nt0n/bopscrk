@@ -8,5 +8,5 @@ setup(
     version='2.0',
     license='GNU General Public License v3.0',
     packages=['bopscrk',],
-    install_requires=['requests','bs4',]
+    install_requires=['requests','beautifulsoup4',]
 )
