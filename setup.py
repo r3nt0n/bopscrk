@@ -13,7 +13,7 @@ setup(
     url='https://github.com/r3nt0n/bopscrk',
     version='2.0',
     license='GNU General Public License v3.0',
-    packages=['lib',],
+    packages=['r3ntlib',],
     scripts=['bopscrk.py'],
     install_requires=['requests','beautifulsoup4'],
 )
