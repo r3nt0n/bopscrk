@@ -94,15 +94,15 @@ def banner():
     name_rand_case = case_transforms(name)
     name_rand_case = name_rand_case[randint((len(name_rand_case) - 3), (len(name_rand_case) - 1))]
 
-    print('\n  ,----------------------------------------------------,  ,------------,')
-    print('  | [][][][][]  [][][][][]  [][][][]  [][__]  [][][][] |  |    v{}{}{}    |'.format(color.BLUE, __version__, color.END))
-    print('  |                                                    |  |------------|')
-    print('  |  [][][][][][][][][][][][][][_]    [][][]  [][][][] |  | {}{}{} |'.format(color.RED, name_rand_leet, color.END))
-    print('  |  [_][][][]{}[]{}[][][][]{}[][]{}[][][ |   [][][]  [][][][] |  | {}{}{}{} |'.format(color.KEY_HIGHL, color.END, color.KEY_HIGHL, color.END, color.BOLD, color.RED, name, color.END))
-    print('  | [][_][]{}[]{}[][][][][]{}[]{}[][][][]||     []    [][][][] |  | {}{}{} |'.format(color.KEY_HIGHL, color.END, color.KEY_HIGHL, color.END, color.RED, name_rand_case, color.END))
-    print('  | [__][][][]{}[]{}[]{}[]{}[][][][][][__]    [][][]  [][][]|| |  |------------|'.format(color.KEY_HIGHL, color.END, color.KEY_HIGHL, color.END))
-    print('  |   [__][________________][__]              [__][]|| |  |{}   {}   {}|'.format(color.GREEN, __author__, color.END))
-    print('  `----------------------------------------------------´  `------------´\n')
+    print('\n  ,----------------------------------------------------,   ,------------,')
+    print('  | [][][][][]  [][][][][]  [][][][]  [][__]  [][][][] |   |    v{}{}{}    |'.format(color.BLUE, __version__, color.END))
+    print('  |                                                    |   |------------|')
+    print('  |  [][][][][][][][][][][][][][_]    [][][]  [][][][] |===| {}{}{} |'.format(color.RED, name_rand_leet, color.END))
+    print('  |  [_][][][]{}[]{}[][][][]{}[][]{}[][][ |   [][][]  [][][][] |===| {}{}{}{} |'.format(color.KEY_HIGHL, color.END, color.KEY_HIGHL, color.END, color.BOLD, color.RED, name, color.END))
+    print('  | [][_][]{}[]{}[][][][][]{}[]{}[][][][]||     []    [][][][] |===| {}{}{} |'.format(color.KEY_HIGHL, color.END, color.KEY_HIGHL, color.END, color.RED, name_rand_case, color.END))
+    print('  | [__][][][]{}[]{}[]{}[]{}[][][][][][__]    [][][]  [][][]|| |   |------------|'.format(color.KEY_HIGHL, color.END, color.KEY_HIGHL, color.END))
+    print('  |   [__][________________][__]              [__][]|| |   |{}   {}   {}|'.format(color.GREEN, __author__, color.END))
+    print('  `----------------------------------------------------´   `------------´\n')
     # print u'  +--------------------------------------------------------------------+'
     # print u'  | Names have to be written without accents, just normal characters.  |'
     # print u'  | If you enable case transforms, doesn\'t matter the lower/uppercases |'
