@@ -19,13 +19,13 @@ The first idea was inspired by **Cupp** and **Crunch**. We could say that bopscr
 
 
 ## Changelist  
-`2.1 version notes (11/07/2020)`  
-+ Fixing min and max length bug.
-`2.0/1.5 version notes (17/06/2020)`  
-+ **PYTHON 3 NOW IS SUPPORTED**: The master branch moves to Python 3. Secondary branch keeps Python 2.7 legacy support.  
-`0-1.2(beta) version notes`  
-+ **EXCLUDE WORDLISTS**: Speed improvement using multithreaded exclusions.  
-+ **NEW FEATURE**: Lyrics searching related to artists increase the wordlist chances.  
++ `2.1 version notes (11/07/2020)`  
+  + Fixing **min and max length bug**.  
++ `2.0/1.5 version notes (17/06/2020)`  
+  + **PYTHON 3 NOW IS SUPPORTED**: The master branch moves to Python 3. Secondary branch keeps Python 2.7 legacy support.  
++ `0-1.2(beta) version notes`  
+  + **EXCLUDE WORDLISTS**: Speed improvement using multithreaded exclusions.  
+  + **NEW FEATURE**: Lyrics searching related to artists increase the wordlist chances.  
 
 
 ## How it works
