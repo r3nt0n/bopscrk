@@ -191,9 +191,11 @@ def combinator(wordlist, nWords):
 
 ################################################################################
 def remove_by_lengths(wordlist, minLength, maxLength):
+    new_wordlist = []
     for word in wordlist:
-        if (len(word) < minLength) or (len(word) > maxLength): wordlist.remove(word)
-    return wordlist
+        #if (len(str(word)) < minLength) or (len(str(word)) > maxLength): wordlist.remove(word)
+        if (len(str(word)) >= minLength) and (len(str(word)) <= maxLength): new_wordlist.append(str(word))
+    return new_wordlist
 
 
 ################################################################################
@@ -546,8 +548,9 @@ def main():
         wordlist = [word for word in final_wordlist if word is not None]
 
 
-    # Check for duplicates
+    # Check for duplicates and re-check by lengths
     wordlist = list(OrderedDict.fromkeys(wordlist))
+    wordlist = remove_by_lengths(wordlist, minLength, maxLength)    
 
 
     # SAVE WORDLIST TO FILE
