@@ -8,7 +8,7 @@
 
 
 # Bopscrk
-Bopscrk (**Before Outset PaSsword CRacKing**) is a tool to **assist** in all the **previous process of password cracking**. By now, it's able to generate smart and powerful wordlists.
+Bopscrk (**Before Outset PaSsword CRacKing**) is a tool to generate smart and powerful wordlists.
 
 Included in **<a href="https://blackarch.org/">BlackArch Linux</a>** pentesting distribution and **<a href="https://inventory.rawsec.ml/">Rawsec's Cybersecurity Inventory</a>** since August 2019.  
   
