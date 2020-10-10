@@ -1,0 +1,5 @@
+[submodule "lib/lyricpass"]
+	path = lib/lyricpass
+	url = https://github.com/r3nt0n/lyricpass
+	branch = requests-lib
+

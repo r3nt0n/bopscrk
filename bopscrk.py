@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# r3nt0n 25/10/2017
-# last update: 17/06/2020
+# https://github.com/r3nt0n/bopscrk
 
 """
 Before Outset PaSsword CRacKing is a tool to assist in the previous process of
@@ -11,7 +10,7 @@ cracking passwords. By now, it's able to generate smart and powerful wordlists.
 global name, __author__,  __version__
 name =  'bopscrk.py'
 __author__ = 'r3nt0n'
-__version__ = '2.0'
+__version__ = '2.2'
 __status__ = 'Development'
 
 
@@ -21,6 +20,7 @@ import sys
 import datetime
 import itertools
 import argparse
+from time import sleep
 from random import randint, choice
 from collections import OrderedDict
 from multiprocessing.dummy import Pool as ThreadPool
@@ -38,53 +38,13 @@ class color:
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
     ORANGE = '\033[33m'
+    GREY = '\033[90m'
     #ORANGEBG = '\033[48;2;255;165;0m'
     END = '\033[0m'
 
     RAND_KEY_COLOR = [PURPLE, CYAN, DARKCYAN, YELLOW, ORANGE]
     KEY_HIGHL = choice(RAND_KEY_COLOR)
 
-
-################################################################################
-# ARGS DEFINITION
-################################################################################
-parser = argparse.ArgumentParser(description='Generates smart and powerful wordlists.')
-
-parser.add_argument('-i', '--interactive', action="store_true",
-                    help='interactive mode, the script will ask you about target')
-
-parser.add_argument('-w', action="store", metavar='', type=str, dest='words',
-                    help='words to combine comma-separated (non-interactive mode)')
-
-parser.add_argument('--min', action="store", metavar='', type=int, dest='min',
-                    default=4, help='min length for the words to generate '
-                                    '(default: 4)')
-parser.add_argument('--max', action="store", metavar='', type=int, dest='max',
-                    default=32, help='max length for the words to generate '
-                                     '(default: 32)')
-
-parser.add_argument('-c', '--case', action="store_true", help='enable case transformations')
-parser.add_argument('-l', '--leet', action="store_true", help='enable leet transformations')
-
-parser.add_argument('-n', action="store", metavar='', type=int, dest='nWords',
-                    default=2, help='max amount of words to combine each time '
-                                    '(default: 2)')
-
-parser.add_argument('-a', '--artists', action="store", metavar='', type=str,
-                    dest='artists', default=False,
-                    help='artists to search song lyrics (comma-separated)')
-
-parser.add_argument('-A', '--lyrics-all', action="store_true", default=False, dest='lyrics_all',
-                    help='enable all possible transforms with lyrics')
-
-parser.add_argument('-x', '--exclude', action="store", metavar='', type=str,
-                    dest='exclude', default=False,
-                    help='exclude all the words included in other wordlists '
-                         '(several wordlists should be comma-separated)')
-
-parser.add_argument('-o', '--output', action="store", metavar='', type=str,
-                    dest='outfile', default='tmp.txt',
-                    help='output file to save the wordlist (default: tmp.txt)')
 
 
 ################################################################################
@@ -94,7 +54,7 @@ def banner():
     name_rand_case = case_transforms(name)
     name_rand_case = name_rand_case[randint((len(name_rand_case) - 3), (len(name_rand_case) - 1))]
 
-    print('\n  ,----------------------------------------------------,   ,------------,')
+    print('  ,----------------------------------------------------,   ,------------,')
     print('  | [][][][][]  [][][][][]  [][][][]  [][__]  [][][][] |   |    v{}{}{}    |'.format(color.BLUE, __version__, color.END))
     print('  |                                                    |   |------------|')
     print('  |  [][][][][][][][][][][][][][_]    [][][]  [][][][] |===| {}{}{} |'.format(color.RED, name_rand_leet, color.END))
@@ -103,16 +63,90 @@ def banner():
     print('  | [__][][][]{}[]{}[]{}[]{}[][][][][][__]    [][][]  [][][]|| |   |------------|'.format(color.KEY_HIGHL, color.END, color.KEY_HIGHL, color.END))
     print('  |   [__][________________][__]              [__][]|| |   |{}   {}   {}|'.format(color.GREEN, __author__, color.END))
     print('  `----------------------------------------------------´   `------------´\n')
-    # print u'  +--------------------------------------------------------------------+'
-    # print u'  | Names have to be written without accents, just normal characters.  |'
-    # print u'  | If you enable case transforms, doesn\'t matter the lower/uppercases |'
-    # print u'  | in your input.                                                     |'
-    # print u'  |                                                                    |'
-    # print u'  | In the others field you can write several words comma-separated.   |'
-    # print u'  | Example: 2C,Flipper                                                |'
-    # print u'  |                                                                    |'
-    # print u'  | Fields can be left empty.                                          |'
-    # print u'  +--------------------------------------------------------------------+\n'
+
+def help_banner():
+    print(u'  +--------------------------------------------------------------------+')
+    print(u'  | Fields can be left empty.  You can use accentuation in your words. |')
+    print(u'  | If you enable case transforms,  won\'t matter the lower/uppercases  |')
+    print(u'  | in your input. In "others" field (interactive mode), you can write |')
+    print(u'  | several words comma-separated (e.g.: 2C,Flipper).                  |')
+    print(u'  |                                                                    |')
+    print(u'  |                              For advanced usage and documentation: |')
+    print(u'  |                                  {}https://github.com/r3nt0n/bopscrk{} |'.format(color.ORANGE,color.END))
+    print(u'  +--------------------------------------------------------------------+\n')
+
+def bopscrk_banner():
+    interval = 0.06
+    print('\n')
+    sleep(interval)
+    print(u'{}         ▄▄▄▄    ▒█████   ██▓███    ██████  ▄████▄   ██▀███   ██ ▄█▀'.format(color.ORANGE))
+    sleep(interval)
+    print(u'        ▓█████▄ ▒██▒  ██▒▓██░  ██▒▒██    ▒ ▒██▀ ▀█  ▓██ ▒ ██▒ ██▄█▒ ')
+    sleep(interval)
+    print(u'        ▒██▒ ▄██▒██░  ██▒▓██░ ██▓▒░ ▓██▄   ▒▓█    ▄ ▓██ ░▄█ ▒▓███▄░ ')
+    sleep(interval)
+    print(u'        ▒██░█▀  ▒██   ██░▒██▄█▓▒ ▒  ▒   ██▒▒▓▓▄ ▄██▒▒██▀▀█▄  ▓██ █▄ ')
+    sleep(interval)
+    print(u'        ░▓█  ▀█▓░ ████▓▒░▒██▒ ░  ░▒██████▒▒▒ ▓███▀ ░░██▓ ▒██▒▒██▒ █▄')
+    sleep(interval)
+    print(u'        ░▒▓███▀▒░ ▒░▒░▒░ ▒▓▒░ ░  ░▒ ▒▓▒ ▒ ░░ ░▒ ▒  ░░ ▒▓ ░▒▓░▒ ▒▒ ▓▒')
+    sleep(interval)
+    print(u'        ▒░▒   ░   ░ ▒ ▒░ ░▒ ░     ░ ░▒  ░ ░  ░  ▒     ░▒ ░ ▒░░ ░▒ ▒░')
+    sleep(interval)
+    print(u'         ░    ░ ░ ░ ░ ▒  ░░       ░  ░  ░  ░          ░░   ░ ░ ░░ ░')
+    sleep(interval)
+    print(u'         ░          ░ ░                 ░  ░ ░         ░     ░  ░')
+    sleep(interval)
+    print(u'              ░                            ░                        {}'.format(color.END))
+    sleep(interval*4)
+
+################################################################################
+# ARGS DEFINITION
+################################################################################
+def read_args():
+    parser = argparse.ArgumentParser(description='Generates smart and powerful wordlists.')
+
+    parser.add_argument('-i', '--interactive', action="store_true",
+                        help='interactive mode, the script will ask you about target')
+
+    parser.add_argument('-w', action="store", metavar='', type=str, dest='words',
+                        help='words to combine comma-separated (non-interactive mode)')
+
+    parser.add_argument('--min', action="store", metavar='', type=int, dest='min',
+                        default=4, help='min length for the words to generate '
+                                        '(default: 4)')
+    parser.add_argument('--max', action="store", metavar='', type=int, dest='max',
+                        default=32, help='max length for the words to generate '
+                                         '(default: 32)')
+    parser.add_argument('-c', '--case', action="store_true", help='enable case transformations')
+
+    parser.add_argument('-l', '--leet', action="store_true", help='enable leet transformations')
+
+    parser.add_argument('-n', action="store", metavar='', type=int, dest='nWords',
+                        default=2, help='max amount of words to combine each time '
+                                        '(default: 2)')
+    parser.add_argument('-a', '--artists', action="store", metavar='', type=str,
+                        dest='artists', default=False,
+                        help='artists to search song lyrics (comma-separated)')
+
+    # parser.add_argument('-A', '--lyrics-all', action="store_true", default=False, dest='lyrics_all',
+    #                     help='enable all possible transforms with lyrics')
+
+    parser.add_argument('-x', '--exclude', action="store", metavar='', type=str,
+                        dest='exclude', default=False,
+                        help='exclude all the words included in other wordlists '
+                             '(several wordlists should be comma-separated)')
+
+    parser.add_argument('-o', '--output', action="store", metavar='', type=str,
+                        dest='outfile', default='tmp.txt',
+                        help='output file to save the wordlist (default: tmp.txt)')
+
+    args = parser.parse_args()
+
+    if len(sys.argv) == 1: bopscrk_banner(); help_banner(); parser.print_help(sys.stdout); sys.exit(2)  # Print simple help and exit when runs without args
+
+
+    return args
 
 
 ################################################################################
@@ -212,11 +246,12 @@ def thread_transforms(transform_type, wordlist):
 
 ################################################################################
 def space_transforms(word):
-    new_wordlist = []
-    new_wordlist.append(word.replace(' ', ''))
-    new_wordlist.append(word.replace(' ', '.'))
-    new_wordlist.append(word.replace(' ', '_'))
-    new_wordlist.append(word.replace(' ', '-'))
+    new_wordlist = [word,]
+    if ' ' in word:  # Avoiding non-space words to be included many times
+        new_wordlist.append(word.replace(' ', ''))
+        new_wordlist.append(word.replace(' ', '.'))
+        new_wordlist.append(word.replace(' ', '_'))
+        new_wordlist.append(word.replace(' ', '-'))
     return new_wordlist
 
 
@@ -309,7 +344,7 @@ def leet_transforms(word):
 ################################################################################
 def asks():
     while True:
-        minLength = input('  {}[?]{} Password\'s min length [1] >>> '.format(color.BLUE, color.END))
+        minLength = input('  {}[?]{} Passwords min length [1] >>> '.format(color.BLUE, color.END))
         if isEmpty(minLength): minLength = 1; break
         else:
             try:
@@ -364,10 +399,10 @@ def asks():
 
     artists = input('  {}[?]{} Artist names to search song lyrics (comma-separated) >>> '.format(color.BLUE, color.END))
     if isEmpty(artists): artists = False
-
-    ly_all_transforms = input('  {}[?]{} Do yo want to make all posible transforms with lyrics? (not recommended) [y/n] >>> '.format(color.BLUE, color.END))
-    if ly_all_transforms.lower() == 'y': ly_all_transforms = True
-    else: ly_all_transforms = False
+    # ly_all_transforms = False
+    # if artists:
+    #     ly_all_transforms = input('  {}[?]{} Do yo want to make all posible transforms with lyrics? (only huge wordlists) [y/n] >>> '.format(color.BLUE, color.END))
+    #     if ly_all_transforms.lower() == 'y': ly_all_transforms = True
 
     while True:
         exclude = input('  {}[?]{} Exclude words from other wordlists? >>> '.format(color.BLUE, color.END))
@@ -379,7 +414,6 @@ def asks():
                 if not os.path.isfile(wl_path):
                     valid_paths = False
                     print('  {}[!]{} {} not found'.format(color.RED, color.END, wl_path))
-
             if valid_paths:
                 break
 
@@ -407,22 +441,20 @@ def asks():
         for i in others:
             wordlist.append(i.lower())
 
-    return wordlist, minLength, maxLength, leet, case, nWords, artists, ly_all_transforms, exclude, outfile
+    return wordlist, minLength, maxLength, leet, case, nWords, artists, exclude, outfile  #,ly_all_transforms
 
 
 ################################################################################
 def main():
-    args = parser.parse_args()
-    interactive = args.interactive
-    if len(sys.argv) == 1: parser.print_help(sys.stdout); sys.exit(2)  # Print help and exit when runs without args
-
-
     # SETTINGS
     ############################################################################
+    args = read_args()
+    interactive = args.interactive
     if interactive:
         clear()
+        bopscrk_banner()
         banner()
-        base_wordlist, minLength, maxLength, leet, case, nWords, artists, ly_all_transforms, exclude_wordlists, outfile = asks()
+        base_wordlist, minLength, maxLength, leet, case, nWords, artists, exclude_wordlists, outfile = asks()    #,ly_all_transforms
 
     else:
         base_wordlist = []
@@ -432,12 +464,12 @@ def main():
                 base_wordlist.append(word.lower())
         minLength = args.min
         maxLength = args.max
-        case = args.case
         leet = args.leet
+        case = args.case
         nWords = args.nWords
         artists = args.artists
         outfile = args.outfile
-        ly_all_transforms = args.lyrics_all
+        #ly_all_transforms = args.lyrics_all
 
         exclude_wordlists = args.exclude
         if exclude_wordlists:
@@ -446,10 +478,8 @@ def main():
                 if not os.path.isfile(wl_path):
                     print('  {}[!]{} {} not found'.format(color.RED, color.END, wl_path))
                     sys.exit(4)
-
     if artists:
         artists = artists.split(',')
-
 
     # Initial timestamp
     start_time = datetime.datetime.now().time().strftime('%H:%M:%S')
@@ -474,41 +504,44 @@ def main():
     ############################################################################
     if artists:
         try:
-            from lib.lyricpass import LyricsFinder
+            from lib.lyricpass import lyricpass
             searchLyrics = True
+            print('\n{}     -- Starting lyricpass module (by initstring) --\n'.format(color.GREY))
         except ImportError:
             print('  {}[!]{} missing dependencies, only artist names will be added and transformed'.format(color.RED, color.END))
             searchLyrics = False
 
         for artist in artists:
+
+            # Add artist-word and all space transforms with artist-word
             wordlist.append(artist)
             wordlist += space_transforms(artist)
 
+            # Search lyrics if it meets dependencies for lyricpass
             if searchLyrics:
                 print('  {}[*]{} Looking for {}\'s lyrics...'.format(color.CYAN, color.END, artist.title()))
-                lyfinder = LyricsFinder(artist, False, True)
-                lyrics = [s.decode("utf-8") for s in lyfinder.lyrics]
-                print('  {}[*] {}{}{} phrases found'.format(color.CYAN, color.GREEN, len(lyrics), color.END))
+                lyrics = lyricpass.lyricpass(artist)
+                #lyrics = [s.decode("utf-8") for s in lyfinder.lyrics]
+                print('\n  {}[*] {}{}{} phrases found\n'.format(color.CYAN, color.GREEN, len(lyrics), color.END))
 
                 # First we remove all the parenthesis in the phrases
                 lyrics = ([s.replace('(', '') for s in lyrics])
                 lyrics = ([s.replace(')', '') for s in lyrics])
 
-                # Now take just the initials
+                # Now take just the initials on each phrase and add as a word
                 base_lyrics = lyrics[:]
                 ly_initials_wl = thread_transforms(take_initials, base_lyrics)
                 for phrase in ly_initials_wl:
                     wordlist.append(phrase)
 
                 # Make all possible transforms taking the song's phrases as base (leet, case and spaces)
-                if ly_all_transforms:
-                    # Add the raw phrases to main wordlist
-                    wordlist += lyrics
-                    # Make space transforms and add it too
-                    lyrics = thread_transforms(space_transforms, lyrics)
-                    for phrase in lyrics:
-                        wordlist += phrase
-
+                # if ly_all_transforms:
+                # Add the raw phrases to main wordlist (leet and case transform will be performed on it later if its enabled)
+                wordlist += lyrics
+                # Make space transforms and add it too
+                lyrics = thread_transforms(space_transforms, lyrics)
+                for phrase in lyrics:
+                    wordlist += phrase
 
     # Check for duplicates
     wordlist = list(OrderedDict.fromkeys(wordlist))
@@ -516,17 +549,15 @@ def main():
     wordlist = remove_by_lengths(wordlist, minLength, maxLength)
 
 
-    # UPPER/LOWER TRANSFORMS
+    # CASE TRANSFORMS
     ############################################################################
     if case:
         thread_transforms(case_transforms, wordlist)
-
 
     # LEET TRANSFORMS
     ############################################################################
     if leet:
         thread_transforms(leet_transforms, wordlist)
-
 
     # EXCLUDE FROM OTHER WORDLISTS
     ############################################################################
@@ -547,18 +578,15 @@ def main():
 
         wordlist = [word for word in final_wordlist if word is not None]
 
-
     # Check for duplicates and re-check by lengths
     wordlist = list(OrderedDict.fromkeys(wordlist))
     wordlist = remove_by_lengths(wordlist, minLength, maxLength)    
-
 
     # SAVE WORDLIST TO FILE
     ############################################################################
     with open(outfile, 'w') as f:
         for word in wordlist:
             f.write(word + '\n')
-
 
     # Final timestamp
     end_time = datetime.datetime.now().time().strftime('%H:%M:%S')

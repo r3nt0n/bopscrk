@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# r3nt0n 25/10/2017
-# last update: 17/06/2020
+# https://github.com/r3nt0n/bopscrk
 
 
 from setuptools import setup, find_packages
@@ -9,9 +8,9 @@ from setuptools import setup, find_packages
 setup(
     name='bopscrk',
     author='r3nt0n',
-    author_email='bvega@protonmail.com',
+    author_email='r3nt0n@protonmail.com',
     url='https://github.com/r3nt0n/bopscrk',
-    version='2.0',
+    version='2.2',
     license='GNU General Public License v3.0',
     packages=['lib',],
     scripts=['bopscrk.py'],
