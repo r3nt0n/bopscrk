@@ -19,9 +19,10 @@ The first idea was inspired by **Cupp** and **Crunch**. We could say that bopscr
  
 
 ## Requirements
-+ Python 3 (the other branch keeps Python 2.7 legacy support)
-+ requests (*optional*, only if you want to use lyricpass)
-+ beautifulsoup4 (*optional*, only if you want to use lyricpass)
++ **Python 3** (the other branch keeps Python 2.7 legacy support)
++ *optional requirements*:
+  + To use *lyricpass module*:  
+    `pip install lib/lyricpass/requirements.txt`
 
 ## Usage
 ```
