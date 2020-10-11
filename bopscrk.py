@@ -14,12 +14,12 @@ __version__ = '2.2'
 __status__ = 'Development'
 
 
-
 import os
 import sys
 import datetime
 import itertools
 import argparse
+import configparser
 from time import sleep
 from random import randint, choice
 from collections import OrderedDict
@@ -48,57 +48,52 @@ class color:
 
 
 ################################################################################
+interval = 0.03
+
 def banner():
-    name_rand_leet = leet_transforms(name)
-    name_rand_leet = name_rand_leet[randint(0, (len(name_rand_leet) - 1))]
+    try:
+        name_rand_leet = leet_transforms(name)
+        name_rand_leet = name_rand_leet[randint(0, (len(name_rand_leet) - 1))]
+    except:
+        name_rand_leet = name
     name_rand_case = case_transforms(name)
     name_rand_case = name_rand_case[randint((len(name_rand_case) - 3), (len(name_rand_case) - 1))]
 
-    print('  ,----------------------------------------------------,   ,------------,')
-    print('  | [][][][][]  [][][][][]  [][][][]  [][__]  [][][][] |   |    v{}{}{}    |'.format(color.BLUE, __version__, color.END))
-    print('  |                                                    |   |------------|')
-    print('  |  [][][][][][][][][][][][][][_]    [][][]  [][][][] |===| {}{}{} |'.format(color.RED, name_rand_leet, color.END))
-    print('  |  [_][][][]{}[]{}[][][][]{}[][]{}[][][ |   [][][]  [][][][] |===| {}{}{}{} |'.format(color.KEY_HIGHL, color.END, color.KEY_HIGHL, color.END, color.BOLD, color.RED, name, color.END))
-    print('  | [][_][]{}[]{}[][][][][]{}[]{}[][][][]||     []    [][][][] |===| {}{}{} |'.format(color.KEY_HIGHL, color.END, color.KEY_HIGHL, color.END, color.RED, name_rand_case, color.END))
-    print('  | [__][][][]{}[]{}[]{}[]{}[][][][][][__]    [][][]  [][][]|| |   |------------|'.format(color.KEY_HIGHL, color.END, color.KEY_HIGHL, color.END))
-    print('  |   [__][________________][__]              [__][]|| |   |{}   {}   {}|'.format(color.GREEN, __author__, color.END))
-    print('  `----------------------------------------------------´   `------------´\n')
+    print('  ,----------------------------------------------------,   ,------------,');sleep(interval)
+    print('  | [][][][][]  [][][][][]  [][][][]  [][__]  [][][][] |   |    v{}{}{}    |'.format(color.BLUE, __version__, color.END));sleep(interval)
+    print('  |                                                    |   |------------|');sleep(interval)
+    print('  |  [][][][][][][][][][][][][][_]    [][][]  [][][][] |===| {}{}{} |'.format(color.RED, name_rand_leet, color.END));sleep(interval)
+    print('  |  [_][][][]{}[]{}[][][][]{}[][]{}[][][ |   [][][]  [][][][] |===| {}{}{}{} |'.format(color.KEY_HIGHL, color.END, color.KEY_HIGHL, color.END, color.BOLD, color.RED, name, color.END));sleep(interval)
+    print('  | [][_][]{}[]{}[][][][][]{}[]{}[][][][]||     []    [][][][] |===| {}{}{} |'.format(color.KEY_HIGHL, color.END, color.KEY_HIGHL, color.END, color.RED, name_rand_case, color.END));sleep(interval)
+    print('  | [__][][][]{}[]{}[]{}[]{}[][][][][][__]    [][][]  [][][]|| |   |------------|'.format(color.KEY_HIGHL, color.END, color.KEY_HIGHL, color.END));sleep(interval)
+    print('  |   [__][________________][__]              [__][]|| |   |{}   {}   {}|'.format(color.GREEN, __author__, color.END));sleep(interval)
+    print('  `----------------------------------------------------´   `------------´\n');sleep(interval)
 
 def help_banner():
-    print(u'  +--------------------------------------------------------------------+')
-    print(u'  | Fields can be left empty.  You can use accentuation in your words. |')
-    print(u'  | If you enable case transforms,  won\'t matter the lower/uppercases  |')
-    print(u'  | in your input. In "others" field (interactive mode), you can write |')
-    print(u'  | several words comma-separated (e.g.: 2C,Flipper).                  |')
-    print(u'  |                                                                    |')
-    print(u'  |                              For advanced usage and documentation: |')
-    print(u'  |                                  {}https://github.com/r3nt0n/bopscrk{} |'.format(color.ORANGE,color.END))
-    print(u'  +--------------------------------------------------------------------+\n')
+    print(u'  +---------------------------------------------------------------------+');sleep(interval)
+    print(u'  | Fields can be left empty.  You can use accentuation in your words.  |');sleep(interval)
+    print(u'  | If you enable case transforms,  won\'t matter the lower/uppercases   |');sleep(interval)
+    print(u'  | in your input. In "others" field (interactive mode), you can write  |');sleep(interval)
+    print(u'  | several words comma-separated (e.g.: 2C,Flipper).                   |');sleep(interval)
+    print(u'  |                                                                     |');sleep(interval)
+    print(u'  |                              For advanced usage and documentation:  |');sleep(interval)
+    print(u'  |                                  {}https://github.com/r3nt0n/bopscrk{}  |'.format(color.ORANGE,color.END));sleep(interval)
+    print(u'  +---------------------------------------------------------------------+\n');sleep(interval)
 
 def bopscrk_banner():
-    interval = 0.06
+    sleep(interval * 4)
     print('\n')
-    sleep(interval)
-    print(u'{}         ▄▄▄▄    ▒█████   ██▓███    ██████  ▄████▄   ██▀███   ██ ▄█▀'.format(color.ORANGE))
-    sleep(interval)
-    print(u'        ▓█████▄ ▒██▒  ██▒▓██░  ██▒▒██    ▒ ▒██▀ ▀█  ▓██ ▒ ██▒ ██▄█▒ ')
-    sleep(interval)
-    print(u'        ▒██▒ ▄██▒██░  ██▒▓██░ ██▓▒░ ▓██▄   ▒▓█    ▄ ▓██ ░▄█ ▒▓███▄░ ')
-    sleep(interval)
-    print(u'        ▒██░█▀  ▒██   ██░▒██▄█▓▒ ▒  ▒   ██▒▒▓▓▄ ▄██▒▒██▀▀█▄  ▓██ █▄ ')
-    sleep(interval)
-    print(u'        ░▓█  ▀█▓░ ████▓▒░▒██▒ ░  ░▒██████▒▒▒ ▓███▀ ░░██▓ ▒██▒▒██▒ █▄')
-    sleep(interval)
-    print(u'        ░▒▓███▀▒░ ▒░▒░▒░ ▒▓▒░ ░  ░▒ ▒▓▒ ▒ ░░ ░▒ ▒  ░░ ▒▓ ░▒▓░▒ ▒▒ ▓▒')
-    sleep(interval)
-    print(u'        ▒░▒   ░   ░ ▒ ▒░ ░▒ ░     ░ ░▒  ░ ░  ░  ▒     ░▒ ░ ▒░░ ░▒ ▒░')
-    sleep(interval)
-    print(u'         ░    ░ ░ ░ ░ ▒  ░░       ░  ░  ░  ░          ░░   ░ ░ ░░ ░')
-    sleep(interval)
-    print(u'         ░          ░ ░                 ░  ░ ░         ░     ░  ░')
-    sleep(interval)
-    print(u'              ░                            ░                        {}'.format(color.END))
-    sleep(interval*4)
+    print(u'{}         ▄▄▄▄    ▒█████   ██▓███    ██████  ▄████▄   ██▀███   ██ ▄█▀'.format(color.ORANGE));sleep(interval)
+    print(u'        ▓█████▄ ▒██▒  ██▒▓██░  ██▒▒██    ▒ ▒██▀ ▀█  ▓██ ▒ ██▒ ██▄█▒ ');sleep(interval)
+    print(u'        ▒██▒ ▄██▒██░  ██▒▓██░ ██▓▒░ ▓██▄   ▒▓█    ▄ ▓██ ░▄█ ▒▓███▄░ ');sleep(interval)
+    print(u'        ▒██░█▀  ▒██   ██░▒██▄█▓▒ ▒  ▒   ██▒▒▓▓▄ ▄██▒▒██▀▀█▄  ▓██ █▄ ');sleep(interval)
+    print(u'        ░▓█  ▀█▓░ ████▓▒░▒██▒ ░  ░▒██████▒▒▒ ▓███▀ ░░██▓ ▒██▒▒██▒ █▄');sleep(interval)
+    print(u'        ░▒▓███▀▒░ ▒░▒░▒░ ▒▓▒░ ░  ░▒ ▒▓▒ ▒ ░░ ░▒ ▒  ░░ ▒▓ ░▒▓░▒ ▒▒ ▓▒');sleep(interval)
+    print(u'        ▒░▒   ░   ░ ▒ ▒░ ░▒ ░     ░ ░▒  ░ ░  ░  ▒     ░▒ ░ ▒░░ ░▒ ▒░');sleep(interval)
+    print(u'         ░    ░ ░ ░ ░ ▒  ░░       ░  ░  ░  ░          ░░   ░ ░ ░░ ░');sleep(interval)
+    print(u'         ░          ░ ░                 ░  ░ ░         ░     ░  ░');sleep(interval)
+    print(u'              ░                            ░                        {}'.format(color.END));sleep(interval)
+    #sleep(interval*2)
 
 ################################################################################
 # ARGS DEFINITION
@@ -149,6 +144,33 @@ def read_args():
     return args
 
 
+# READING DEFAULT PARAMETERS FROM CONFIG FILE
+###############################################################################
+def read_conf(category, field):
+    cfg = configparser.ConfigParser()
+    try:
+        cfg.read([CFG_FILE])
+        value = cfg.get(category, field)
+    except:
+        value = False
+    return value
+
+
+# GLOBAL VARIABLES
+###############################################################################
+CFG_FILE = './bopscrk.cfg'
+LEET_CHARSET = read_conf('TRANSFORMS', 'leet_charset')
+# Reading spaces replacement charset from config file
+space_replacement = []
+space_replacement_chars = read_conf('TRANSFORMS', 'space_replacement_chars')
+space_replacement_strings = read_conf('TRANSFORMS', 'space_replacement_strings')
+if space_replacement_chars:
+    space_replacement[:] = space_replacement_chars
+if space_replacement_strings:
+    space_replacement.extend(space_replacement_strings.split())
+SPACE_REPLACEMENT = space_replacement
+
+
 ################################################################################
 def clear():
     """Clear the screen. Works on Windows and Linux."""
@@ -191,12 +213,23 @@ def add_common_separators(wordlist):
     :param wordlist: the base wordlist to combine
     :return: a new wordlist with all the combinations
     """
-    common_separators = ['.', '_', '-', '123', '$', '%', '&', '#', '@']
+    #separators = ['.', '_', '-', '123', '$', '%', '&', '#', '@']
+    separators = []
+    # Reading separators charset from config file
+    separators_chars = read_conf('COMBINATIONS', 'separators_chars')
+    separators_strings = read_conf('COMBINATIONS', 'separators_strings')
+    if (not separators_chars) and (not separators_strings):
+        print('  {}[!]{} Any separators charset specified in {}'.format(color.ORANGE, color.END,CFG_FILE))
+        #sys.exit(3)
+    if separators_chars:
+        separators[:] = separators_chars
+    if separators_strings:
+        separators.extend(separators_strings.split())
+
     words = wordlist[:]
     new_wordlist = []
-
     for word in words:
-        for sep in common_separators:
+        for sep in separators:
             new_wordlist.append(word + sep)
             new_wordlist.append(sep + word)
 
@@ -249,9 +282,10 @@ def space_transforms(word):
     new_wordlist = [word,]
     if ' ' in word:  # Avoiding non-space words to be included many times
         new_wordlist.append(word.replace(' ', ''))
-        new_wordlist.append(word.replace(' ', '.'))
-        new_wordlist.append(word.replace(' ', '_'))
-        new_wordlist.append(word.replace(' ', '-'))
+        if space_replacement:
+            for character in space_replacement:
+                new_wordlist.append(word.replace(' ', character))
+
     return new_wordlist
 
 
@@ -304,16 +338,23 @@ def case_transforms(word):
     vowels = 'aeiou'
     new_word = ''
     for char in word:
-        if char not in vowels: new_word += char.upper()
+        if char.lower() not in vowels: new_word += char.upper()
         else: new_word += char
     if new_word not in new_wordlist: new_wordlist.append(new_word)
 
     # Make vowels upper (hello => hEllO)
     new_word = ''
     for char in word:
-        if char in vowels: new_word += char.upper()
+        if char.lower() in vowels: new_word += char.upper()
         else: new_word += char
     if new_word not in new_wordlist: new_wordlist.append(new_word)
+
+    # recursive call function (not working, maybe this option won't be even useful)
+    # for new_word in new_wordlist:
+    #     original_size = len(new_wordlist)
+    #     new_wordlist.extend(case_transforms(new_word))
+    #     if len(new_wordlist) == original_size:
+    #         break  # breaking recursive call
 
     return new_wordlist
 
@@ -322,38 +363,42 @@ def case_transforms(word):
 def leet_transforms(word):
     new_wordlist = []
     i=0
+    leet_charset = LEET_CHARSET.split()
     for char in word:
-        if char in ('a', 'A'):
-            char = '4'
-        elif char in ('i', 'I'):
-            char = '1'
-        elif char in ('e', 'E'):
-            char = '3'
-        elif char in ('s', 'S'):
-            char = '5'
-        elif char in ('b', 'B'):
-            char = '8'
-        elif char in ('o', 'O'):
-            char = '0'
-        word = word[:i] + char + word[i + 1:]
+        for lchar in leet_charset:
+            leeted_char = ''
+            if lchar.startswith(char.lower()):
+                leeted_char = lchar[-1:]
+                new_word = word[:i] + leeted_char + word[i + 1:]
+                if new_word not in new_wordlist: new_wordlist.append(new_word)
+                # dont break to allow multiple transforms to a single char (e.g. a into 4 and @)
         i += 1
-        if word not in new_wordlist: new_wordlist.append(word)
+
+    # recursive call function
+    recursive_leet = read_conf('TRANSFORMS', 'recursive_leet')
+    if recursive_leet.lower() == 'true':
+        for new_word in new_wordlist:
+            original_size = len(new_wordlist)
+            new_wordlist.extend(leet_transforms(new_word))
+            if len(new_wordlist) == original_size:
+                break  # breaking recursive call
+
     return new_wordlist
 
 
 ################################################################################
 def asks():
     while True:
-        minLength = input('  {}[?]{} Passwords min length [1] >>> '.format(color.BLUE, color.END))
-        if isEmpty(minLength): minLength = 1; break
+        minLength = input('  {}[?]{} Passwords min length [4] >>> '.format(color.BLUE, color.END))
+        if isEmpty(minLength): minLength = 4; break
         else:
             try:
                 minLength = int(minLength); break
             except ValueError:
                 print('  {}[!]{} Min length should be an integer'.format(color.RED, color.END))
     while True:
-        maxLength = input('  {}[?]{} Password\'s max length [99] >>> '.format(color.BLUE, color.END))
-        if isEmpty(maxLength): maxLength = 99; break
+        maxLength = input('  {}[?]{} Password\'s max length [32] >>> '.format(color.BLUE, color.END))
+        if isEmpty(maxLength): maxLength = 32; break
         else:
             try:
                 maxLength = int(maxLength)
@@ -453,10 +498,14 @@ def main():
     if interactive:
         clear()
         bopscrk_banner()
+        help_banner()
         banner()
         base_wordlist, minLength, maxLength, leet, case, nWords, artists, exclude_wordlists, outfile = asks()    #,ly_all_transforms
 
     else:
+        bopscrk_banner()
+        help_banner()
+        banner()
         base_wordlist = []
         if args.words:
             raw_wordlist = (args.words).split(',')
@@ -486,18 +535,20 @@ def main():
     wordlist = base_wordlist[:]  # Copy to preserve the original
 
 
-    # WORD COMBINATIONS
-    ############################################################################
-    if nWords > 1:
-        wordlist = combinator(base_wordlist, 2)
-        i = 2
-        while i < nWords:
-            i += 1
-            wordlist += combinator(base_wordlist, i)
-
-    # WORD COMBINATIONS WITH COMMON SEPARATORS
-    ############################################################################
-    wordlist += add_common_separators(base_wordlist)
+    # # WORD COMBINATIONS
+    # ############################################################################
+    # if nWords > 1:
+    #     wordlist = combinator(base_wordlist, 2)
+    #     i = 2
+    #     while i < nWords:
+    #         i += 1
+    #         wordlist += combinator(base_wordlist, i)
+    #
+    # print('  {}[+]{} Creating all posible combinations between words...'.format(color.BLUE, color.END))
+    # # WORD COMBINATIONS WITH COMMON SEPARATORS
+    # ############################################################################
+    # print('  {}[+]{} Mixing, lpadding and rpadding words with separators (if any configured)...'.format(color.BLUE, color.END))
+    # wordlist += add_common_separators(base_wordlist)
 
 
     # SEARCH FOR LYRICS
@@ -512,10 +563,16 @@ def main():
             searchLyrics = False
 
         for artist in artists:
-
-            # Add artist-word and all space transforms with artist-word
-            wordlist.append(artist)
-            wordlist += space_transforms(artist)
+            # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            # Add IN BASE WORDLIST artist name as a word  !!!!!!!!!!!! Start point created to implement weighted-words system !!!!!!!!!!!!!!
+            # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            base_wordlist.append(artist)
+            # Add artist name with all space transformed into a specific charset
+            if not SPACE_REPLACEMENT:
+                print('  {}[!]{} Any spaces-replacement charset specified in {}'.format(color.ORANGE, color.END, CFG_FILE))
+                print('  {}[!]{} Spaces inside artists names and lyrics phrases will be simply removed\n'.format(color.ORANGE, color.END))
+            else:
+                wordlist += space_transforms(artist)
 
             # Search lyrics if it meets dependencies for lyricpass
             if searchLyrics:
@@ -539,9 +596,26 @@ def main():
                 # Add the raw phrases to main wordlist (leet and case transform will be performed on it later if its enabled)
                 wordlist += lyrics
                 # Make space transforms and add it too
-                lyrics = thread_transforms(space_transforms, lyrics)
+                if space_replacement:
+                    lyrics = thread_transforms(space_transforms, lyrics)
                 for phrase in lyrics:
                     wordlist += phrase
+
+
+    # WORD COMBINATIONS
+    ############################################################################
+    if nWords > 1:
+        i = 2
+        while i < nWords:
+            i += 1
+            wordlist += combinator(base_wordlist, i)
+
+    print('  {}[+]{} Creating all posible combinations between words...'.format(color.BLUE, color.END))
+    # WORD COMBINATIONS WITH COMMON SEPARATORS
+    ############################################################################
+    print('  {}[+]{} Creating extra combinations (separators charset in {}{}{})'.format(color.BLUE, color.END,color.CYAN,CFG_FILE,color.END))
+    wordlist += add_common_separators(base_wordlist)
+
 
     # Check for duplicates
     wordlist = list(OrderedDict.fromkeys(wordlist))
@@ -552,16 +626,23 @@ def main():
     # CASE TRANSFORMS
     ############################################################################
     if case:
+        print('  {}[+]{} Applying case transforms...'.format(color.BLUE, color.END))
         thread_transforms(case_transforms, wordlist)
 
     # LEET TRANSFORMS
     ############################################################################
     if leet:
-        thread_transforms(leet_transforms, wordlist)
+        if not LEET_CHARSET:
+            print('  {}[!]{} Any leet charset specified in {}'.format(color.ORANGE, color.END, CFG_FILE))
+            print('  {}[!]{} Skipping leet transforms...'.format(color.ORANGE, color.END, CFG_FILE))
+        else:
+            print('  {}[+]{} Applying leet transforms...'.format(color.BLUE, color.END))
+            thread_transforms(leet_transforms, wordlist)
 
     # EXCLUDE FROM OTHER WORDLISTS
     ############################################################################
     if exclude_wordlists:
+        print('  {}[+]{} Excluding wordlists...'.format(color.BLUE, color.END))
         global words_to_exclude
         words_to_exclude = []
 

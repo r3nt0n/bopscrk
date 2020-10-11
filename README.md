@@ -3,20 +3,25 @@
 ![[Python 3.8](https://github.com/R3nt0n)](http://img.shields.io/badge/python-3.8-blue.svg)
 ![[GPL-3.0 License](https://github.com/R3nt0n)](https://img.shields.io/badge/license-GPL%203.0-brightgreen.svg)
 ![[Date](https://github.com/R3nt0n)](http://img.shields.io/badge/date-06/05/2018-yellow.svg)
-![[Last update](https://github.com/R3nt0n)](http://img.shields.io/badge/updated-10/10/2020-purple.svg)
+![[Last update](https://github.com/R3nt0n)](http://img.shields.io/badge/updated-11/10/2020-purple.svg)
 
 
 
 # Bopscrk
-Bopscrk (**Before Outset PaSsword CRacKing**) is a tool to generate smart and powerful wordlists.
+Bopscrk (**Before Outset PaSsword CRacKing**) is a tool to generate smart and powerful wordlists for targeted attacks.
 
 Included in **<a href="https://blackarch.org/">BlackArch Linux</a>** pentesting distribution and **<a href="https://inventory.rawsec.ml/">Rawsec's Cybersecurity Inventory</a>** since August 2019.  
   
-<p align="center"><img src="https://github.com/R3nt0n/bopscrk/blob/master/img/example.gif" /></p>
-  
+<p align="center"><img src="https://github.com/R3nt0n/bopscrk/blob/master/img/bopscrk-2.2.gif" /></p>  
 
-The first idea was inspired by **Cupp** and **Crunch**. We could say that bopscrk is a wordlist generator **situated between them**, taking the best of each one. The challenge was try to apply the Cupp's idea to more generic-situations and amplify the shoot-range of the resultant wordlist, without loosing this custom-wordlist-profiler feature. 
- 
+
+**Customizable case** and **leet transforms** (and **recursive option**): create **custom charsets** and **transforms patterns** trough a simple **config file**.
+
+**Wordlists exclusion**: Exclude words from another wordlist (to avoid passwords that you already have tested).
+
+**Targeted-attack wordlist creator**: search lyrics related to artists, combines every word and transforms results into possible passwords.
+
+**Interactive mode** and **one-line command interface** supported. 
 
 ## Requirements
 + **Python 3** (the other branch keeps Python 2.7 legacy support)
@@ -63,21 +68,40 @@ The first idea was inspired by **Cupp** and **Crunch**. We could say that bopscr
 ### Lyricpass 
 This feature is based in a modified version of a [tool](https://github.com/initstring/lyricpass) developed originally by [initstring](https://github.com/initstring/). The changes are made to integrate input and output's tool with bopscrk.
 
-It will retrieve all lyrics from all songs which belongs to artists that you provide. As this feature can make the wordlist grow too much, **by default it will store each phrase reduced to its initials** (which will be transformed later if you have activated leet and case transforms). As one of the main methods to use lyrics as a password is to take just initials, It should be usually enough.
+It will retrieve all lyrics from all songs which belongs to artists that you provide. **By default it will store each artist, each phrase found with space substitution, each phrase found reduced to its initials** (which will be transformed later if you have activated leet and case transforms).
+
 
 
 ### Advanced usage
 
 #### Custom transforms using cfg file
-[...] Coming soon [...]
++ In `bopscrk.cfg` file you can specify your own charsets and enable/disable options:  
+  + **separators_chars**: characters to insert between words when combining them, and also at begining and at the end. *Can be a single char or a string of chars, e.g.: `!?-/&(`*  
+  + **separators_strings**: strings to insert between words when combining them, and also at begining and at the end. *Can be a single string or a list of strings space-separated, e.g.: `123` `34!@`*
+  + **leet_charset**: characters to replace and correspondent substitute in leet transforms, *e.g.: `e:3 b:8 t:7 a:4`* 
+  + **recursive_leet**: enables a recursive call to leet_transforms() function to get all possible leet transforms (*disabled by default*). *Can be true or false.*  
+  + **space_replacement_chars**: characters to insert instead of spaces inside an artist name or a lyric phrase.  *Can be a single char or a string of chars, e.g.: `!?-/&(`*
+  + **space_replacement_strings**: strings to insert instead of spaces inside an artist name or a lyric phrase.  *Can be a single string or a list of strings space-separated, e.g.: `123` `34!@`*
++ Some transforms have extensive charsets included. To use it instead of the basic, just uncomment the corresponding line.
+
++ **Parameters configuration examples**
+  + Combine all the words using dots as separator, and same using commas  
+    `separators_chars=.,` 
+  + Convert all "a/A" occurrences into "4" and all "e/E" occurrences into "3"  
+    `leet_charset=a:4 e:3`      
+
 
 #### Weighted-words system
 [...] Coming soon [...]
 
 ## Changelist
-+ `2.2 version notes (10/10/2020)`  
++ `2.2 version notes (11/10/2020`
+  + **Configuration file** implemented
+  + **NEW FEATURE**: Allow to create **custom charsets** and **transforms patterns** trough the **config file**
+  + **NEW FEATURE**: **Recursive leet transforms** implemented (*disabled by default*, can be enabled in cfg file)
++ `2.2~beta version notes (10/10/2020)`
   + The **lyricpass** integration have been **updated to run with last version released by initstring**
-  + `--lyrics-all` option removed         
+  + `--lyrics-all` option removed (feature integrated in other options)        
 + `2.1 version notes (11/07/2020)`  
   + Fixing **min and max length bug**  
 + `2.0/1.5 version notes (17/06/2020)`  
@@ -88,8 +112,9 @@ It will retrieve all lyrics from all songs which belongs to artists that you pro
 
 
 ## TO-DO list
-  + Implement **weighted-words system**.
-  + Allow to create **advanced custom transforms** trough a **configuration file**.
++ Implement **weighted-words system**.
++ Create options to **custom case transforms** (e.g.: disable pair/odd transforms).
++ Create options to **custom which info is stored in lyric searches** (e.g.: as one of the main methods to use lyrics as a password is to take just initials, sometimes it should be usually enough). *Related to future weighted-words system*.
 + **Lyricpass** integration was upgraded to last version released by initstring, but still needs some tweaks to speed up the search process (I would appreciate any help).
 
 
