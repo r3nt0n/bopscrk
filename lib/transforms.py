@@ -5,7 +5,7 @@
 
 from multiprocessing.dummy import Pool as ThreadPool
 
-from lib.config import *
+from lib.config import Config
 
 
 ################################################################################
@@ -66,7 +66,7 @@ def case_transforms(word):
 def leet_transforms(word):
     new_wordlist = []
     i=0
-    leet_charset = LEET_CHARSET.split()
+    leet_charset = Config.LEET_CHARSET
     for char in word:
         for lchar in leet_charset:
             leeted_char = ''
@@ -78,8 +78,8 @@ def leet_transforms(word):
         i += 1
 
     # recursive call function
-    recursive_leet = read_config('TRANSFORMS', 'recursive_leet')
-    if recursive_leet.lower() == 'true':
+    #recursive_leet = read_config('TRANSFORMS', 'recursive_leet')
+    if Config.RECURSIVE_LEET:
         for new_word in new_wordlist:
             original_size = len(new_wordlist)
             new_wordlist.extend(leet_transforms(new_word))
@@ -90,7 +90,7 @@ def leet_transforms(word):
 
 
 ################################################################################
-def thread_transforms(transform_type, wordlist):
+def multithread_transforms(transform_type, wordlist):
     pool = ThreadPool(16)
     # process each word in their own thread and return the results
     new_wordlist = pool.map(transform_type, wordlist)
@@ -106,8 +106,8 @@ def space_transforms(word):
     new_wordlist = [word,]
     if ' ' in word:  # Avoiding non-space words to be included many times
         new_wordlist.append(word.replace(' ', ''))
-        if space_replacement:
-            for character in space_replacement:
+        if Config.SPACE_REPLACEMENT_CHARSET:
+            for character in Config.SPACE_REPLACEMENT_CHARSET:
                 new_wordlist.append(word.replace(' ', character))
 
     return new_wordlist

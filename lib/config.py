@@ -5,11 +5,9 @@
 
 import configparser
 
+CFG_FILE = './bopscrk.cfg'  # relative to bopscrk.py path
 
-CFG_FILE = './bopscrk.cfg'
 
-# READING DEFAULT PARAMETERS FROM CONFIG FILE
-###############################################################################
 def read_config(category, field):
     cfg = configparser.ConfigParser()
     try:
@@ -19,16 +17,29 @@ def read_config(category, field):
         value = False
     return value
 
+def merge_settings(chars, strings):
+    final_list = []
+    if chars:
+        final_list[:] = chars
+    if strings:
+        final_list.extend(strings.split())
+    return final_list
 
-# GLOBAL VARIABLES
-###############################################################################
-LEET_CHARSET = read_config('TRANSFORMS', 'leet_charset')
-# Reading spaces replacement charset from config file
-space_replacement = []
-space_replacement_chars = read_config('TRANSFORMS', 'space_replacement_chars')
-space_replacement_strings = read_config('TRANSFORMS', 'space_replacement_strings')
-if space_replacement_chars:
-    space_replacement[:] = space_replacement_chars
-if space_replacement_strings:
-    space_replacement.extend(space_replacement_strings.split())
-SPACE_REPLACEMENT = space_replacement
+def parse_booleans(value):
+    if value.lower() ==  'true':
+        return True
+    return False
+
+class Config:
+    EXTRA_COMBINATIONS = parse_booleans(read_config('COMBINATIONS', 'extra_combinations'))
+    SEPARATORS_CHARSET = merge_settings(read_config('COMBINATIONS', 'separators_chars'),
+                                        read_config('COMBINATIONS', 'separators_strings'))
+    LEET_CHARSET = (read_config('TRANSFORMS', 'leet_charset')).split()
+    RECURSIVE_LEET = parse_booleans(read_config('TRANSFORMS', 'recursive_leet'))
+    SPACE_REPLACEMENT_CHARSET = merge_settings(read_config('TRANSFORMS', 'space_replacement_chars'),
+                                               read_config('TRANSFORMS', 'space_replacement_strings'))
+    REMOVE_PARENTHESIS = parse_booleans(read_config('LYRICS', 'remove_parenthesis'))
+    TAKE_INITIALS = parse_booleans(read_config('LYRICS', 'take_initials'))
+
+
+

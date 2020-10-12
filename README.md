@@ -48,11 +48,11 @@ Included in **<a href="https://blackarch.org/">BlackArch Linux</a>** pentesting 
 ```
  
 ## How it works
-+ You have to **provide** some **words** which will act as a **base**.
-+ The tool will generate **all possible combinations** between them.
-+ To generate more combinations, it will add some **common separators** (e.g. "-", "_", "."), **random numbers** and **special chars**.
-+ You can enable **leet** and **case transforms** to increase your chances.
-+ If you enable **lyricpass mode**, the tool will ask you about **artists** and it will download all his **songs' lyrics**. Each line will be added as a new word. By default, artist names and a word formed by the initial of word on each phrase, will be added too.
++ You have to **provide** some **words** which will act as a base.  
++ The tool will generate **all possible combinations** between them.  
++ To generate more combinations, it will add some **common separators** (e.g. "-", "_", "."), **numbers** and **special chars** frequently used in passwords.  
++ You can enable **leet** and **case transforms** to increase your chances.  
++ The **lyricpass feature** allows to introduce **artists**. The tool will download all his **songs' lyrics** and each line will be added as a new word. By default, artist names and a word formed by the initial of word on each phrase, will be added too.  
 + You can provide **wordlists** that you already tried against the target in order **to exclude** all this words from the resultant wordlist (`-x`).
   
 ### Tips  
@@ -74,14 +74,15 @@ It will retrieve all lyrics from all songs which belongs to artists that you pro
 ### Advanced usage
 
 #### Custom transforms using cfg file
-+ In `bopscrk.cfg` file you can specify your own charsets and enable/disable options:  
-  + **separators_chars**: characters to insert between words when combining them, and also at begining and at the end. *Can be a single char or a string of chars, e.g.: `!?-/&(`*  
-  + **separators_strings**: strings to insert between words when combining them, and also at begining and at the end. *Can be a single string or a list of strings space-separated, e.g.: `123` `34!@`*
++ In `bopscrk.cfg` file you can specify your own charsets and enable/disable options:
+  + **extra_combinations** (like `(john, doe) => 123john, john123, 123doe, doe123, john123doe doe123john`) are *enabled by default*. You can disable it in the configuration file in order to get more focused wordlists.  
+  + **separators_chars**: characters to use in extra-combinations. *Can be a single char or a string of chars, e.g.: `!?-/&(`*  
+  + **separators_strings**: strings  to use in extra-combinations. *Can be a single string or a list of strings space-separated, e.g.: `123` `34!@`*
   + **leet_charset**: characters to replace and correspondent substitute in leet transforms, *e.g.: `e:3 b:8 t:7 a:4`* 
-  + **recursive_leet**: enables a recursive call to leet_transforms() function to get all possible leet transforms (*disabled by default*). *Can be true or false.*  
+  + **recursive_leet**: enables a recursive call to leet_transforms() function to get all possible leet transforms (*enabled by default*). *Can be true or false.*  
   + **space_replacement_chars**: characters to insert instead of spaces inside an artist name or a lyric phrase.  *Can be a single char or a string of chars, e.g.: `!?-/&(`*
   + **space_replacement_strings**: strings to insert instead of spaces inside an artist name or a lyric phrase.  *Can be a single string or a list of strings space-separated, e.g.: `123` `34!@`*
-+ Some transforms have extensive charsets included. To use it instead of the basic, just uncomment the corresponding line.
++ Some transforms have extensive charsets preincluded. To use it instead of the basic, just uncomment the corresponding line.
 
 + **Parameters configuration examples**
   + Combine all the words using dots as separator, and same using commas  
@@ -94,6 +95,9 @@ It will retrieve all lyrics from all songs which belongs to artists that you pro
 [...] Coming soon [...]
 
 ## Changelist
++ **Memory management and efficiency improved**
++ **SPLIT INTO MODULES** to improve project structure
++ **BUG FIXED** in wordlists-exclusion feature
 + `2.2 version notes (11/10/2020`
   + **Configuration file** implemented
   + **NEW FEATURE**: Allow to create **custom charsets** and **transforms patterns** trough the **config file**
