@@ -1,4 +1,4 @@
-<!--- [![Rawsec's CyberSecurity Inventory](https://inventory.rawsec.ml/img/badges/Rawsec-inventoried-FF5050_flat.svg)](https://inventory.rawsec.ml/) -->
+[![Rawsec's CyberSecurity Inventory](https://inventory.raw.pm/img/badges/Rawsec-inventoried-FF5050_flat.svg)](https://inventory.raw.pm/)
 ![[Version 2.2](https://github.com/R3nt0n)](http://img.shields.io/badge/version-v2.2-orange.svg)
 ![[Python 3.8](https://github.com/R3nt0n)](http://img.shields.io/badge/python-3.8-blue.svg)
 ![[GPL-3.0 License](https://github.com/R3nt0n)](https://img.shields.io/badge/license-GPL%203.0-brightgreen.svg)
@@ -10,7 +10,7 @@
 # Bopscrk
 Bopscrk (**Before Outset PaSsword CRacKing**) is a tool to generate smart and powerful wordlists for targeted attacks.
 
-Included in **<a href="https://blackarch.org/">BlackArch Linux</a>** pentesting distribution and **<a href="https://inventory.rawsec.ml/">Rawsec's Cybersecurity Inventory</a>** since August 2019.  
+Included in **<a href="https://blackarch.org/">BlackArch Linux</a>** pentesting distribution and **<a href="https://inventory.raw.pm/">Rawsec's Cybersecurity Inventory</a>** since August 2019.  
   
 <p align="center"><img src="https://github.com/R3nt0n/bopscrk/blob/master/img/bopscrk-2.2.gif" /></p>  
 
