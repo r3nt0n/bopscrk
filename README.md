@@ -24,9 +24,8 @@ Included in **<a href="https://blackarch.org/">BlackArch Linux</a>** pentesting 
 **Interactive mode** and **one-line command interface** supported. 
 
 ## Requirements
-+ **Python 3** (the other branch keeps Python 2.7 legacy support)
-+ *optional requirements*:
-  + To use *lyricpass module*:  
++ **Python 3** (secondary branch keeps Python 2.7 legacy support)
++ *optional requirements (to use lyricpass module):*  
     `pip install lib/lyricpass/requirements.txt`
 
 ## Usage
