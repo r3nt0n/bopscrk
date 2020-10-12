@@ -1,9 +1,9 @@
+[![BlackArch package](https://repology.org/badge/version-for-repo/blackarch/bopscrk.svg)](https://repology.org/project/bopscrk/versions)
 [![Rawsec's CyberSecurity Inventory](https://inventory.raw.pm/img/badges/Rawsec-inventoried-FF5050_flat.svg)](https://inventory.raw.pm/)
-![[Version 2.2](https://github.com/R3nt0n)](http://img.shields.io/badge/version-v2.2-orange.svg)
-![[Python 3.8](https://github.com/R3nt0n)](http://img.shields.io/badge/python-3.8-blue.svg)
-![[GPL-3.0 License](https://github.com/R3nt0n)](https://img.shields.io/badge/license-GPL%203.0-brightgreen.svg)
-![[Date](https://github.com/R3nt0n)](http://img.shields.io/badge/date-06/05/2018-yellow.svg)
-![[Last update](https://github.com/R3nt0n)](http://img.shields.io/badge/updated-11/10/2020-purple.svg)
+[![Packaging status](https://repology.org/badge/tiny-repos/bopscrk.svg)](https://repology.org/project/bopscrk/versions)
+![[Version 2.2](https://github.com/r3nt0n)](http://img.shields.io/badge/version-v2.2-orange.svg)
+![[Python 3.8](https://github.com/r3nt0n)](http://img.shields.io/badge/python-3.8-blue.svg)
+![[GPL-3.0 License](https://github.com/r3nt0n)](https://img.shields.io/badge/license-GPL%203.0-brightgreen.svg)
 
 
 
