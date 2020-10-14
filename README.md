@@ -7,25 +7,24 @@
 
 
 
-# Bopscrk
-Bopscrk (**Before Outset PaSsword CRacKing**) is a tool to generate smart and powerful wordlists for targeted attacks.
+# bopscrk
+bopscrk (**B**efore **O**utset **P**a**S**sword **CR**ac**K**ing) is a tool to generate smart and powerful wordlists for targeted attacks.
 
 Included in **<a href="https://blackarch.org/">BlackArch Linux</a>** pentesting distribution and **<a href="https://inventory.raw.pm/">Rawsec's Cybersecurity Inventory</a>** since August 2019.  
   
 <p align="center"><img src="https://github.com/R3nt0n/bopscrk/blob/master/img/bopscrk-2.2.gif" /></p>  
 
++ **Targeted-attack wordlist creator**: introduce personal info related to target, combines every word and transforms results into possible passwords. The *lyricpass* module allows to **search lyrics related to artists** and include them to the wordlists.
 
-**Customizable case** and **leet transforms** (and **recursive option**): create **custom charsets** and **transforms patterns** trough a simple **config file**.
++ **Customizable case** and **leet transforms**: create **custom charsets** and **transforms patterns** trough a simple **config file**.
 
-**Wordlists exclusion**: Exclude words from another wordlist (to avoid passwords that you already have tested).
++ **Wordlists exclusion**: Exclude words from another wordlist (to avoid passwords that you have already tested).
 
-**Targeted-attack wordlist creator**: search lyrics related to artists, combines every word and transforms results into possible passwords.
-
-**Interactive mode** and **one-line command interface** supported. 
++ **Interactive mode** and **one-line command interface** supported. 
 
 ## Requirements
 + **Python 3** (secondary branch keeps Python 2.7 legacy support)
-+ *optional requirements (to use lyricpass module):*  
++ *optional* - to use `lyricpass` module:   
     `pip install lib/lyricpass/requirements.txt`
 
 ## Usage
@@ -48,12 +47,12 @@ Included in **<a href="https://blackarch.org/">BlackArch Linux</a>** pentesting 
 ```
  
 ## How it works
-+ You have to **provide** some **words** which will act as a base.  
++ You have to **provide** some **words** which will act as a base.      
++ The **lyricpass feature** allows to introduce **artists**. The tool will download all his **songs' lyrics** and each line will be added as a new word. By default, artist names and a word formed by the initial of word on each phrase, will be added too.
 + The tool will generate **all possible combinations** between them.  
-+ To generate more combinations, it will add some **common separators** (e.g. "-", "_", "."), **numbers** and **special chars** frequently used in passwords.  
++ To generate more combinations, it will add some **common separators** (e.g. "-", "_", "."), **numbers** and **special chars** frequently used in passwords.
 + You can enable **leet** and **case transforms** to increase your chances.  
-+ The **lyricpass feature** allows to introduce **artists**. The tool will download all his **songs' lyrics** and each line will be added as a new word. By default, artist names and a word formed by the initial of word on each phrase, will be added too.  
-+ You can provide **wordlists** that you already tried against the target in order **to exclude** all this words from the resultant wordlist (`-x`).
++ You can provide **wordlists** that you have already tested against the target in order **to exclude** all this words from the resultant wordlist (`-x`).
   
 ### Tips  
 + Fields can be left **empty**.
@@ -73,7 +72,7 @@ It will retrieve all lyrics from all songs which belongs to artists that you pro
 
 ### Advanced usage
 
-#### Custom transforms using cfg file
+#### Customizing behaviour using .cfg file
 + In `bopscrk.cfg` file you can specify your own charsets and enable/disable options:
   + **extra_combinations** (like `(john, doe) => 123john, john123, 123doe, doe123, john123doe doe123john`) are *enabled by default*. You can disable it in the configuration file in order to get more focused wordlists.  
   + **separators_chars**: characters to use in extra-combinations. *Can be a single char or a string of chars, e.g.: `!?-/&(`*  

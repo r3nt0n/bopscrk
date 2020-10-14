@@ -10,13 +10,12 @@ cracking passwords. By now, it's able to generate smart and powerful wordlists.
 
 name =  'bopscrk.py'
 __author__ = 'r3nt0n'
-__version__ = '2.2.5'
+__version__ = '2.2.6'
 __status__ = 'Development'
 
 
 import sys
-import argparse
-
+#from collections import OrderedDict as ordDict
 from lib.config import Config
 from lib.args import Arguments
 from lib.aux import *
@@ -111,10 +110,10 @@ def main():
         final_wordlist += add_common_separators(base_wordlist)
 
 
-    # (!) Check for duplicates
-    final_wordlist = list(OrderedDict.fromkeys(final_wordlist))
     # Remove words by min-max length range established
     final_wordlist = remove_by_lengths(final_wordlist, args.min_length, args.max_length)
+    # (!) Check for duplicates
+    final_wordlist = list(OrderedDict.fromkeys(final_wordlist))
 
 
     # CASE TRANSFORMS
