@@ -21,7 +21,7 @@ def banner(name, version, author):
         name_rand_leet = name
     name_rand_case = case_transforms(name)
     name_rand_case = name_rand_case[randint((len(name_rand_case) - 3), (len(name_rand_case) - 1))]
-
+    version = version[:3]
     print('  ,----------------------------------------------------,   ,------------,');sleep(interval)
     print('  | [][][][][]  [][][][][]  [][][][]  [][__]  [][][][] |   |    v{}{}{}    |'.format(color.BLUE, version, color.END));sleep(interval)
     print('  |                                                    |   |------------|');sleep(interval)

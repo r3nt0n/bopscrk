@@ -14,5 +14,5 @@ setup(
     license='GNU General Public License v3.0',
     packages=['lib',],
     scripts=['bopscrk.py'],
-    install_requires=['requests','beautifulsoup4'],
+    install_requires=['requests'],
 )

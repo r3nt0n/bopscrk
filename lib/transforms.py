@@ -78,7 +78,6 @@ def leet_transforms(word):
         i += 1
 
     # recursive call function
-    #recursive_leet = read_config('TRANSFORMS', 'recursive_leet')
     if Config.RECURSIVE_LEET:
         for new_word in new_wordlist:
             original_size = len(new_wordlist)
@@ -91,21 +90,25 @@ def leet_transforms(word):
 
 ################################################################################
 def multithread_transforms(transform_type, wordlist):
-    pool = ThreadPool(16)
     # process each word in their own thread and return the results
-    new_wordlist = pool.map(transform_type, wordlist)
-    pool.close()
-    pool.join()
-    for lists in new_wordlist:
-        wordlist += lists
+    new_wordlists = []
+    with ThreadPool(32) as pool:
+        new_wordlists += pool.map(transform_type, wordlist)
+    new_wordlist = []
+    for nlist in new_wordlists:
+         new_wordlist += nlist
     return new_wordlist
 
 
 ################################################################################
 def space_transforms(word):
-    new_wordlist = [word,]
+    new_wordlist = []
     if ' ' in word:  # Avoiding non-space words to be included many times
+        # Add each word in the artist name splitting by spaces (e.g.: ['bob', 'dylan'])
+        new_wordlist.extend(word.split(' '))
+        # Add artist name without spaces (e.g.: 'bobdylan')
         new_wordlist.append(word.replace(' ', ''))
+        # Replace spaces in artist name with all space replacements charset
         if Config.SPACE_REPLACEMENT_CHARSET:
             for character in Config.SPACE_REPLACEMENT_CHARSET:
                 new_wordlist.append(word.replace(' ', character))

@@ -6,8 +6,10 @@
 import itertools
 from collections import OrderedDict
 
-from lib.config import Config, CFG_FILE
-from lib.color import *
+from lib.config import Config
+
+def remove_duplicates(wordlist):
+    return list(OrderedDict.fromkeys(wordlist))
 
 def add_common_separators(wordlist):
     """
@@ -17,10 +19,6 @@ def add_common_separators(wordlist):
     :param wordlist: the base wordlist to combine
     :return: a new wordlist with all the combinations
     """
-
-    if not Config.SEPARATORS_CHARSET:
-        print('  {}[!]{} Any separators charset specified in {}'.format(color.ORANGE, color.END, CFG_FILE))
-
     words = wordlist[:]
     new_wordlist = []
     for word in words:
@@ -36,7 +34,7 @@ def add_common_separators(wordlist):
                 new_wordlist.append(wordseparated + word)
                 new_wordlist.append(word + wordseparated)
 
-    return list(OrderedDict.fromkeys(new_wordlist))
+    return remove_duplicates(new_wordlist)
 
 
 ################################################################################
@@ -48,5 +46,6 @@ def combinator(wordlist, nWords):
         for i in combination:
             word += i
         if word not in new_wordlist: new_wordlist.append(word)
-    return new_wordlist
+
+    return remove_duplicates(new_wordlist)
 

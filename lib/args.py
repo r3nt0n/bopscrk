@@ -7,6 +7,10 @@ import os, sys, argparse
 from lib.banners import *
 from lib.aux import is_empty, is_valid_date
 
+DEFAULT_MIN = 4
+DEFAULT_MAX = 12
+DEFAULT_N_WORDS = 2
+DEFAULT_OUTPUT_FILE = 'tmp.txt'
 
 class Arguments:
     def __init__(self):
@@ -23,18 +27,18 @@ class Arguments:
         #                     help='words (weight-2) to combine comma-separated (will be combined with all weight-1 words)')
 
         parser.add_argument('-m', '--min', action="store", metavar='', type=int, dest='min',
-                            default=4, help='min length for the words to generate (default: 4)')
+                            default=DEFAULT_MIN, help='min length for the words to generate (default: {})'.format(DEFAULT_MIN))
 
         parser.add_argument('-M', '--max', action="store", metavar='', type=int, dest='max',
-                            default=32, help='max length for the words to generate (default: 32)')
+                            default=DEFAULT_MAX, help='max length for the words to generate (default: {})'.format(DEFAULT_MAX))
 
         parser.add_argument('-c', '--case', action="store_true", help='enable case transformations')
 
         parser.add_argument('-l', '--leet', action="store_true", help='enable leet transformations')
 
         parser.add_argument('-n', action="store", metavar='', type=int, dest='n_words',
-                            default=2, help='max amount of words to combine each time '
-                                            '(default: 2)')
+                            default=DEFAULT_N_WORDS, help='max amount of words to combine each time '
+                                            '(default: {})'.format(DEFAULT_N_WORDS))
         parser.add_argument('-a', '--artists', action="store", metavar='', type=str,
                             dest='artists', default=False,
                             help='artists to search song lyrics (comma-separated)')
@@ -45,8 +49,8 @@ class Arguments:
                                  '(several wordlists should be comma-separated)')
 
         parser.add_argument('-o', '--output', action="store", metavar='', type=str,
-                            dest='outfile', default='tmp.txt',
-                            help='output file to save the wordlist (default: tmp.txt)')
+                            dest='outfile', default=DEFAULT_OUTPUT_FILE,
+                            help='output file to save the wordlist (default: {})'.format(DEFAULT_OUTPUT_FILE))
 
         if len(sys.argv) == 1: bopscrk_banner(); help_banner(); parser.print_help(sys.stdout); sys.exit(2)  # Print simple help and exit when runs without args
         self.args = parser.parse_args()
@@ -54,9 +58,9 @@ class Arguments:
 
     def set_interactive_options(self):
         while True:
-            min_length = input('  {}[?]{} Passwords min length [4] >>> '.format(color.BLUE, color.END))
+            min_length = input('  {}[?]{} Passwords min length [{}] >>> '.format(color.BLUE, color.END, DEFAULT_MIN))
             if is_empty(min_length):
-                self.min_length = 4; break
+                self.min_length = DEFAULT_MIN; break
             else:
                 try:
                     self.min_length = int(min_length)
@@ -64,9 +68,9 @@ class Arguments:
                 except ValueError:
                     print('  {}[!]{} Min length should be an integer'.format(color.RED, color.END))
         while True:
-            max_length = input('  {}[?]{} Password\'s max length [32] >>> '.format(color.BLUE, color.END))
+            max_length = input('  {}[?]{} Password\'s max length [{}] >>> '.format(color.BLUE, color.END, DEFAULT_MAX))
             if is_empty(max_length):
-                self.max_length = 32; break
+                self.max_length = DEFAULT_MAX; break
             else:
                 try:
                     max_length = int(max_length)
@@ -101,9 +105,9 @@ class Arguments:
         else: self.case = False
 
         while True:
-            n_words = input('  {}[?]{} How much words do you want to combine at most [2] >>> '.format(color.BLUE, color.END))
+            n_words = input('  {}[?]{} How much words do you want to combine at most [{}] >>> '.format(color.BLUE, color.END, DEFAULT_N_WORDS))
             if is_empty(n_words):
-                self.n_words = 2; break
+                self.n_words = DEFAULT_N_WORDS; break
             else:
                 try:
                     n_words = int(n_words)
@@ -117,6 +121,7 @@ class Arguments:
 
         self.artists = input('  {}[?]{} Artist names to search song lyrics (comma-separated) >>> '.format(color.BLUE, color.END))
         if is_empty(self.artists): self.artists = False
+        else: self.artists = self.artists.split(',')
 
         while True:
             exclude = input('  {}[?]{} Exclude words from other wordlists? >>> '.format(color.BLUE, color.END))
@@ -133,8 +138,8 @@ class Arguments:
                     self.exclude_wordlists = exclude
                     break
 
-        self.outfile = input('  {}[?]{} Output file [tmp.txt] >>> '.format(color.BLUE, color.END))
-        if is_empty(self.outfile): self.outfile = 'tmp.txt'
+        self.outfile = input('  {}[?]{} Output file [{}] >>> '.format(color.BLUE, color.END, DEFAULT_OUTPUT_FILE))
+        if is_empty(self.outfile): self.outfile = DEFAULT_OUTPUT_FILE
 
         self.base_wordlist = []
 

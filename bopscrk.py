@@ -10,13 +10,12 @@ cracking passwords. By now, it's able to generate smart and powerful wordlists.
 
 name =  'bopscrk.py'
 __author__ = 'r3nt0n'
-__version__ = '2.2.6'
+__version__ = '2.2.7'
 __status__ = 'Development'
 
 
 import sys
-#from collections import OrderedDict as ordDict
-from lib.config import Config
+from lib.config import CFG_FILE
 from lib.args import Arguments
 from lib.aux import *
 from lib.banners import *     # inside import color
@@ -84,12 +83,14 @@ def main():
                 # Take just the initials on each phrase and add as a new word
                 if Config.TAKE_INITIALS:
                     base_lyrics = lyrics[:]
-                    ly_initials_wl = multithread_transforms(take_initials, base_lyrics)
-                    final_wordlist += ly_initials_wl
+                    ly_initials_wordlist = multithread_transforms(take_initials, base_lyrics)
+                    final_wordlist += ly_initials_wordlist
 
                 # Make space transforms and add it too
                 if Config.SPACE_REPLACEMENT_CHARSET:
-                    space_transformed_lyrics = multithread_transforms(space_transforms, lyrics)
+                    base_lyrics = lyrics[:]
+                    space_transformed_lyrics = multithread_transforms(space_transforms, base_lyrics)
+                    #space_transformed_lyrics = multithread_transforms(space_transforms, lyrics)
                     final_wordlist += space_transformed_lyrics
 
             except ImportError:
@@ -106,20 +107,17 @@ def main():
 
     # WORD COMBINATIONS (WITH COMMON SEPARATORS)
     if Config.EXTRA_COMBINATIONS:
-        print('  {}[+]{} Creating extra combinations (separators charset in {}{}{})'.format(color.BLUE, color.END,color.CYAN,CFG_FILE,color.END))
-        final_wordlist += add_common_separators(base_wordlist)
+        if Config.SEPARATORS_CHARSET:
+            print('  {}[+]{} Creating extra combinations (separators charset in {}{}{})'.format(color.BLUE, color.END,color.CYAN, CFG_FILE,color.END))
+            final_wordlist += add_common_separators(base_wordlist)
+        else:
+            print('  {}[!]{} Any separators charset specified in {}{}'.format(color.ORANGE, color.END, CFG_FILE,color.END))
 
 
     # Remove words by min-max length range established
     final_wordlist = remove_by_lengths(final_wordlist, args.min_length, args.max_length)
     # (!) Check for duplicates
-    final_wordlist = list(OrderedDict.fromkeys(final_wordlist))
-
-
-    # CASE TRANSFORMS
-    if args.case:
-        print('  {}[+]{} Applying case transforms...'.format(color.BLUE, color.END))
-        multithread_transforms(case_transforms, final_wordlist)
+    final_wordlist = remove_duplicates(final_wordlist)
 
     # LEET TRANSFORMS
     if args.leet:
@@ -128,7 +126,16 @@ def main():
             print('  {}[!]{} Skipping leet transforms...'.format(color.ORANGE, color.END, CFG_FILE))
         else:
             print('  {}[+]{} Applying leet transforms...'.format(color.BLUE, color.END))
-            multithread_transforms(leet_transforms, final_wordlist)
+            temp_wordlist = []
+            temp_wordlist += multithread_transforms(leet_transforms, final_wordlist)
+            final_wordlist += temp_wordlist
+
+    # CASE TRANSFORMS
+    if args.case:
+        print('  {}[+]{} Applying case transforms...'.format(color.BLUE, color.END))
+        temp_wordlist = []
+        temp_wordlist += multithread_transforms(case_transforms, final_wordlist)
+        final_wordlist += temp_wordlist
 
     # EXCLUDE FROM OTHER WORDLISTS
     if args.exclude_wordlists:
@@ -143,29 +150,8 @@ def main():
                     if not word_to_exclude: break  # breaks the loop when file ends
                     final_wordlist = multithread_exclude(word_to_exclude, final_wordlist)
 
-        # re-check by lengths
-        #final_wordlist = remove_by_lengths(final_wordlist, min_length, max_length)
-
-        # OLD APPROACH - This is not memory efficient and could crash handling large files
-        # words_to_exclude = []
-        # for wl_path in exclude_wordlists:
-        #     with open(wl_path, 'r') as wlist_file:
-        #         wlist = wlist_file.readlines()
-        #     wl = wl.split('\n')
-        #     words_to_exclude += wl
-        #
-        # diff_wordlist = []
-        # with ThreadPool(16) as pool:
-        #     #args = (word, words_to_exclude)
-        #     diff_wordlist += pool.starmap(exclude, [(word, words_to_exclude) for word in final_wordlist])
-        #
-        # final_wordlist = [word for word in diff_wordlist if word is not None]
-        # # re-check by lengths
-        # final_wordlist = remove_by_lengths(final_wordlist, min_length, max_length)
-
     # re-check for duplicates
-    final_wordlist = list(OrderedDict.fromkeys(final_wordlist))
-
+    final_wordlist = remove_duplicates(final_wordlist)
 
     # SAVE WORDLIST TO FILE
     ############################################################################
