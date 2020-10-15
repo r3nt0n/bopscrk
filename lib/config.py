@@ -36,10 +36,14 @@ class Config:
                                         read_config('COMBINATIONS', 'separators_strings'))
     LEET_CHARSET = (read_config('TRANSFORMS', 'leet_charset')).split()
     RECURSIVE_LEET = parse_booleans(read_config('TRANSFORMS', 'recursive_leet'))
-    SPACE_REPLACEMENT_CHARSET = merge_settings(read_config('TRANSFORMS', 'space_replacement_chars'),
-                                               read_config('TRANSFORMS', 'space_replacement_strings'))
     REMOVE_PARENTHESIS = parse_booleans(read_config('LYRICS', 'remove_parenthesis'))
     TAKE_INITIALS = parse_booleans(read_config('LYRICS', 'take_initials'))
+    ARTIST_SPLIT_BY_WORD = parse_booleans(read_config('LYRICS', 'artist_split_by_word'))
+    LYRIC_SPLIT_BY_WORD = parse_booleans(read_config('LYRICS', 'lyric_split_by_word'))
+    ARTIST_SPACE_REPLACEMENT = parse_booleans(read_config('LYRICS', 'artist_space_replacement'))
+    LYRIC_SPACE_REPLACEMENT = parse_booleans(read_config('LYRICS', 'lyric_space_replacement'))
+    SPACE_REPLACEMENT_CHARSET = merge_settings(read_config('LYRICS', 'space_replacement_chars'),
+                                               read_config('LYRICS', 'space_replacement_strings'))
 
 
 

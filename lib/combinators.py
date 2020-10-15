@@ -4,12 +4,10 @@
 # bopscrk - combinators functions module
 
 import itertools
-from collections import OrderedDict
 
 from lib.config import Config
+from lib.excluders import *
 
-def remove_duplicates(wordlist):
-    return list(OrderedDict.fromkeys(wordlist))
 
 def add_common_separators(wordlist):
     """

@@ -6,6 +6,7 @@
 from multiprocessing.dummy import Pool as ThreadPool
 
 from lib.config import Config
+from lib.excluders import *
 
 
 ################################################################################
@@ -65,6 +66,7 @@ def case_transforms(word):
 ################################################################################
 def leet_transforms(word):
     new_wordlist = []
+    original_size = len(new_wordlist)
     i=0
     leet_charset = Config.LEET_CHARSET
     for char in word:
@@ -77,13 +79,50 @@ def leet_transforms(word):
                 # dont break to allow multiple transforms to a single char (e.g. a into 4 and @)
         i += 1
 
-    # recursive call function
+    # MULTITHREAD RECURSIVE call function (doesn't seem efficient)
+    # if Config.RECURSIVE_LEET and (len(new_wordlist) > original_size):
+    #     new_wordlist += multithread_transforms(leet_transforms, new_wordlist)
+
+    # UNITHREAD RECURSIVE call function
     if Config.RECURSIVE_LEET:
         for new_word in new_wordlist:
             original_size = len(new_wordlist)
             new_wordlist.extend(leet_transforms(new_word))
             if len(new_wordlist) == original_size:
                 break  # breaking recursive call
+
+    return remove_duplicates(new_wordlist)
+
+
+################################################################################
+def lyric_space_transforms(word):
+    new_wordlist = []
+    if ' ' in word:  # Avoiding non-space words to be included many
+        if Config.LYRIC_SPLIT_BY_WORD:
+            # Add each word in the phrase splitting by spaces (e.g.: ['hello', 'world'])
+            new_wordlist.extend(word.split(' '))
+        # Add phrase without spaces (e.g.: 'helloworld')
+        new_wordlist.append(word.replace(' ', ''))
+        # Replace spaces in phrase with all space replacements charset
+        if (Config.LYRIC_SPACE_REPLACEMENT and Config.SPACE_REPLACEMENT_CHARSET):
+            for character in Config.SPACE_REPLACEMENT_CHARSET:
+                new_wordlist.append(word.replace(' ', character))
+
+    return new_wordlist
+
+################################################################################
+def artist_space_transforms(word):
+    new_wordlist = []
+    if ' ' in word:  # Avoiding non-space words to be included many
+        if Config.ARTIST_SPLIT_BY_WORD:
+            # Add each word in the artist name splitting by spaces (e.g.: ['bob', 'dylan'])
+            new_wordlist.extend(word.split(' '))
+        # Add artist name without spaces (e.g.: 'bobdylan')
+        new_wordlist.append(word.replace(' ', ''))
+        # Replace spaces in artist name with all space replacements charset
+        if (Config.ARTIST_SPACE_REPLACEMENT and Config.SPACE_REPLACEMENT_CHARSET):
+            for character in Config.SPACE_REPLACEMENT_CHARSET:
+                new_wordlist.append(word.replace(' ', character))
 
     return new_wordlist
 
@@ -97,22 +136,6 @@ def multithread_transforms(transform_type, wordlist):
     new_wordlist = []
     for nlist in new_wordlists:
          new_wordlist += nlist
-    return new_wordlist
-
-
-################################################################################
-def space_transforms(word):
-    new_wordlist = []
-    if ' ' in word:  # Avoiding non-space words to be included many times
-        # Add each word in the artist name splitting by spaces (e.g.: ['bob', 'dylan'])
-        new_wordlist.extend(word.split(' '))
-        # Add artist name without spaces (e.g.: 'bobdylan')
-        new_wordlist.append(word.replace(' ', ''))
-        # Replace spaces in artist name with all space replacements charset
-        if Config.SPACE_REPLACEMENT_CHARSET:
-            for character in Config.SPACE_REPLACEMENT_CHARSET:
-                new_wordlist.append(word.replace(' ', character))
-
     return new_wordlist
 
 

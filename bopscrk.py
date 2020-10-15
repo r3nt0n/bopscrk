@@ -44,29 +44,34 @@ def main():
 
     # Inserting original values into final_wordlist
     base_wordlist = args.base_wordlist
+    print('  {}[+]{} Appending words provided (base wordlist length: {})...'.format(color.BLUE, color.END, len(base_wordlist)))
     final_wordlist = base_wordlist[:]  # Copy to preserve the original
 
     # WORD COMBINATIONS (?)
 
     # SEARCH FOR LYRICS
     if args.artists:
+        print('  {}[+]{} Appending artist names   (base wordlist length: {})...'.format(color.BLUE, color.END,(len(base_wordlist)+len(args.artists))))
         for artist in args.artists:
             # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             # Add IN BASE WORDLIST artist name as a word             !!!!
             # Start point created to implement weighted-words system !!!!
             # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             base_wordlist.append(artist)
-            # Add artist name with all space transformed into a specific charset
-            if not Config.SPACE_REPLACEMENT_CHARSET:
-                print('  {}[!]{} Any spaces-replacement charset specified in {}'.format(color.ORANGE, color.END, CFG_FILE))
-                print('  {}[!]{} Spaces inside artists names and lyrics phrases will be simply removed\n'.format(color.ORANGE, color.END))
-            else:
-                final_wordlist += space_transforms(artist)
+
+            # Add artist name with all space transformed configured (and enabled) into a specific charset
+            if not (Config.SPACE_REPLACEMENT_CHARSET and Config.ARTIST_SPACE_REPLACEMENT):
+                print('  {}[!]{} Any space-replacement charset specified in {}'.format(color.ORANGE, color.END, CFG_FILE))
+                print('  {}[!]{} Spaces inside artists names won\'t be replaced\n'.format(color.ORANGE, color.END))
+                #print('  {}[!]{} Spaces inside artists names and lyrics phrases will be simply removed\n'.format(color.ORANGE, color.END))
+            elif Config.ARTIST_SPACE_REPLACEMENT:
+                print('  {}[+]{} Producing new words replacing any space in {}...'.format(color.BLUE, color.END,artist))
+                final_wordlist += artist_space_transforms(artist)
 
             # Search lyrics if it meets dependencies for lyricpass
             try:
                 from lib.lyricpass import lyricpass
-                print('\n{}     -- Starting lyricpass module (by initstring) --\n'.format(color.GREY))
+                print('\n{}     -- Starting lyricpass module (based on a tool by initstring) --\n'.format(color.GREY))
                 print('  {}[*]{} Looking for {}\'s lyrics...'.format(color.CYAN, color.END, artist.title()))
                 lyrics = lyricpass.lyricpass(artist)
                 #lyrics = [s.decode("utf-8") for s in lyfinder.lyrics]
@@ -77,38 +82,46 @@ def main():
                     lyrics = ([s.replace('(', '') for s in lyrics])
                     lyrics = ([s.replace(')', '') for s in lyrics])
 
-                # Add the phrases to main wordlist
+                # Add the phrases to BASE wordlist
+                lyrics = remove_by_lengths(lyrics, args.min_length, args.max_length)
+                print('  {}[+]{} Removing by min and max length range ({} phrases remain)...'.format(color.BLUE, color.END,len(lyrics)))
                 final_wordlist += lyrics
 
-                # Take just the initials on each phrase and add as a new word
+                # Take just the initials on each phrase and add as a new word to FINAL wordlist
                 if Config.TAKE_INITIALS:
                     base_lyrics = lyrics[:]
                     ly_initials_wordlist = multithread_transforms(take_initials, base_lyrics)
                     final_wordlist += ly_initials_wordlist
 
                 # Make space transforms and add it too
-                if Config.SPACE_REPLACEMENT_CHARSET:
+                if not (Config.SPACE_REPLACEMENT_CHARSET and Config.LYRIC_SPACE_REPLACEMENT):
+                    print('  {}[!]{} Any spaces-replacement charset specified in {}'.format(color.ORANGE, color.END,CFG_FILE))
+                    print('  {}[!]{} Spaces inside lyrics won\'t be replaced\n'.format(color.ORANGE,color.END))
+                elif Config.LYRIC_SPACE_REPLACEMENT:
+                    print('  {}[+]{} Producing new words replacing spaces in {} lyrics...'.format(color.BLUE, color.END, len(lyrics)))
                     base_lyrics = lyrics[:]
-                    space_transformed_lyrics = multithread_transforms(space_transforms, base_lyrics)
-                    #space_transformed_lyrics = multithread_transforms(space_transforms, lyrics)
+                    space_transformed_lyrics = multithread_transforms(lyric_space_transforms, base_lyrics)
                     final_wordlist += space_transformed_lyrics
 
             except ImportError:
                 print('  {}[!]{} missing dependencies, only artist names will be added and transformed'.format(color.RED, color.END))
 
     # WORD COMBINATIONS
-    if args.n_words > 1:
+    if ((args.n_words > 1) and (len(base_wordlist) >= args.n_words)):
+        print('  {}[+]{} Creating all posible combinations between words...'.format(color.BLUE, color.END))
         i = 1
-        while i < args.n_words:
+        while i <= args.n_words:
+            print('  {}[*]{} Combining {} words using {} words (words produced: {})...       \r\n'.format(color.CYAN,color.END,len(base_wordlist),i,len(final_wordlist)), end="")
             i += 1
             final_wordlist += combinator(base_wordlist, i)
+            #print('\n')
 
-    print('  {}[+]{} Creating all posible combinations between words...'.format(color.BLUE, color.END))
+
 
     # WORD COMBINATIONS (WITH COMMON SEPARATORS)
     if Config.EXTRA_COMBINATIONS:
         if Config.SEPARATORS_CHARSET:
-            print('  {}[+]{} Creating extra combinations (separators charset in {}{}{})'.format(color.BLUE, color.END,color.CYAN, CFG_FILE,color.END))
+            print('  {}[+]{} Creating extra combinations (separators charset in {}{}{})...'.format(color.BLUE, color.END,color.CYAN, CFG_FILE,color.END))
             final_wordlist += add_common_separators(base_wordlist)
         else:
             print('  {}[!]{} Any separators charset specified in {}{}'.format(color.ORANGE, color.END, CFG_FILE,color.END))
@@ -116,8 +129,8 @@ def main():
 
     # Remove words by min-max length range established
     final_wordlist = remove_by_lengths(final_wordlist, args.min_length, args.max_length)
-    # (!) Check for duplicates
-    final_wordlist = remove_duplicates(final_wordlist)
+    # (!) Check for duplicates (is checked before return in combinator() and add_common_separators())
+    #final_wordlist = remove_duplicates(final_wordlist)
 
     # LEET TRANSFORMS
     if args.leet:
@@ -125,14 +138,22 @@ def main():
             print('  {}[!]{} Any leet charset specified in {}'.format(color.ORANGE, color.END, CFG_FILE))
             print('  {}[!]{} Skipping leet transforms...'.format(color.ORANGE, color.END, CFG_FILE))
         else:
-            print('  {}[+]{} Applying leet transforms...'.format(color.BLUE, color.END))
+            recursive_msg = ''
+            if Config.RECURSIVE_LEET:
+                print('\n  {}[!] WARNING: Recursive leet is enabled, depending on the words\n'
+                      '      max-length configured (now is {}{}{}) and the size of your\n'
+                      '      wordlist at this point (now contains {}{}{} words), this process\n'
+                      '      could take several minutes{}\n'.format(color.ORANGE,color.END,len(final_wordlist),color.ORANGE,color.END,args.max_length,color.ORANGE,color.END))
+                recursive_msg = '{}recursive{} '.format(color.RED,color.END)
+            print('  {}[+]{} Applying {}leet transforms to {} words...'.format(color.BLUE, color.END, recursive_msg,len(final_wordlist)))
+            #print(final_wordlist)
             temp_wordlist = []
             temp_wordlist += multithread_transforms(leet_transforms, final_wordlist)
             final_wordlist += temp_wordlist
 
     # CASE TRANSFORMS
     if args.case:
-        print('  {}[+]{} Applying case transforms...'.format(color.BLUE, color.END))
+        print('  {}[+]{} Applying case transforms to {} words...'.format(color.BLUE, color.END, len(final_wordlist)))
         temp_wordlist = []
         temp_wordlist += multithread_transforms(case_transforms, final_wordlist)
         final_wordlist += temp_wordlist

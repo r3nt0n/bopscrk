@@ -51,7 +51,7 @@ Included in **<a href="https://blackarch.org/">BlackArch Linux</a>** pentesting 
 + The **lyricpass feature** allows to introduce **artists**. The tool will download all his **songs' lyrics** and each line will be added as a new word. By default, artist names and a word formed by the initial of word on each phrase, will be added too.
 + The tool will generate **all possible combinations** between them.  
 + To generate more combinations, it will add some **common separators** (e.g. "-", "_", "."), **numbers** and **special chars** frequently used in passwords.
-+ You can enable **leet** and **case transforms** to increase your chances.  
++ You can use **leet** and **case transforms** to increase your chances.  
 + You can provide **wordlists** that you have already tested against the target in order **to exclude** all this words from the resultant wordlist (`-x`).
   
 ### Tips  
@@ -59,6 +59,7 @@ Included in **<a href="https://blackarch.org/">BlackArch Linux</a>** pentesting 
 + You **can use accentuation** in your words.
 + In the others field you can write **several words comma-separated**. *Example*: 2C,Flipper.
 + If you want to produce **all possible leet transformations**, enable the **recursive_leet option** in configuration file.
++ You can **select which transforms to apply on lyrics phrases** found trough the cfg file.
 + Using the **non-interactive mode**, you should provide years in the long and short way (1970,70) to get the same result than the interactive mode.
 + You have to be careful with **-n** argument. If you set a big value, it could result in **too huge wordlists**. I recommend values between 2 and 5.
 + To provide **several artist names** through command line you should provides it **comma-separated**. *Example*: `-a johndoe,johnsmith`
@@ -79,7 +80,13 @@ It will retrieve all lyrics from all songs which belongs to artists that you pro
   + **separators_chars**: characters to use in extra-combinations. *Can be a single char or a string of chars, e.g.: `!?-/&(`*  
   + **separators_strings**: strings  to use in extra-combinations. *Can be a single string or a list of strings space-separated, e.g.: `123` `34!@`*
   + **leet_charset**: characters to replace and correspondent substitute in leet transforms, *e.g.: `e:3 b:8 t:7 a:4`* 
-  + **recursive_leet**: enables a recursive call to leet_transforms() function to get all possible leet transforms (*disabled by default*). *WARNING*: enabled with huge --max parameters (e.g.: greater than 18) could take several minutes. *Can be true or false.*  
+  + **recursive_leet**: enables a recursive call to leet_transforms() function to get all possible leet transforms (*disabled by default*). *WARNING*: enabled with huge --max parameters (e.g.: greater than 18) could take several minutes. *Can be true or false.* 
+  + **remove_parenthesis**: remove all parenthesis in lyrics found before any transform  
+  + **take_initials**: produce words based on initial of each word in lyric phrases found (if enabled with remove_parenthesis disabled, it can produce useless words)
+  + **artist_split_by_word**: split artist names and add each word as a new one 
+  + **lyric_split_by_word**: same with lyrics found
+  + **artist_space_replacement**: replace spaces in artist names with chars/strings defined in charset
+  + **lyric_space_replacement**: same with lyrics found
   + **space_replacement_chars**: characters to insert instead of spaces inside an artist name or a lyric phrase.  *Can be a single char or a string of chars, e.g.: `!?-/&(`*
   + **space_replacement_strings**: strings to insert instead of spaces inside an artist name or a lyric phrase.  *Can be a single string or a list of strings space-separated, e.g.: `123` `34!@`*
 + Some transforms have extensive charsets preincluded. To use it instead of the basic, just uncomment the corresponding line.
@@ -95,10 +102,10 @@ It will retrieve all lyrics from all songs which belongs to artists that you pro
 [...] Coming soon [...]
 
 ## Changelist
++ **Customizable** configuration for **artists and lyrics transforms** using the cfg file 
 + Requirements at **setup.py updated**
 + **Multithreads logic improved**
 + **Leet and case order reversed** to improve operations efficiency
-+ **BUG FIXED** when parses artist names in interactive mode
 + **BUG FIXED** in lyrics space replacement
 + **BUG FIXED** when shows version in banner
 + **BUG FIXED** when remove duplicates (*Type Error: unhashable type: 'list'*)
@@ -122,9 +129,9 @@ It will retrieve all lyrics from all songs which belongs to artists that you pro
 
 
 ## TO-DO list
++ Implement **unittests**.
 + Implement **weighted-words system**.
 + Create options to **custom case transforms** (e.g.: disable pair/odd transforms).
-+ Create options to **custom which info is stored in lyric searches** (e.g.: as one of the main methods to use lyrics as a password is to take just initials, sometimes it should be usually enough). *Related to future weighted-words system*.
 + **Lyricpass** integration was upgraded to last version released by initstring, but still needs some tweaks to speed up the search process (I would appreciate any help).
 
 

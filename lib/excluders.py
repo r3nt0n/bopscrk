@@ -4,6 +4,7 @@
 # bopscrk - transform functions module
 
 from multiprocessing.dummy import Pool as ThreadPool
+from collections import OrderedDict
 
 def compare(word_to_exclude, word_in_wordlist):
     if word_in_wordlist is not word_to_exclude:
@@ -19,6 +20,9 @@ def multithread_exclude(word_to_exclude, wordlist):
     # Rewriting here removes excluded words from final_wordlist before it checks next wordlist
     final_wordlist = [word for word in diff_wordlist if word is not None]
     return final_wordlist
+
+def remove_duplicates(wordlist):
+    return list(OrderedDict.fromkeys(wordlist))
 
 def remove_by_lengths(wordlist, min_length, max_length):
     '''expect a list, return a new list with the values between min and max length provided'''
