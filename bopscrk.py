@@ -10,7 +10,7 @@ cracking passwords. By now, it's able to generate smart and powerful wordlists.
 
 name =  'bopscrk.py'
 __author__ = 'r3nt0n'
-__version__ = '2.2.7'
+__version__ = '2.3'
 __status__ = 'Development'
 
 
@@ -71,11 +71,12 @@ def main():
             # Search lyrics if it meets dependencies for lyricpass
             try:
                 from lib.lyricpass import lyricpass
-                print('\n{}     -- Starting lyricpass module (based on a tool by initstring) --\n'.format(color.GREY))
+                print('\n{}     -- Starting lyricpass module (by initstring) --\n'.format(color.GREY))
                 print('  {}[*]{} Looking for {}\'s lyrics...'.format(color.CYAN, color.END, artist.title()))
                 lyrics = lyricpass.lyricpass(artist)
                 #lyrics = [s.decode("utf-8") for s in lyfinder.lyrics]
-                print('\n  {}[*] {}{}{} phrases found\n'.format(color.CYAN, color.GREEN, len(lyrics), color.END))
+                print('\n  {}[*] {}{}{} phrases found'.format(color.CYAN, color.GREEN, len(lyrics), color.END))
+                print('\n{}     -- Stopping lyricpass module --\n'.format(color.GREY))
 
                 # First we remove all the parenthesis in the phrases (if enabled)
                 if Config.REMOVE_PARENTHESIS:
@@ -98,7 +99,7 @@ def main():
                     print('  {}[!]{} Any spaces-replacement charset specified in {}'.format(color.ORANGE, color.END,CFG_FILE))
                     print('  {}[!]{} Spaces inside lyrics won\'t be replaced\n'.format(color.ORANGE,color.END))
                 elif Config.LYRIC_SPACE_REPLACEMENT:
-                    print('  {}[+]{} Producing new words replacing spaces in {} lyrics...'.format(color.BLUE, color.END, len(lyrics)))
+                    print('  {}[+]{} Producing new words replacing spaces in {} phrases...'.format(color.BLUE, color.END, len(lyrics)))
                     base_lyrics = lyrics[:]
                     space_transformed_lyrics = multithread_transforms(lyric_space_transforms, base_lyrics)
                     final_wordlist += space_transformed_lyrics

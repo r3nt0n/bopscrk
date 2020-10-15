@@ -1,18 +1,18 @@
 [![BlackArch package](https://repology.org/badge/version-for-repo/blackarch/bopscrk.svg)](https://repology.org/project/bopscrk/versions)
 [![Rawsec's CyberSecurity Inventory](https://inventory.raw.pm/img/badges/Rawsec-inventoried-FF5050_flat.svg)](https://inventory.raw.pm/)
 [![Packaging status](https://repology.org/badge/tiny-repos/bopscrk.svg)](https://repology.org/project/bopscrk/versions)
-![[Version 2.2](https://github.com/r3nt0n)](http://img.shields.io/badge/version-v2.2-orange.svg)
+![[Version 2.3](https://github.com/r3nt0n)](http://img.shields.io/badge/version-v2.3-orange.svg)
 ![[Python 3.8](https://github.com/r3nt0n)](http://img.shields.io/badge/python-3.8-blue.svg)
 ![[GPL-3.0 License](https://github.com/r3nt0n)](https://img.shields.io/badge/license-GPL%203.0-brightgreen.svg)
 
 
 
 # bopscrk
-bopscrk (**B**efore **O**utset **P**a**S**sword **CR**ac**K**ing) is a tool to generate smart and powerful wordlists for targeted attacks.
+**bopscrk** (**B**efore **O**utset **P**a**S**sword **CR**ac**K**ing) is a tool to generate smart and powerful wordlists for targeted attacks.
 
 Included in **<a href="https://blackarch.org/">BlackArch Linux</a>** pentesting distribution and **<a href="https://inventory.raw.pm/">Rawsec's Cybersecurity Inventory</a>** since August 2019.  
   
-<p align="center"><img src="https://github.com/R3nt0n/bopscrk/blob/master/img/bopscrk-2.2.gif" /></p>  
+<p align="center"><img src="https://github.com/R3nt0n/bopscrk/blob/master/img/bopscrk-2.3.gif" /></p>  
 
 + **Targeted-attack wordlist creator**: introduce personal info related to target, combines every word and transforms results into possible passwords. The *lyricpass* module allows to **search lyrics related to artists** and include them to the wordlists.
 
@@ -102,16 +102,16 @@ It will retrieve all lyrics from all songs which belongs to artists that you pro
 [...] Coming soon [...]
 
 ## Changelist
-+ **Customizable** configuration for **artists and lyrics transforms** using the cfg file 
-+ Requirements at **setup.py updated**
-+ **Multithreads logic improved**
-+ **Leet and case order reversed** to improve operations efficiency
-+ **BUG FIXED** in lyrics space replacement
-+ **BUG FIXED** when shows version in banner
-+ **BUG FIXED** when remove duplicates (*Type Error: unhashable type: 'list'*)
-+ **Memory management and efficiency improved**
-+ **SPLIT INTO MODULES** to improve project structure
-+ **BUG FIXED** in wordlists-exclusion feature
++ `2.3 version notes (15/10/2020)`
+  + **Customizable** configuration for **artists and lyrics transforms** using the cfg file 
+  + Requirements at **setup.py updated**
+  + **Multithreads logic improved**
+  + **Leet and case order reversed** to improve operations efficiency
+  + **BUG FIXED** in lyrics space replacement
+  + **BUG FIXED** when remove duplicates (*Type Error: unhashable type: 'list'*)
+  + **Memory management and efficiency improved**
+  + **SPLIT INTO MODULES** to improve project structure
+  + **BUG FIXED** in wordlists-exclusion feature
 + `2.2 version notes (11/10/2020`
   + **Configuration file** implemented
   + **NEW FEATURE**: Allow to create **custom charsets** and **transforms patterns** trough the **config file**
