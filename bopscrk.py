@@ -144,7 +144,7 @@ def main():
                 print('\n  {}[!] WARNING: Recursive leet is enabled, depending on the words\n'
                       '      max-length configured (now is {}{}{}) and the size of your\n'
                       '      wordlist at this point (now contains {}{}{} words), this process\n'
-                      '      could take several minutes{}\n'.format(color.ORANGE,color.END,len(final_wordlist),color.ORANGE,color.END,args.max_length,color.ORANGE,color.END))
+                      '      could take several minutes{}\n'.format(color.ORANGE,color.END,args.max_length,color.ORANGE,color.END,len(final_wordlist),color.ORANGE,color.END))
                 recursive_msg = '{}recursive{} '.format(color.RED,color.END)
             print('  {}[+]{} Applying {}leet transforms to {} words...'.format(color.BLUE, color.END, recursive_msg,len(final_wordlist)))
             #print(final_wordlist)
