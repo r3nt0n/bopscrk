@@ -133,7 +133,6 @@ It will retrieve all lyrics from all songs which belongs to artists that you pro
 
 
 ## TO-DO list
-+ Implement **unittests**.
 + Implement **weighted-words system**.
 + Create options to **custom case transforms** (e.g.: disable pair/odd transforms).
 + **Lyricpass** integration was upgraded to last version released by initstring, but still needs some tweaks to speed up the search process (I would appreciate any help).
