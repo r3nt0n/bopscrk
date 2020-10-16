@@ -6,6 +6,8 @@
 from multiprocessing.dummy import Pool as ThreadPool
 from collections import OrderedDict
 
+from bopscrk import Config
+
 def compare(word_to_exclude, word_in_wordlist):
     if word_in_wordlist is not word_to_exclude:
         return word_in_wordlist
@@ -13,7 +15,7 @@ def compare(word_to_exclude, word_in_wordlist):
 # Remove word to exclude from final_wordlist
 def multithread_exclude(word_to_exclude, wordlist):
     diff_wordlist = []
-    with ThreadPool(16) as pool:
+    with ThreadPool(Config.THREADS) as pool:
         #args = (word, words_to_exclude)
         diff_wordlist += pool.starmap(compare, [(word_to_exclude, word) for word in wordlist])
 

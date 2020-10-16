@@ -1,9 +1,9 @@
 [![BlackArch package](https://repology.org/badge/version-for-repo/blackarch/bopscrk.svg)](https://repology.org/project/bopscrk/versions)
 [![Rawsec's CyberSecurity Inventory](https://inventory.raw.pm/img/badges/Rawsec-inventoried-FF5050_flat.svg)](https://inventory.raw.pm/)
 [![Packaging status](https://repology.org/badge/tiny-repos/bopscrk.svg)](https://repology.org/project/bopscrk/versions)
-![[Version 2.3](https://github.com/r3nt0n)](http://img.shields.io/badge/version-v2.3-orange.svg)
-![[Python 3.8](https://github.com/r3nt0n)](http://img.shields.io/badge/python-3.8-blue.svg)
 ![[GPL-3.0 License](https://github.com/r3nt0n)](https://img.shields.io/badge/license-GPL%203.0-brightgreen.svg)
+![[Python 3.8](https://github.com/r3nt0n)](http://img.shields.io/badge/python-3.8-blue.svg)
+![[Version 2.3.1](https://github.com/r3nt0n)](http://img.shields.io/badge/version-2.3.1-orange.svg)
 
 
 
@@ -42,6 +42,7 @@ Included in **<a href="https://blackarch.org/">BlackArch Linux</a>** pentesting 
   -x , --exclude     exclude all the words included in other wordlists
                      (several wordlists should be comma-separated)
   -o , --output      output file to save the wordlist (default: tmp.txt)
+  -C , --config      specify config file to use (default: ./bopscrk.cfg)
 
 
 ```
@@ -66,16 +67,17 @@ Included in **<a href="https://blackarch.org/">BlackArch Linux</a>** pentesting 
 + To provide **artist names with spaces** through command line you should provides it **quotes-enclosed**. *Example*: `-a "john doe,john smith"`
 
 ### Lyricpass 
-This feature is based in a modified version of a [tool](https://github.com/initstring/lyricpass) developed originally by [initstring](https://github.com/initstring/). The changes are made to integrate input and output's tool with bopscrk.
+<p align="center"><img src="https://github.com/R3nt0n/bopscrk/blob/master/img/bopscrk-2.3-lyricpass-example.gif" /></p>  
+
+This feature is based in a modified version of a [tool](https://github.com/initstring/lyricpass) developed originally by [initstring](https://github.com/initstring/). The changes are made to integrate input and output's tool with bopscrk.  
 
 It will retrieve all lyrics from all songs which belongs to artists that you provide. **By default it will store each artist, each phrase found with space substitution, each phrase found reduced to its initials** (which will be transformed later if you have activated leet and case transforms).
-
-
 
 ### Advanced usage
 
 #### Customizing behaviour using .cfg file
 + In `bopscrk.cfg` file you can specify your own charsets and enable/disable options:
+  + **threads**: number of threads to use in multithreaded operations
   + **extra_combinations** (like `(john, doe) => 123john, john123, 123doe, doe123, john123doe doe123john`) are *enabled by default*. You can disable it in the configuration file in order to get more focused wordlists.  
   + **separators_chars**: characters to use in extra-combinations. *Can be a single char or a string of chars, e.g.: `!?-/&(`*  
   + **separators_strings**: strings  to use in extra-combinations. *Can be a single string or a list of strings space-separated, e.g.: `123` `34!@`*
@@ -102,6 +104,8 @@ It will retrieve all lyrics from all songs which belongs to artists that you pro
 [...] Coming soon [...]
 
 ## Changelist
++ `2.3.x version notes`
+  + **unittest** (and simple unitary tests for transforms, excluders and combinators functions) **implemented**.
 + `2.3 version notes (15/10/2020)`
   + **Customizable** configuration for **artists and lyrics transforms** using the cfg file 
   + Requirements at **setup.py updated**

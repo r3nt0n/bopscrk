@@ -5,18 +5,11 @@
 
 import itertools
 
-from lib.config import Config
-from lib.excluders import *
+from bopscrk import Config
+from modules.excluders import remove_duplicates
 
 
 def add_common_separators(wordlist):
-    """
-    Take a wordlist and generate all possible combinations between the words
-    contained and another wordlist which contains common separator (e.g. _ ).
-
-    :param wordlist: the base wordlist to combine
-    :return: a new wordlist with all the combinations
-    """
     words = wordlist[:]
     new_wordlist = []
     for word in words:
@@ -35,7 +28,6 @@ def add_common_separators(wordlist):
     return remove_duplicates(new_wordlist)
 
 
-################################################################################
 def combinator(wordlist, nWords):
     new_wordlist = wordlist[:]  # I need copy to use itertools properly
     wlist_combined = itertools.permutations(new_wordlist, nWords)

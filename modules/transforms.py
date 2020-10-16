@@ -5,11 +5,10 @@
 
 from multiprocessing.dummy import Pool as ThreadPool
 
-from lib.config import Config
-from lib.excluders import *
+from bopscrk import Config
+from modules.excluders import remove_duplicates
 
 
-################################################################################
 def case_transforms(word):
     new_wordlist = []
 
@@ -63,7 +62,6 @@ def case_transforms(word):
     return new_wordlist
 
 
-################################################################################
 def leet_transforms(word):
     new_wordlist = []
     original_size = len(new_wordlist)
@@ -94,23 +92,15 @@ def leet_transforms(word):
     return remove_duplicates(new_wordlist)
 
 
-################################################################################
-def lyric_space_transforms(word):
-    new_wordlist = []
-    if ' ' in word:  # Avoiding non-space words to be included many
-        if Config.LYRIC_SPLIT_BY_WORD:
-            # Add each word in the phrase splitting by spaces (e.g.: ['hello', 'world'])
-            new_wordlist.extend(word.split(' '))
-        # Add phrase without spaces (e.g.: 'helloworld')
-        new_wordlist.append(word.replace(' ', ''))
-        # Replace spaces in phrase with all space replacements charset
-        if (Config.LYRIC_SPACE_REPLACEMENT and Config.SPACE_REPLACEMENT_CHARSET):
-            for character in Config.SPACE_REPLACEMENT_CHARSET:
-                new_wordlist.append(word.replace(' ', character))
+def take_initials(word):
+    splitted = word.split(' ')
+    initials = ''
+    for char in splitted:
+        try: initials += char[0]
+        except IndexError: continue
+    return initials
 
-    return new_wordlist
 
-################################################################################
 def artist_space_transforms(word):
     new_wordlist = []
     if ' ' in word:  # Avoiding non-space words to be included many
@@ -127,11 +117,25 @@ def artist_space_transforms(word):
     return new_wordlist
 
 
-################################################################################
+def lyric_space_transforms(word):
+    new_wordlist = []
+    if ' ' in word:  # Avoiding non-space words to be included many
+        if Config.LYRIC_SPLIT_BY_WORD:
+            # Add each word in the phrase splitting by spaces (e.g.: ['hello', 'world'])
+            new_wordlist.extend(word.split(' '))
+        # Add phrase without spaces (e.g.: 'helloworld')
+        new_wordlist.append(word.replace(' ', ''))
+        # Replace spaces in phrase with all space replacements charset
+        if (Config.LYRIC_SPACE_REPLACEMENT and Config.SPACE_REPLACEMENT_CHARSET):
+            for character in Config.SPACE_REPLACEMENT_CHARSET:
+                new_wordlist.append(word.replace(' ', character))
+    return new_wordlist
+
+
 def multithread_transforms(transform_type, wordlist):
     # process each word in their own thread and return the results
     new_wordlists = []
-    with ThreadPool(32) as pool:
+    with ThreadPool(Config.THREADS) as pool:
         new_wordlists += pool.map(transform_type, wordlist)
     new_wordlist = []
     for nlist in new_wordlists:
@@ -139,12 +143,4 @@ def multithread_transforms(transform_type, wordlist):
     return new_wordlist
 
 
-################################################################################
-def take_initials(word):
-    splitted = word.split(' ')
-    initials = ''
-    for char in splitted:
-        try: initials += char[0]
-        except IndexError: continue
-    return initials
 

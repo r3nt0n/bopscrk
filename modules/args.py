@@ -4,41 +4,39 @@
 
 import os, sys, argparse
 
-from lib.banners import *
-from lib.aux import is_empty, is_valid_date
+from modules.color import color
+from modules.aux import is_empty, is_valid_date
 
-DEFAULT_MIN = 4
-DEFAULT_MAX = 12
-DEFAULT_N_WORDS = 2
-DEFAULT_OUTPUT_FILE = 'tmp.txt'
 
 class Arguments:
     def __init__(self):
+        self.DEFAULT_MIN = 4
+        self.DEFAULT_MAX = 12
+        self.DEFAULT_N_WORDS = 2
+        self.DEFAULT_OUTPUT_FILE = 'tmp.txt'
+        self.DEFAULT_CFG_FILE = './bopscrk.cfg'
+
         parser = argparse.ArgumentParser(description='Generates smart and powerful wordlists.')
 
         parser.add_argument('-i', '--interactive', action="store_true",
                             help='interactive mode, the script will ask you about target')
 
         parser.add_argument('-w', action="store", metavar='', type=str, dest='words',
-                            help='words (weight-1) to combine comma-separated (will be combined with all words)')
-
-        # still to implement (next feature)
-        # parser.add_argument('-w2', action="store", metavar='', type=str, dest='words',
-        #                     help='words (weight-2) to combine comma-separated (will be combined with all weight-1 words)')
+                            help='words to combine comma-separated (will be combined with all words)')
 
         parser.add_argument('-m', '--min', action="store", metavar='', type=int, dest='min',
-                            default=DEFAULT_MIN, help='min length for the words to generate (default: {})'.format(DEFAULT_MIN))
+                            default=self.DEFAULT_MIN, help='min length for the words to generate (default: {})'.format(self.DEFAULT_MIN))
 
         parser.add_argument('-M', '--max', action="store", metavar='', type=int, dest='max',
-                            default=DEFAULT_MAX, help='max length for the words to generate (default: {})'.format(DEFAULT_MAX))
+                            default=self.DEFAULT_MAX, help='max length for the words to generate (default: {})'.format(self.DEFAULT_MAX))
 
         parser.add_argument('-c', '--case', action="store_true", help='enable case transformations')
 
         parser.add_argument('-l', '--leet', action="store_true", help='enable leet transformations')
 
         parser.add_argument('-n', action="store", metavar='', type=int, dest='n_words',
-                            default=DEFAULT_N_WORDS, help='max amount of words to combine each time '
-                                            '(default: {})'.format(DEFAULT_N_WORDS))
+                            default=self.DEFAULT_N_WORDS, help='max amount of words to combine each time '
+                                            '(default: {})'.format(self.DEFAULT_N_WORDS))
         parser.add_argument('-a', '--artists', action="store", metavar='', type=str,
                             dest='artists', default=False,
                             help='artists to search song lyrics (comma-separated)')
@@ -49,18 +47,23 @@ class Arguments:
                                  '(several wordlists should be comma-separated)')
 
         parser.add_argument('-o', '--output', action="store", metavar='', type=str,
-                            dest='outfile', default=DEFAULT_OUTPUT_FILE,
-                            help='output file to save the wordlist (default: {})'.format(DEFAULT_OUTPUT_FILE))
+                            dest='outfile', default=self.DEFAULT_OUTPUT_FILE,
+                            help='output file to save the wordlist (default: {})'.format(self.DEFAULT_OUTPUT_FILE))
 
-        if len(sys.argv) == 1: bopscrk_banner(); help_banner(); parser.print_help(sys.stdout); sys.exit(2)  # Print simple help and exit when runs without args
+        parser.add_argument('-C', '--config', action="store", metavar='', type=str,
+                            dest='cfg_file', default=self.DEFAULT_CFG_FILE,
+                            help='specify config file to use (default: {})'.format(self.DEFAULT_CFG_FILE))
+
+        self.parser = parser
         self.args = parser.parse_args()
         self.interactive = self.args.interactive
+        self.cfg_file = self.args.cfg_file
 
     def set_interactive_options(self):
         while True:
-            min_length = input('  {}[?]{} Passwords min length [{}] >>> '.format(color.BLUE, color.END, DEFAULT_MIN))
+            min_length = input('  {}[?]{} Passwords min length [{}] >>> '.format(color.BLUE, color.END, self.DEFAULT_MIN))
             if is_empty(min_length):
-                self.min_length = DEFAULT_MIN; break
+                self.min_length = self.DEFAULT_MIN; break
             else:
                 try:
                     self.min_length = int(min_length)
@@ -68,9 +71,9 @@ class Arguments:
                 except ValueError:
                     print('  {}[!]{} Min length should be an integer'.format(color.RED, color.END))
         while True:
-            max_length = input('  {}[?]{} Password\'s max length [{}] >>> '.format(color.BLUE, color.END, DEFAULT_MAX))
+            max_length = input('  {}[?]{} Password\'s max length [{}] >>> '.format(color.BLUE, color.END, self.DEFAULT_MAX))
             if is_empty(max_length):
-                self.max_length = DEFAULT_MAX; break
+                self.max_length = self.DEFAULT_MAX; break
             else:
                 try:
                     max_length = int(max_length)
@@ -105,9 +108,9 @@ class Arguments:
         else: self.case = False
 
         while True:
-            n_words = input('  {}[?]{} How much words do you want to combine at most [{}] >>> '.format(color.BLUE, color.END, DEFAULT_N_WORDS))
+            n_words = input('  {}[?]{} How much words do you want to combine at most [{}] >>> '.format(color.BLUE, color.END, self.DEFAULT_N_WORDS))
             if is_empty(n_words):
-                self.n_words = DEFAULT_N_WORDS; break
+                self.n_words = self.DEFAULT_N_WORDS; break
             else:
                 try:
                     n_words = int(n_words)
@@ -138,14 +141,13 @@ class Arguments:
                     self.exclude_wordlists = exclude
                     break
 
-        self.outfile = input('  {}[?]{} Output file [{}] >>> '.format(color.BLUE, color.END, DEFAULT_OUTPUT_FILE))
-        if is_empty(self.outfile): self.outfile = DEFAULT_OUTPUT_FILE
+        self.outfile = input('  {}[?]{} Output file [{}] >>> '.format(color.BLUE, color.END, self.DEFAULT_OUTPUT_FILE))
+        if is_empty(self.outfile): self.outfile = self.DEFAULT_OUTPUT_FILE
+
+        print('')  # Print blank line after all questions
 
         self.base_wordlist = []
-
-        # here I can select on which wordlist include each info by their weight
-        # ** Entry point to next feature WEIGHTED-WORDS SYSTEM
-        # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        # here I can select on which wordlist include each info by their weight (to implement)
         if not is_empty(firstname):
             firstname = firstname.lower()
             self.base_wordlist.append(firstname)

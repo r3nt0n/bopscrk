@@ -1,5 +1,5 @@
 [submodule "lib/lyricpass"]
-	path = lib/lyricpass
+	path = modules/lyricpass
 	url = https://github.com/r3nt0n/lyricpass
 	branch = default
 
