@@ -67,7 +67,7 @@ Included in **<a href="https://blackarch.org/">BlackArch Linux</a>** pentesting 
 + To provide **artist names with spaces** through command line you should provides it **quotes-enclosed**. *Example*: `-a "john doe,john smith"`
 
 ### Lyricpass 
-<p align="center"><img src="https://github.com/R3nt0n/bopscrk/blob/master/img/bopscrk-2.3-lyricpass-example.gif" /></p>  
+<p align="center"><img src="https://github.com/R3nt0n/bopscrk/blob/master/img/bopscrk-2.3-lyricpass-example.png" /></p>  
 
 This feature is based in a modified version of a [tool](https://github.com/initstring/lyricpass) developed originally by [initstring](https://github.com/initstring/). The changes are made to integrate input and output's tool with bopscrk.  
 
