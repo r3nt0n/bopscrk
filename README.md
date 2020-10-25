@@ -25,7 +25,7 @@ Included in **<a href="https://blackarch.org/">BlackArch Linux</a>** pentesting 
 ## Requirements
 + **Python 3** (secondary branch keeps Python 2.7 legacy support)
 + *optional* - to use `lyricpass` module:   
-    `pip install lib/lyricpass/requirements.txt`
+    `pip install requirements.txt`
 
 ## Usage
 ```
