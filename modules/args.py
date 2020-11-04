@@ -5,7 +5,7 @@
 import os, sys, argparse
 
 from modules.color import color
-from modules.aux import is_empty, is_valid_date
+from modules.auxiliars import is_empty, is_valid_date
 
 
 class Arguments:

@@ -6,7 +6,7 @@
 import sys, os, datetime
 
 from bopscrk import name, __version__, __author__, args, Config
-from modules.aux import clear
+from modules.auxiliars import clear
 from modules import banners
 from modules.color import color
 from modules.transforms import leet_transforms, case_transforms, artist_space_transforms, lyric_space_transforms, multithread_transforms, take_initials
