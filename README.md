@@ -104,7 +104,8 @@ It will retrieve all lyrics from all songs which belongs to artists that you pro
 [...] Coming soon [...]
 
 ## Changelist
-+ `2.3.x version notes`
++ `2.3.1 version notes`
+  + fixing namespace bug (related to aux.py module, renamed to auxiliars.py) when running on windows systems
   + **unittest** (and simple unitary tests for transforms, excluders and combinators functions) **implemented**.
 + `2.3 version notes (15/10/2020)`
   + **Customizable** configuration for **artists and lyrics transforms** using the cfg file 
