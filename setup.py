@@ -15,4 +15,9 @@ setup(
     packages=['modules',],
     scripts=['bopscrk.py'],
     install_requires=['requests'],
+    entry_points = {
+        'console_scripts':[
+            'bopscrk = modules.main:run'
+        ]
+    }
 )
