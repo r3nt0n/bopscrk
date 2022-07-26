@@ -7,6 +7,7 @@ from multiprocessing.dummy import Pool as ThreadPool
 
 from bopscrk import Config
 from modules.excluders import remove_duplicates
+from modules.auxiliars import append_wordlist_to_file
 
 
 def case_transforms(word):
@@ -141,6 +142,42 @@ def multithread_transforms(transform_type, wordlist):
     for nlist in new_wordlists:
          new_wordlist += nlist
     return new_wordlist
+
+
+def transform_cached_wordlist_and_save(transform_type, filepath):
+
+    last_position = 0
+
+    while True:
+
+        cached_wordlist = []
+        new_wordlist = []
+
+        with open(filepath, 'r', encoding='utf-8') as f:
+            counter = 0
+            f.seek(last_position)  # put point on last position
+            while True:
+                line = f.readline()
+                if counter >= 8000:
+                    last_position = f.tell()  # save last_position and break inner loop
+                    break
+                if not line:
+                    break
+                if line.strip() not in cached_wordlist:
+                    cached_wordlist.append(line.strip())
+                counter += 1
+                last_position = f.tell()  # save last_position
+
+        new_wordlist += multithread_transforms(transform_type, cached_wordlist)
+        #cached_wordlist += new_wordlist
+        append_wordlist_to_file(filepath, new_wordlist)
+
+        # read again the file to check if it ended
+        with open(filepath, 'r', encoding='utf-8') as f:
+            f.seek(last_position)  # put point on last position
+            line = f.readline()
+            if not line:
+                break
 
 
 

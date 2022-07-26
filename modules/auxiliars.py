@@ -30,3 +30,32 @@ def is_valid_date(date_str):
         return True
     except ValueError:
         return False
+
+def append_wordlist_to_file(filepath, wordlist):
+    """
+    Save wordlist into filepath provided (creates it if not exists, add words to the end if exists).
+    :param filepath: path to file
+    :param wordlist: list of words to save
+    :return: True or False
+    """
+    try:
+        with open(filepath, 'a') as f:
+            for word in wordlist:
+                f.write(word + '\n')
+        return True
+    except:
+        return False
+
+
+def remove_duplicates_from_file(infile_path, outfile_path="temp.000000000.bopscrk"):
+    lines_seen = set()  # holds lines already seen
+    outfile = open(outfile_path, "w")
+    infile = open(infile_path, "r")
+    for line in infile:
+        if line not in lines_seen:  # not a duplicate
+            outfile.write(line)
+            lines_seen.add(line)
+    outfile.close()
+    infile.close()
+    os.remove(infile_path)
+    os.rename(outfile_path, infile_path)

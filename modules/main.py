@@ -6,10 +6,10 @@
 import sys, os, datetime
 
 from bopscrk import name, __version__, __author__, args, Config
-from modules.auxiliars import clear
+from modules.auxiliars import clear, remove_duplicates_from_file
 from modules import banners
 from modules.color import color
-from modules.transforms import leet_transforms, case_transforms, artist_space_transforms, lyric_space_transforms, multithread_transforms, take_initials
+from modules.transforms import leet_transforms, case_transforms, artist_space_transforms, lyric_space_transforms, multithread_transforms, take_initials, transform_cached_wordlist_and_save
 from modules.combinators import combinator, add_common_separators
 from modules.excluders import remove_by_lengths, remove_duplicates, multithread_exclude
 
@@ -59,7 +59,7 @@ def run():
                 # Search lyrics if it meets dependencies for lyricpass
                 try:
                     from modules.lyricpass import lyricpass
-                    print('\n{}     -- Starting lyricpass module (by initstring) --\n'.format(color.GREY))
+                    print('\n{}     -- Starting lyricpass module --\n'.format(color.GREY))
                     print('  {}[*]{} Looking for {}\'s lyrics...'.format(color.CYAN, color.END, artist.title()))
                     lyrics = lyricpass.lyricpass(artist)
                     #lyrics = [s.decode("utf-8") for s in lyfinder.lyrics]
@@ -73,7 +73,7 @@ def run():
 
                     # Add the phrases to BASE wordlist
                     lyrics = remove_by_lengths(lyrics, args.min_length, args.max_length)
-                    print('  {}[+]{} Removing by min and max length range ({} phrases remain)...'.format(color.BLUE, color.END,len(lyrics)))
+                    print('  {}[+]{} Adding raw phrases filtering by min and max length range ({} phrases remain)...'.format(color.BLUE, color.END,len(lyrics)))
                     final_wordlist += lyrics
 
                     # Take just the initials on each phrase and add as a new word to FINAL wordlist
@@ -121,6 +121,24 @@ def run():
         # (!) Check for duplicates (is checked before return in combinator() and add_common_separators())
         #final_wordlist = remove_duplicates(final_wordlist)
 
+
+        # # CASE TRANSFORMS
+        # if args.case:
+        #     print('  {}[+]{} Applying case transforms to {} words...'.format(color.BLUE, color.END, len(final_wordlist)))
+        #
+        #     # transform_cached_wordlist_and_save(case_transforms, args.outfile) # not working yet, infinite loop ?¿?¿
+        #     temp_wordlist = []
+        #     temp_wordlist += multithread_transforms(case_transforms, final_wordlist)
+        #     final_wordlist += temp_wordlist
+        #
+        # final_wordlist = remove_duplicates(final_wordlist)
+        #
+        # # SAVE WORDLIST TO FILE BEFORE LEET TRANSFORMS
+        # ############################################################################
+        # with open(args.outfile, 'w') as f:
+        #     for word in final_wordlist:
+        #         f.write(word + '\n')
+
         # LEET TRANSFORMS
         if args.leet:
             if not Config.LEET_CHARSET:
@@ -135,36 +153,44 @@ def run():
                           '      could take several minutes{}\n'.format(color.ORANGE,color.END,args.max_length,color.ORANGE,color.END,len(final_wordlist),color.ORANGE,color.END))
                     recursive_msg = '{}recursive{} '.format(color.RED,color.END)
                 print('  {}[+]{} Applying {}leet transforms to {} words...'.format(color.BLUE, color.END, recursive_msg,len(final_wordlist)))
-                #print(final_wordlist)
+
+                #transform_cached_wordlist_and_save(leet_transforms, args.outfile)
+                #remove_duplicates_from_file(args.outfile)
+
                 temp_wordlist = []
                 temp_wordlist += multithread_transforms(leet_transforms, final_wordlist)
                 final_wordlist += temp_wordlist
 
         # CASE TRANSFORMS
         if args.case:
-            print('  {}[+]{} Applying case transforms to {} words...'.format(color.BLUE, color.END, len(final_wordlist)))
+            print('  {}[+]{} Applying case transforms to {} words...'.format(color.BLUE, color.END,len(final_wordlist)))
+
+            # transform_cached_wordlist_and_save(case_transforms, args.outfile) # not working yet, infinite loop ?¿?¿
+
             temp_wordlist = []
             temp_wordlist += multithread_transforms(case_transforms, final_wordlist)
             final_wordlist += temp_wordlist
 
-        # EXCLUDE FROM OTHER WORDLISTS
-        if args.exclude_wordlists:
-            # For each path to wordlist provided
-            for wl_path in args.exclude_wordlists:
-                print('  {}[+]{} Excluding wordlist {}...'.format(color.BLUE, color.END, os.path.basename(wl_path)))
-                # Open the file
-                with open(wl_path, 'r') as x_wordlist_file:
-                    # Read line by line in a loop
-                    while True:
-                        word_to_exclude = x_wordlist_file.readline()
-                        if not word_to_exclude: break  # breaks the loop when file ends
-                        final_wordlist = multithread_exclude(word_to_exclude, final_wordlist)
-
-        # re-check for duplicates
         final_wordlist = remove_duplicates(final_wordlist)
 
+        # EXCLUDE FROM OTHER WORDLISTS
+        #if args.exclude_wordlists:
+            # For each path to wordlist provided
+            # for wl_path in args.exclude_wordlists:
+            #     print('  {}[+]{} Excluding wordlist {}...'.format(color.BLUE, color.END, os.path.basename(wl_path)))
+            #     # Open the file
+            #     with open(wl_path, 'r') as x_wordlist_file:
+            #         # Read line by line in a loop
+            #         while True:
+            #             word_to_exclude = x_wordlist_file.readline()
+            #             if not word_to_exclude: break  # breaks the loop when file ends
+            #             final_wordlist = multithread_exclude(word_to_exclude, final_wordlist)
+
+        # re-check for duplicates
+        #final_wordlist = remove_duplicates(final_wordlist)
+
         # SAVE WORDLIST TO FILE
-        ############################################################################
+        ###########################################################################
         with open(args.outfile, 'w') as f:
             for word in final_wordlist:
                 f.write(word + '\n')
@@ -178,7 +204,8 @@ def run():
         ############################################################################
         print('\n  {}[+]{} Time elapsed:\t{}'.format(color.GREEN, color.END, total_time))
         print('  {}[+]{} Output file:\t{}{}{}{}'.format(color.GREEN, color.END, color.BOLD, color.BLUE, args.outfile, color.END))
-        print('  {}[+]{} Words generated:\t{}{}{}\n'.format(color.GREEN, color.END, color.RED, len(final_wordlist), color.END))
+        #print('  {}[+]{} Words generated:\t{}{}{}\n'.format(color.GREEN, color.END, color.RED, str(sum(1 for line in open(args.outfile))), color.END))
+        print('  {}[+]{} Words generated:\t{}{}{}\n'.format(color.GREEN, color.END, color.RED,len(final_wordlist), color.END))
         sys.exit(0)
 
     except KeyboardInterrupt:

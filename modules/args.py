@@ -41,10 +41,10 @@ class Arguments:
                             dest='artists', default=False,
                             help='artists to search song lyrics (comma-separated)')
 
-        parser.add_argument('-x', '--exclude', action="store", metavar='', type=str,
-                            dest='exclude', default=False,
-                            help='exclude all the words included in other wordlists '
-                                 '(several wordlists should be comma-separated)')
+        # parser.add_argument('-x', '--exclude', action="store", metavar='', type=str,
+        #                     dest='exclude', default=False,
+        #                     help='exclude all the words included in other wordlists '
+        #                          '(several wordlists should be comma-separated)')
 
         parser.add_argument('-o', '--output', action="store", metavar='', type=str,
                             dest='outfile', default=self.DEFAULT_OUTPUT_FILE,
@@ -96,6 +96,12 @@ class Arguments:
             else:
                 break
 
+        self.artists = input('  {}[?]{} Artist names to search song lyrics (comma-separated) >>> '.format(color.BLUE, color.END))
+        if is_empty(self.artists):
+            self.artists = False
+        else:
+            self.artists = self.artists.split(',')
+
         others = input('  {}[?]{} Some other relevant words (comma-separated) >>> '.format(color.BLUE, color.END))
 
         leet = input('  {}[?]{} Do yo want to make leet transforms? [y/n] >>> '.format(color.BLUE, color.END))
@@ -122,24 +128,20 @@ class Arguments:
                 except ValueError:
                     print('  {}[!]{} Should be an integer'.format(color.RED, color.END))
 
-        self.artists = input('  {}[?]{} Artist names to search song lyrics (comma-separated) >>> '.format(color.BLUE, color.END))
-        if is_empty(self.artists): self.artists = False
-        else: self.artists = self.artists.split(',')
-
-        while True:
-            exclude = input('  {}[?]{} Exclude words from other wordlists? >>> '.format(color.BLUE, color.END))
-            if is_empty(exclude):
-                self.exclude_wordlists = False; break
-            else:
-                exclude = exclude.split(',')
-                valid_paths = True
-                for wl_path in exclude:
-                    if not os.path.isfile(wl_path):
-                        valid_paths = False
-                        print('  {}[!]{} {} not found'.format(color.RED, color.END, wl_path))
-                if valid_paths:
-                    self.exclude_wordlists = exclude
-                    break
+        # while True:
+        #     exclude = input('  {}[?]{} Exclude words from other wordlists? >>> '.format(color.BLUE, color.END))
+        #     if is_empty(exclude):
+        #         self.exclude_wordlists = False; break
+        #     else:
+        #         exclude = exclude.split(',')
+        #         valid_paths = True
+        #         for wl_path in exclude:
+        #             if not os.path.isfile(wl_path):
+        #                 valid_paths = False
+        #                 print('  {}[!]{} {} not found'.format(color.RED, color.END, wl_path))
+        #         if valid_paths:
+        #             self.exclude_wordlists = exclude
+        #             break
 
         self.outfile = input('  {}[?]{} Output file [{}] >>> '.format(color.BLUE, color.END, self.DEFAULT_OUTPUT_FILE))
         if is_empty(self.outfile): self.outfile = self.DEFAULT_OUTPUT_FILE
@@ -178,12 +180,12 @@ class Arguments:
         self.n_words = self.args.n_words
         self.artists = self.args.artists
         self.outfile = self.args.outfile
-        self.exclude_wordlists = self.args.exclude
-        if self.exclude_wordlists:
-            self.exclude_wordlists = self.exclude_wordlists.split(',')
-            for wl_path in self.exclude_wordlists:
-                if not os.path.isfile(wl_path):
-                    print('  {}[!]{} {} not found'.format(color.RED, color.END, wl_path))
-                    sys.exit(4)
+        # self.exclude_wordlists = self.args.exclude
+        # if self.exclude_wordlists:
+        #     self.exclude_wordlists = self.exclude_wordlists.split(',')
+        #     for wl_path in self.exclude_wordlists:
+        #         if not os.path.isfile(wl_path):
+        #             print('  {}[!]{} {} not found'.format(color.RED, color.END, wl_path))
+        #             sys.exit(4)
         if self.artists:
             self.artists = self.artists.split(',')

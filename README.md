@@ -3,7 +3,7 @@
 [![Packaging status](https://repology.org/badge/tiny-repos/bopscrk.svg)](https://repology.org/project/bopscrk/versions)
 ![[GPL-3.0 License](https://github.com/r3nt0n)](https://img.shields.io/badge/license-GPL%203.0-brightgreen.svg)
 ![[Python 3.8](https://github.com/r3nt0n)](http://img.shields.io/badge/python-3.8-blue.svg)
-![[Version 2.3.1](https://github.com/r3nt0n)](http://img.shields.io/badge/version-2.3.1-orange.svg)
+![[Version 2.4](https://github.com/r3nt0n)](http://img.shields.io/badge/version-2.4-orange.svg)
 
 
 
@@ -24,8 +24,18 @@ Included in **<a href="https://blackarch.org/">BlackArch Linux</a>** pentesting 
 
 ## Requirements
 + **Python 3** (secondary branch keeps Python 2.7 legacy support)
-+ *optional* - to use `lyricpass` module:   
-    `pip install requirements.txt`
++ requests python module
+
+## Get started
+### Download and install
+```
+git clone --recurse-submodules https://github.com/r3nt0n/bopscrk
+pip install -r requirements.txt
+```
+### Run interactive mode
+```
+python3 bopscrk.py -i
+```
 
 ## Usage
 ```
@@ -39,8 +49,6 @@ Included in **<a href="https://blackarch.org/">BlackArch Linux</a>** pentesting 
   -l, --leet         enable leet transformations
   -n                 max amount of words to combine each time (default: 2)
   -a , --artists     artists to search song lyrics (comma-separated)
-  -x , --exclude     exclude all the words included in other wordlists
-                     (several wordlists should be comma-separated)
   -o , --output      output file to save the wordlist (default: tmp.txt)
   -C , --config      specify config file to use (default: ./bopscrk.cfg)
 
@@ -100,10 +108,12 @@ It will retrieve all lyrics from all songs which belongs to artists that you pro
     `leet_charset=a:4 e:3`      
 
 
-#### Weighted-words system
-[...] Coming soon [...]
-
 ## Changelist
++ `2.4 version notes (26/7/2022`
+  + make the installation process easier
+  + starting to implement better memory management (cached wordlists writing and reading i/o files), not working yet
+  + updating and fixing minor bugs related to dependencies
+  + 'exclude from other wordlists' feature removed 
 + `2.3.1 version notes`
   + fixing namespace bug (related to aux.py module, renamed to auxiliars.py) when running on windows systems
   + **unittest** (and simple unitary tests for transforms, excluders and combinators functions) **implemented**.
@@ -134,7 +144,6 @@ It will retrieve all lyrics from all songs which belongs to artists that you pro
 
 
 ## TO-DO list
-+ Implement **weighted-words system**.
 + Create options to **custom case transforms** (e.g.: disable pair/odd transforms).
 + **Lyricpass** integration was upgraded to last version released by initstring, but still needs some tweaks to speed up the search process (I would appreciate any help).
 
