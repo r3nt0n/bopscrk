@@ -1,3 +1,5 @@
 .idea
 *.pyc
 *tmp*
+bopscrk.egg-info
+dist

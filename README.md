@@ -2,7 +2,7 @@
 [![Rawsec's CyberSecurity Inventory](https://inventory.raw.pm/img/badges/Rawsec-inventoried-FF5050_flat.svg)](https://inventory.raw.pm/)
 [![Packaging status](https://repology.org/badge/tiny-repos/bopscrk.svg)](https://repology.org/project/bopscrk/versions)
 ![[GPL-3.0 License](https://github.com/r3nt0n)](https://img.shields.io/badge/license-GPL%203.0-brightgreen.svg)
-![[Python 3.8](https://github.com/r3nt0n)](http://img.shields.io/badge/python-3.8-blue.svg)
+![[Python 3](https://github.com/r3nt0n)](http://img.shields.io/badge/python-3-blue.svg)
 ![[Version 2.4](https://github.com/r3nt0n)](http://img.shields.io/badge/version-2.4-orange.svg)
 
 
@@ -28,6 +28,11 @@ Included in **<a href="https://blackarch.org/">BlackArch Linux</a>** pentesting 
 
 ## Get started
 ### Download and install
+#### Option 1: Install last version published on Pypi (more stable)
+```
+pip install bopscrk
+```
+#### Option 2: Download last version published on Github (more updated)
 ```
 git clone --recurse-submodules https://github.com/r3nt0n/bopscrk
 pip install -r requirements.txt
@@ -109,8 +114,8 @@ It will retrieve all lyrics from all songs which belongs to artists that you pro
 
 
 ## Changelist
-+ `2.4 version notes (26/7/2022`
-  + make the installation process easier
++ `2.4 version notes (26/07/2022)`
+  + make the installation process easier enabling `pip install` method
   + starting to implement better memory management (cached wordlists writing and reading i/o files), not working yet
   + updating and fixing minor bugs related to dependencies
   + 'exclude from other wordlists' feature removed 
