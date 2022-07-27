@@ -39,6 +39,10 @@ pip install -r requirements.txt
 ```
 ### Run interactive mode
 ```
+# If installed using pip
+bopscrk -i
+
+# If downloaded from GitHub
 python3 bopscrk.py -i
 ```
 

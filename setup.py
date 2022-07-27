@@ -10,9 +10,10 @@ setup(
     author='r3nt0n',
     author_email='r3nt0n@protonmail.com',
     url='https://github.com/r3nt0n/bopscrk',
-    version='2.4',
+    version='2.4.1',
     license='GNU General Public License v3.0',
-    packages=['modules',],
+    #packages=['modules',],
+    packages=find_packages(),
     scripts=['bopscrk.py'],
     install_requires=['requests'],
     entry_points = {
