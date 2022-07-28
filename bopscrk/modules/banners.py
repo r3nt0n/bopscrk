@@ -6,8 +6,8 @@
 from time import sleep
 from random import randint
 
-from modules.color import color
-from modules.transforms import *
+from bopscrk.modules.color import color
+from bopscrk.modules.transforms import *
 
 
 # Set the time interval (in secs) between printing each line

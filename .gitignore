@@ -2,4 +2,6 @@
 *.pyc
 *tmp*
 bopscrk.egg-info
-dist
+dist/
+*.log
+*.bak

@@ -5,13 +5,14 @@
 
 import sys, os, datetime
 
-from bopscrk import name, __version__, __author__, args, Config
-from modules.auxiliars import clear, remove_duplicates_from_file
-from modules import banners
-from modules.color import color
-from modules.transforms import leet_transforms, case_transforms, artist_space_transforms, lyric_space_transforms, multithread_transforms, take_initials, transform_cached_wordlist_and_save
-from modules.combinators import combinator, add_common_separators
-from modules.excluders import remove_by_lengths, remove_duplicates, multithread_exclude
+from bopscrk.bopscrk import name, __version__, __author__
+from bopscrk.modules import args, Config
+from bopscrk.modules.auxiliars import clear, remove_duplicates_from_file
+from bopscrk.modules import banners
+from bopscrk.modules.color import color
+from bopscrk.modules.transforms import leet_transforms, case_transforms, artist_space_transforms, lyric_space_transforms, multithread_transforms, take_initials, transform_cached_wordlist_and_save
+from bopscrk.modules.combinators import combinator, add_common_separators
+from bopscrk.modules.excluders import remove_by_lengths, remove_duplicates, multithread_exclude
 
 
 def run():
@@ -32,6 +33,16 @@ def run():
             banners.help_banner()
             banners.banner(name, __version__, __author__)
             args.set_cli_options()
+
+        # Check if config file exists
+        if not os.path.exists(args.cfg_file):
+            args.cfg_file
+            print('  {}[!]{} error trying to load config file {}'.format(color.RED, color.END, args.cfg_file))
+            sys.exit(3)
+
+        else:
+            Config.setup()
+            print('  {}[V]{} config file {} loaded'.format(color.GREEN, color.END, args.cfg_file))
 
         # Initial timestamp
         start_time = datetime.datetime.now().time().strftime('%H:%M:%S')

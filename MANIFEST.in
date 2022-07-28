@@ -1,0 +1,12 @@
+include LICENSE
+include *.in
+include *.py
+include bopscrk/*.cfg
+global-exclude *.pyc *.pyo *~
+global-exclude *test*
+global-exclude *tmp*
+prune __pycache__
+prune */__pycache__
+prune build
+prune dist
+prune bopscrk/tests

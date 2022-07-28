@@ -4,8 +4,8 @@
 
 import os, sys, argparse
 
-from modules.color import color
-from modules.auxiliars import is_empty, is_valid_date
+from bopscrk.modules.color import color
+from bopscrk.modules.auxiliars import is_empty, is_valid_date
 
 
 class Arguments:
@@ -14,7 +14,13 @@ class Arguments:
         self.DEFAULT_MAX = 12
         self.DEFAULT_N_WORDS = 2
         self.DEFAULT_OUTPUT_FILE = 'tmp.txt'
-        self.DEFAULT_CFG_FILE = './bopscrk.cfg'
+        # scratch, still need to be regorganized
+        import os
+        self.DEFAULT_CFG_FILE = os.path.abspath(
+                os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                             '../bopscrk.cfg')
+        )
+        #self.DEFAULT_CFG_FILE = './bopscrk.cfg'
 
         parser = argparse.ArgumentParser(description='Generates smart and powerful wordlists.')
 

@@ -5,8 +5,8 @@
 
 import itertools
 
-from bopscrk import Config
-from modules.excluders import remove_duplicates
+from bopscrk.modules import Config
+from bopscrk.modules.excluders import remove_duplicates
 
 
 def add_common_separators(wordlist):

@@ -29,9 +29,12 @@ class Config:
         return final_list
 
     def parse_booleans(self, value):
-        if value.lower() == 'true':
-            return True
-        return False
+        try:
+            if value.lower() == 'true':
+                return True
+            return False
+        except AttributeError:
+            return None
 
     def parse_threads(self, value):
         try: value = int(value); return value

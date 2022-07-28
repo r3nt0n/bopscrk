@@ -14,17 +14,23 @@ setup(
     author='r3nt0n',
     author_email='r3nt0n@protonmail.com',
     url='https://github.com/r3nt0n/bopscrk',
-    version='2.4.2',
+    version='2.4.3',
     license='GNU General Public License v3.0',
     long_description=long_desc,
     long_description_content_type="text/markdown",
+    include_package_data=True,
+    package_data={
+        # If any package contains *.ini files, include them
+        '': ['*.cfg'],
+    },
     #packages=['modules',],
-    packages=find_packages(),
-    scripts=['bopscrk.py'],
+    #packages=find_packages(),
+    packages=['bopscrk', 'bopscrk.modules', 'bopscrk.modules.lyricpass'],
+    #scripts=['bopscrk/bopscrk.py'],
     install_requires=['requests'],
     entry_points = {
         'console_scripts':[
-            'bopscrk = modules.main:run'
+            'bopscrk = bopscrk.modules.main:run'
         ]
     }
 )
