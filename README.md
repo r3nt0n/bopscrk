@@ -35,6 +35,7 @@ pip install bopscrk
 #### Option 2: Download last version published on Github (more updated)
 ```
 git clone --recurse-submodules https://github.com/r3nt0n/bopscrk
+cd bopscrk
 pip install -r requirements.txt
 ```
 ### Run interactive mode
@@ -43,6 +44,7 @@ pip install -r requirements.txt
 bopscrk -i
 
 # If downloaded from GitHub
+cd bopscrk
 python3 bopscrk.py -i
 ```
 
@@ -118,13 +120,20 @@ It will retrieve all lyrics from all songs which belongs to artists that you pro
 
 
 ## Changelist
++ `2.4.3 version notes (28/07/2022)`
+  + Fixing project structure to allow properly install via pip:
+    + Add MANIFEST to exclude compiled and tests files when building dist
+    + Improving structure to properly copy all structure into python packages dir inside a parent dir
+    + Fixing relative path to config file
+  + Catch exception when a wrong config file was provided (notice and exit)
+
 + `2.4 version notes (26/07/2022)`
-  + make the installation process easier enabling `pip install` method
-  + starting to implement better memory management (cached wordlists writing and reading i/o files), not working yet
-  + updating and fixing minor bugs related to dependencies
+  + Make the installation process easier enabling `pip install` method
+  + Starting to implement better memory management (cached wordlists writing and reading i/o files), not working yet
+  + Updating and fixing minor bugs related to dependencies
   + 'exclude from other wordlists' feature removed 
 + `2.3.1 version notes`
-  + fixing namespace bug (related to aux.py module, renamed to auxiliars.py) when running on windows systems
+  + Fixing namespace bug (related to aux.py module, renamed to auxiliars.py) when running on windows systems
   + **unittest** (and simple unitary tests for transforms, excluders and combinators functions) **implemented**.
 + `2.3 version notes (15/10/2020)`
   + **Customizable** configuration for **artists and lyrics transforms** using the cfg file 
