@@ -1,3 +1,13 @@
+<div id="top"></div>
+<!-- 
+This documentation was written using Best-README-Template by othneildrew
+https://github.com/othneildrew/
+https://github.com/othneildrew/Best-README-Template/edit/master/README.md 
+-->
+
+
+
+<!-- PROJECT SHIELDS -->
 [![BlackArch package](https://repology.org/badge/version-for-repo/blackarch/bopscrk.svg)](https://repology.org/project/bopscrk/versions)
 [![Rawsec's CyberSecurity Inventory](https://inventory.raw.pm/img/badges/Rawsec-inventoried-FF5050_flat.svg)](https://inventory.raw.pm/)
 [![Packaging status](https://repology.org/badge/tiny-repos/bopscrk.svg)](https://repology.org/project/bopscrk/versions)
@@ -7,34 +17,106 @@
 
 
 
-# bopscrk
-**bopscrk** (**B**efore **O**utset **P**a**S**sword **CR**ac**K**ing) is a tool to generate smart and powerful wordlists for targeted attacks.
+<!-- PROJECT LOGO -->
+<br />
+<div align="center">
+  <a href="https://github.com/r3nt0n/bopscrk">
+    <img src="img/logo.png" alt=" " width="80" height="80">
+  </a>
 
-Included in **<a href="https://blackarch.org/">BlackArch Linux</a>** pentesting distribution and **<a href="https://inventory.raw.pm/">Rawsec's Cybersecurity Inventory</a>** since August 2019.  
-  
-<p align="center"><img src="https://github.com/R3nt0n/bopscrk/blob/master/img/bopscrk-2.3.gif" /></p>  
+  <h3 align="center">bopscrk</h3>
 
+  <p align="center">
+    A tool to generate smart and powerful wordlists for targeted attacks
+    <br />
+    <a href="https://github.com/r3nt0n/bopscrk"><strong>Explore the docs »</strong></a>
+    <br />
+    <br />
+    <a href="https://github.com/r3nt0n/bopscrk">View Demo</a>
+    ·
+    <a href="https://github.com/r3nt0n/bopscrk">Report Bug</a>
+    ·
+    <a href="https://github.com/r3nt0n/bopscrk">Request Feature</a>
+  </p>
+</div>
+
+
+
+<!-- TABLE OF CONTENTS -->
+<details>
+  <summary>Table of Contents</summary>
+  <ol>
+    <li>
+      <a href="#about-the-project">About The Project</a>
+      <ul>
+        <li><a href="#built-with">Built With</a></li>
+      </ul>
+    </li>
+    <li>
+      <a href="#getting-started">Getting Started</a>
+      <ul>
+        <li><a href="#installation">Installation</a></li>
+        <li><a href="#run-interactive-mode">Run interactive mode</a></li>
+      </ul>
+    </li>
+    <li>
+      <a href="#usage">Usage</a>
+      <ul>
+        <li><a href="#how-it-works">How it works</a></li>
+        <li><a href="#tips">Tips</a></li>
+        <li><a href="#lyricpass">Lyricpass</a></li>
+        <li><a href="#advanced-usage">Advanced usage</a></li>
+      </ul>
+    </li>
+    <li><a href="#roadmap">Roadmap</a></li>
+    <li><a href="#contributing">Contributing</a></li>
+    <li><a href="#changelist">Changelist</a></li>
+    <li><a href="#license">License</a></li>
+    <li><a href="#contact">Contact</a></li>
+    <li><a href="#acknowledgments">Acknowledgments</a></li>
+    <li><a href="#legal-disclaimer">Legal disclaimer</a></li>
+  </ol>
+</details>
+
+
+
+<!-- ABOUT THE PROJECT -->
+## About The Project
+
+<p align="center"><img src="https://github.com/r3nt0n/bopscrk/blob/master/img/bopscrk-2.3.gif" /></p>  
+
+    
 + **Targeted-attack wordlist creator**: introduce personal info related to target, combines every word and transforms results into possible passwords. The *lyricpass* module allows to **search lyrics related to artists** and include them to the wordlists.
-
 + **Customizable case** and **leet transforms**: create **custom charsets** and **transforms patterns** trough a simple **config file**.
-
 + **Wordlists exclusion**: Exclude words from another wordlist (to avoid passwords that you have already tested).
-
 + **Interactive mode** and **one-line command interface** supported. 
++ Included in **<a href="https://blackarch.org/">BlackArch Linux</a>** pentesting distribution and **<a href="https://inventory.raw.pm/">Rawsec's Cybersecurity Inventory</a>** since August 2019.
 
-## Requirements
+<p align="right">(<a href="#top">back to top</a>)</p>
+
+
+
+### Built With
+
 + **Python 3** (secondary branch keeps Python 2.7 legacy support)
-  + requests
-  + alive-progress
+  + **requests**
+  + **alive-progress**
 
-## Get started
-### Download and install
+<p align="right">(<a href="#top">back to top</a>)</p>
 
-[//]: # (#### Option 1: Install last version published on Pypi &#40;more stable&#41;)
+
+
+<!-- GETTING STARTED -->
+## Getting Started
+
+### Installation
+
 ```
 pip install bopscrk
 ```
 
+<!-- Download from Github and install requirements -->
+<!-- COMMENTED FOR NOW -->
 [//]: # (#### Option 2: Download last version published on Github &#40;more updated&#41;)
 
 [//]: # (```)
@@ -46,11 +128,17 @@ pip install bopscrk
 [//]: # (pip install -r requirements.txt)
 
 [//]: # (```)
+<!-- END COMMENT -->
+
 ### Run interactive mode
 ```
 bopscrk -i
 ```
 
+<p align="right">(<a href="#top">back to top</a>)</p>
+
+
+<!-- USAGE EXAMPLES -->
 ## Usage
 ```
 
@@ -66,10 +154,13 @@ bopscrk -i
   -o , --output      output file to save the wordlist (default: tmp.txt)
   -C , --config      specify config file to use (default: ./bopscrk.cfg)
 
-
 ```
- 
-## How it works
+
+_For more information, please refer to the [Advanced usage section](##advanced-usage)_
+
+<p align="right">(<a href="#top">back to top</a>)</p>
+
+### How it works
 + You have to **provide** some **words** which will act as a base.      
 + The **lyricpass feature** allows to introduce **artists**. The tool will download all his **songs' lyrics** and each line will be added as a new word. By default, artist names and a word formed by the initial of word on each phrase, will be added too.
 + The tool will generate **all possible combinations** between them.  
@@ -121,10 +212,50 @@ It will retrieve all lyrics from all songs which belongs to artists that you pro
   + Convert all "a/A" occurrences into "4" and all "e/E" occurrences into "3"  
     `leet_charset=a:4 e:3`      
 
+<p align="right">(<a href="#top">back to top</a>)</p>
+
+
+
+<!-- ROADMAP -->
+## Roadmap
+
+- [ ] Improve **memory management**
+    - [ ] Write wordlists into filesystem during execution and use it as cache (<a href="https://github.com/r3nt0n/bopscrk/issues">#12</a>)
+- [ ] Improve **performance**
+    - [ ] Refactor and improve threads and transforms logic
+- [ ] Extra features
+    - [x] Implement **progress bar** to keep user informed of the execution state
+    - [ ] Implement **session file** to keep track of the execution point and **be able to stop and resume sessions** (<a href="https://github.com/r3nt0n/bopscrk/issues">#12</a>)
+    - [ ] Create **config options** for customized **case transforms** (e.g.: disable pair/odd transforms)
+
+See the [open issues](https://github.com/r3nt0n/bopscrk/issues) for a full list of proposed features (and known issues).
+
+<p align="right">(<a href="#top">back to top</a>)</p>
+
+
+
+<!-- CONTRIBUTING -->
+## Contributing
+
+Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+
+If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
+Don't forget to give the project a star! Thanks again!
+
+1. Fork the Project
+2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the Branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+<p align="right">(<a href="#top">back to top</a>)</p>
+
+
 
 ## Changelist
-+ `development version - last changes`
++ `last development version (available on Github)`
   + **progress bar** implemented and working
+  + Docs improved
 + `2.4.4 version notes (31/07/2022)`
   + **Relative imports bug fixed**
   + Starting to refactor general structure to allow **progressbar feature inclusion**
@@ -168,11 +299,48 @@ It will retrieve all lyrics from all songs which belongs to artists that you pro
   + **EXCLUDE WORDLISTS**: speed improvement using multithreaded exclusions  
   + **NEW FEATURE**: lyrics searching related to artists increase the wordlist chances
 
-
-## TO-DO list
-+ Create options to **custom case transforms** (e.g.: disable pair/odd transforms).
-+ **Lyricpass** integration was upgraded to last version released by initstring, but still needs some tweaks to speed up the search process (I would appreciate any help).
+<p align="right">(<a href="#top">back to top</a>)</p>
 
 
+
+<!-- LICENSE -->
+## License
+
+Distributed under the GNU General Public License v3.0. See `LICENSE` for more information.
+
+<p align="right">(<a href="#top">back to top</a>)</p>
+
+
+
+<!-- CONTACT -->
+## Contact
+
+r3nt0n: https://github.com/r3nt0n - r3nt0n@protonmail.com
+
+Bopscrk: [https://github.com/r3nt0n/bopscrk](https://github.com/r3nt0n/bopscrk)
+
+<p align="right">(<a href="#top">back to top</a>)</p>
+
+
+
+<!-- ACKNOWLEDGMENTS -->
+## Acknowledgments
+
+* [lyricpass](https://github.com/initstring/lyricpass) (original script by [initstring](https://github.com/initstring))
+* [noraj](https://github.com/noraj) contributed opening several issues and pull requests that have allow to fix some important bugs. He also has managed by his own the tool's addition in BlackArch and RawSec repositories, which has allowed its popularity and use to increase.
+* [nylocx](https://github.com/nylocx)/[agoertz-fls](https://github.com/agoertz-fls) contributed adding Python3 support
+* [glozanoa](https://github.com/glozanoa)/[https://github.com/fabaff](fabaff) contributed adding bopscrk command (improvements on setup.py)
+
+Thank you all!
+
+<p align="right">(<a href="#top">back to top</a>)</p>
+
+
+
+<!-- LEGAL DISCLAIMER -->
 ## Legal disclaimer
 This tool is created for the sole purpose of security awareness and education, it should not be used against systems that you do not have permission to test/attack. The author is not responsible for misuse or for any damage that you may cause. You agree that you use this software at your own risk.
+
+<p align="right">(<a href="#top">back to top</a>)</p>
+
+
