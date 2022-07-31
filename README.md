@@ -94,8 +94,6 @@ Thanks dude :)
 + **Interactive mode** and **one-line command interface** supported. 
 + Included in **<a href="https://blackarch.org/">BlackArch Linux</a>** pentesting distribution and **<a href="https://inventory.raw.pm/">Rawsec's Cybersecurity Inventory</a>** since August 2019.
 
-<p align="right">(<a href="#top">back to top</a>)</p>
-
 
 
 ### Built with
