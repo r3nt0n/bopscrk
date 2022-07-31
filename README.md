@@ -70,7 +70,12 @@ Thanks dude :)
       </ul>
     </li>
     <li><a href="#roadmap">Roadmap</a></li>
-    <li><a href="#contributing">Contributing</a></li>
+    <li>
+      <a href="#contributing">Contributing</a>
+      <ul>
+        <li><a href="#contributors">Contributors</a></li>
+      </ul>
+    </li>
     <li><a href="#changelist">Changelist</a></li>
     <li><a href="#license">License</a></li>
     <li><a href="#contact">Contact</a></li>
@@ -248,6 +253,14 @@ Don't forget to give the project a star! Thanks again!
 4. Push to the Branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
+
+### Contributors
+* [noraj](https://github.com/noraj) contributed opening several issues and pull requests that have allow to fix some important bugs. He also managed by his own the tool's addition in BlackArch and RawSec repositories, which has increase its popularity and use
+* [nylocx](https://github.com/nylocx) and [agoertz-fls](https://github.com/agoertz-fls) contributed adding Python3 support
+* [glozanoa](https://github.com/glozanoa) and [fabaff](https://github.com/fabaff) contributed adding bopscrk command (improvements on setup.py)
+
+Thank you all!
+
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 
@@ -327,11 +340,6 @@ Bopscrk: [https://github.com/r3nt0n/bopscrk](https://github.com/r3nt0n/bopscrk)
 ## Acknowledgments
 
 * lyricpass module is based on a [project](https://github.com/initstring/lyricpass) created by [initstring](https://github.com/initstring)
-* [noraj](https://github.com/noraj) contributed opening several issues and pull requests that have allow to fix some important bugs. He also managed by his own the tool's addition in BlackArch and RawSec repositories, which has increase its popularity and use
-* [nylocx](https://github.com/nylocx) and [agoertz-fls](https://github.com/agoertz-fls) contributed adding Python3 support
-* [glozanoa](https://github.com/glozanoa) and [fabaff](https://github.com/fabaff) contributed adding bopscrk command (improvements on setup.py)
-
-Thank you all!
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
