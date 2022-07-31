@@ -24,7 +24,8 @@ Included in **<a href="https://blackarch.org/">BlackArch Linux</a>** pentesting 
 
 ## Requirements
 + **Python 3** (secondary branch keeps Python 2.7 legacy support)
-+ requests python module
+  + requests
+  + alive-progress
 
 ## Get started
 ### Download and install
@@ -122,6 +123,8 @@ It will retrieve all lyrics from all songs which belongs to artists that you pro
 
 
 ## Changelist
++ `development version - last changes`
+  + **progress bar** implemented and working
 + `2.4.4 version notes (31/07/2022)`
   + **Relative imports bug fixed**
   + Starting to refactor general structure to allow **progressbar feature inclusion**

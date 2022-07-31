@@ -5,6 +5,7 @@
 # packages with python3 setup.py -v sdist
 
 from setuptools import setup, find_packages
+from bopscrk.bopscrk import __version__
 
 # Read project description
 with open('README.md', 'r') as f:
@@ -15,7 +16,7 @@ setup(
     author='r3nt0n',
     author_email='r3nt0n@protonmail.com',
     url='https://github.com/r3nt0n/bopscrk',
-    version='2.4.4',
+    version=__version__,
     license='GNU General Public License v3.0',
     long_description=long_desc,
     long_description_content_type="text/markdown",
@@ -28,7 +29,7 @@ setup(
     #packages=find_packages(),
     packages=['bopscrk', 'bopscrk.modules', 'bopscrk.modules.lyricpass'],
     #scripts=['bopscrk/bopscrk.py'],
-    install_requires=['requests'],
+    install_requires=['requests', 'alive-progress'],
     entry_points = {
         'console_scripts':[
             #'bopscrk = bopscrk.modules.main:run'

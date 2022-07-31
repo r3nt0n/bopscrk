@@ -11,7 +11,7 @@ Before Outset PaSsword CRacKing is a tool to assist in the previous process of c
 
 name = 'bopscrk.py'
 __author__ = 'r3nt0n'
-__version__ = '2.4.3'
+__version__ = '2.4.5'
 __status__ = 'Development'
 
 

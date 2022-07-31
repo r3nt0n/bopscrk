@@ -5,6 +5,9 @@
 
 from multiprocessing.dummy import Pool as ThreadPool
 
+#from tqdm import tqdm
+from alive_progress import alive_bar
+
 from . import Config
 from .excluders import remove_duplicates
 from .auxiliars import append_wordlist_to_file
@@ -137,7 +140,9 @@ def multithread_transforms(transform_type, wordlist):
     # process each word in their own thread and return the results
     new_wordlists = []
     with ThreadPool(Config.THREADS) as pool:
-        new_wordlists += pool.map(transform_type, wordlist)
+        with alive_bar(bar=None,spinner='bubbles', monitor=False,elapsed=False,stats=False,receipt=False) as progressbar:
+            new_wordlists += pool.map(transform_type, wordlist)
+            progressbar()
     new_wordlist = []
     for nlist in new_wordlists:
          new_wordlist += nlist

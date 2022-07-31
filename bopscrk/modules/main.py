@@ -112,22 +112,25 @@ def run(name, version):
             while ((i < args.n_words) and (len(base_wordlist) > i)):
                 i += 1
                 final_wordlist += combinator(base_wordlist, i)
-                print('  {}[*]{} Combining {} words using {} words (words produced: {})...'.format(color.CYAN,color.END,len(base_wordlist),i, len(final_wordlist)))
-                #print('\n')
+                print('  {}[*]{} {} words combined using {} words (words produced: {})'.format(color.CYAN,color.END,len(base_wordlist),i, len(final_wordlist)))
 
 
 
         # WORD COMBINATIONS (WITH COMMON SEPARATORS)
         if Config.EXTRA_COMBINATIONS:
             if Config.SEPARATORS_CHARSET:
-                print('  {}[+]{} Creating extra combinations (separators charset in {}{}{})...'.format(color.BLUE, color.END,color.CYAN, args.cfg_file,color.END))
+                #print('  {}[+]{} Creating extra combinations (separators charset in {}{}{})...'.format(color.BLUE, color.END,color.CYAN, args.cfg_file,color.END))
+                print('  {}[+]{} Creating extra combinations with separators charset...'.format(color.BLUE,color.END))
                 final_wordlist += add_common_separators(base_wordlist)
+                print('  {}[*]{} Words produced: {}'.format(color.CYAN, color.END, len(final_wordlist)))
             else:
                 print('  {}[!]{} Any separators charset specified in {}{}'.format(color.ORANGE, color.END, args.cfg_file,color.END))
 
 
         # Remove words by min-max length range established
+        print('  {}[-]{} Removing words by min and max length provided ({}-{})...'.format(color.PURPLE, color.END,args.min_length,args.max_length))
         final_wordlist = remove_by_lengths(final_wordlist, args.min_length, args.max_length)
+        print('  {}[*]{} Words remained: {}'.format(color.CYAN, color.END, len(final_wordlist)))
         # (!) Check for duplicates (is checked before return in combinator() and add_common_separators())
         #final_wordlist = remove_duplicates(final_wordlist)
 
@@ -157,10 +160,10 @@ def run(name, version):
             else:
                 recursive_msg = ''
                 if Config.RECURSIVE_LEET:
-                    print('\n  {}[!] WARNING: Recursive leet is enabled, depending on the words\n'
-                          '      max-length configured (now is {}{}{}) and the size of your\n'
-                          '      wordlist at this point (now contains {}{}{} words), this process\n'
-                          '      could take several minutes{}\n'.format(color.ORANGE,color.END,args.max_length,color.ORANGE,color.END,len(final_wordlist),color.ORANGE,color.END))
+                    # print('\n  {}[!] WARNING: Recursive leet is enabled, depending on the words\n'
+                    #       '      max-length configured (now is {}{}{}) and the size of your\n'
+                    #       '      wordlist at this point (now contains {}{}{} words), this process\n'
+                    #       '      could take a long time{}\n'.format(color.ORANGE,color.END,args.max_length,color.ORANGE,color.END,len(final_wordlist),color.ORANGE,color.END))
                     recursive_msg = '{}recursive{} '.format(color.RED,color.END)
                 print('  {}[+]{} Applying {}leet transforms to {} words...'.format(color.BLUE, color.END, recursive_msg,len(final_wordlist)))
 
@@ -181,7 +184,9 @@ def run(name, version):
             temp_wordlist += multithread_transforms(case_transforms, final_wordlist)
             final_wordlist += temp_wordlist
 
+        print('  {}[-]{} Removing duplicates...'.format(color.PURPLE, color.END))
         final_wordlist = remove_duplicates(final_wordlist)
+        print('  {}[*]{} Words remained: {}'.format(color.CYAN, color.END, len(final_wordlist)))
 
         # EXCLUDE FROM OTHER WORDLISTS
         #if args.exclude_wordlists:
