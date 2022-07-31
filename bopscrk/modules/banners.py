@@ -6,14 +6,14 @@
 from time import sleep
 from random import randint
 
-from bopscrk.modules.color import color
-from bopscrk.modules.transforms import *
+from .color import color
+from .transforms import *
 
 
 # Set the time interval (in secs) between printing each line
 interval = 0.03
 
-def banner(name, version, author):
+def banner(name, version, author="r3nt0n"):
     try:
         name_rand_leet = leet_transforms(name)
         name_rand_leet = name_rand_leet[randint(0, (len(name_rand_leet) - 1))]

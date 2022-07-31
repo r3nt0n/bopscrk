@@ -9,7 +9,7 @@ import sys
 from os import path
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
 
-from modules.transforms import case_transforms, leet_transforms, multithread_transforms, \
+from ..modules.transforms import case_transforms, leet_transforms, multithread_transforms, \
                            take_initials, artist_space_transforms, lyric_space_transforms
 
 

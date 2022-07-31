@@ -6,7 +6,7 @@
 from multiprocessing.dummy import Pool as ThreadPool
 from collections import OrderedDict
 
-from bopscrk.modules import Config
+from . import Config
 
 def compare(word_to_exclude, word_in_wordlist):
     if word_in_wordlist is not word_to_exclude:

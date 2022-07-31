@@ -9,7 +9,7 @@ import sys
 from os import path
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
 
-from modules.excluders import compare, multithread_exclude, remove_duplicates, remove_by_lengths
+from ..modules.excluders import compare, multithread_exclude, remove_duplicates, remove_by_lengths
 
 
 class TestExcluders(unittest.TestCase):

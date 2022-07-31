@@ -14,18 +14,15 @@ __author__ = 'r3nt0n'
 __version__ = '2.4.3'
 __status__ = 'Development'
 
-# from modules.args import Arguments
-# from modules.config import Config
-#
-#
-# args = Arguments()
-# Config = Config(args.cfg_file)
-# Config.setup()
-#from bopscrk.modules import args, Config
+
+def start():
+    try:
+        from .modules import main
+    # catching except when running python3 bopscrk.py (sketchy, need some refactor)
+    except ImportError:
+        from modules import main
+    main.run(name, __version__)
 
 
 if __name__ == '__main__':
-    # from modules import main as bopscrk
-    # bopscrk.run()
-    from bopscrk.modules import main
-    main.run()
+    start()

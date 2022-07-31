@@ -4,8 +4,8 @@
 
 import os, sys, argparse
 
-from bopscrk.modules.color import color
-from bopscrk.modules.auxiliars import is_empty, is_valid_date
+from .color import color
+from .auxiliars import is_empty, is_valid_date
 
 
 class Arguments:

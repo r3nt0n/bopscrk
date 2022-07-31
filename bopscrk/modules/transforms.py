@@ -5,9 +5,9 @@
 
 from multiprocessing.dummy import Pool as ThreadPool
 
-from bopscrk.modules import Config
-from bopscrk.modules.excluders import remove_duplicates
-from bopscrk.modules.auxiliars import append_wordlist_to_file
+from . import Config
+from .excluders import remove_duplicates
+from .auxiliars import append_wordlist_to_file
 
 
 def case_transforms(word):

@@ -122,6 +122,9 @@ It will retrieve all lyrics from all songs which belongs to artists that you pro
 
 
 ## Changelist
++ `2.4.4 version notes (31/07/2022)`
+  + **Relative imports bug fixed**
+  + Starting to refactor general structure to allow **progressbar feature inclusion**
 + `2.4.3 version notes (28/07/2022)`
   + Fixing project structure to allow properly install via pip:
     + Add MANIFEST to exclude compiled and tests files when building dist

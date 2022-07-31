@@ -5,17 +5,17 @@
 
 import sys, os, datetime
 
-from bopscrk.bopscrk import name, __version__, __author__
-from bopscrk.modules import args, Config
-from bopscrk.modules.auxiliars import clear, remove_duplicates_from_file
-from bopscrk.modules import banners
-from bopscrk.modules.color import color
-from bopscrk.modules.transforms import leet_transforms, case_transforms, artist_space_transforms, lyric_space_transforms, multithread_transforms, take_initials, transform_cached_wordlist_and_save
-from bopscrk.modules.combinators import combinator, add_common_separators
-from bopscrk.modules.excluders import remove_by_lengths, remove_duplicates, multithread_exclude
+#from bopscrk.bopscrk import name, __version__, __author__
+from . import args, Config
+from .auxiliars import clear, remove_duplicates_from_file
+from . import banners
+from .color import color
+from .transforms import leet_transforms, case_transforms, artist_space_transforms, lyric_space_transforms, multithread_transforms, take_initials, transform_cached_wordlist_and_save
+from .combinators import combinator, add_common_separators
+from .excluders import remove_by_lengths, remove_duplicates, multithread_exclude
 
 
-def run():
+def run(name, version):
     # check Python version
     if sys.version_info < (3, 0): print('Python 3 is required'); sys.exit(1)
     # Print simple help and exit when runs without args
@@ -26,17 +26,16 @@ def run():
             clear()
             banners.bopscrk_banner()
             banners.help_banner()
-            banners.banner(name, __version__, __author__)
+            banners.banner(name, version)
             args.set_interactive_options()
         else:
             banners.bopscrk_banner()
             banners.help_banner()
-            banners.banner(name, __version__, __author__)
+            banners.banner(name, version)
             args.set_cli_options()
 
         # Check if config file exists
         if not os.path.exists(args.cfg_file):
-            args.cfg_file
             print('  {}[!]{} error trying to load config file {}'.format(color.RED, color.END, args.cfg_file))
             sys.exit(3)
 
@@ -69,7 +68,7 @@ def run():
 
                 # Search lyrics if it meets dependencies for lyricpass
                 try:
-                    from modules.lyricpass import lyricpass
+                    from .lyricpass import lyricpass
                     print('\n{}     -- Starting lyricpass module --\n'.format(color.GREY))
                     print('  {}[*]{} Looking for {}\'s lyrics...'.format(color.CYAN, color.END, artist.title()))
                     lyrics = lyricpass.lyricpass(artist)
