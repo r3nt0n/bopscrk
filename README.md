@@ -326,10 +326,10 @@ Bopscrk: [https://github.com/r3nt0n/bopscrk](https://github.com/r3nt0n/bopscrk)
 <!-- ACKNOWLEDGMENTS -->
 ## Acknowledgments
 
-* [lyricpass](https://github.com/initstring/lyricpass) (original script by [initstring](https://github.com/initstring))
-* [noraj](https://github.com/noraj) contributed opening several issues and pull requests that have allow to fix some important bugs. He also has managed by his own the tool's addition in BlackArch and RawSec repositories, which has allowed its popularity and use to increase.
-* [nylocx](https://github.com/nylocx)/[agoertz-fls](https://github.com/agoertz-fls) contributed adding Python3 support
-* [glozanoa](https://github.com/glozanoa)/[https://github.com/fabaff](fabaff) contributed adding bopscrk command (improvements on setup.py)
+* lyricpass module is based on a [project](https://github.com/initstring/lyricpass) created by [initstring](https://github.com/initstring)
+* [noraj](https://github.com/noraj) contributed opening several issues and pull requests that have allow to fix some important bugs. He also managed by his own the tool's addition in BlackArch and RawSec repositories, which has increase its popularity and use
+* [nylocx](https://github.com/nylocx) and [agoertz-fls](https://github.com/agoertz-fls) contributed adding Python3 support
+* [glozanoa](https://github.com/glozanoa) and [fabaff](https://github.com/fabaff) contributed adding bopscrk command (improvements on setup.py)
 
 Thank you all!
 
