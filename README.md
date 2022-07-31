@@ -28,24 +28,26 @@ Included in **<a href="https://blackarch.org/">BlackArch Linux</a>** pentesting 
 
 ## Get started
 ### Download and install
-#### Option 1: Install last version published on Pypi (more stable)
+
+[//]: # (#### Option 1: Install last version published on Pypi &#40;more stable&#41;)
 ```
 pip install bopscrk
 ```
-#### Option 2: Download last version published on Github (more updated)
-```
-git clone --recurse-submodules https://github.com/r3nt0n/bopscrk
-cd bopscrk
-pip install -r requirements.txt
-```
+
+[//]: # (#### Option 2: Download last version published on Github &#40;more updated&#41;)
+
+[//]: # (```)
+
+[//]: # (git clone --recurse-submodules https://github.com/r3nt0n/bopscrk)
+
+[//]: # (cd bopscrk)
+
+[//]: # (pip install -r requirements.txt)
+
+[//]: # (```)
 ### Run interactive mode
 ```
-# If installed using pip
 bopscrk -i
-
-# If downloaded from GitHub
-cd bopscrk
-python3 bopscrk.py -i
 ```
 
 ## Usage
