@@ -3,6 +3,7 @@
 This documentation was written using Best-README-Template by othneildrew
 https://github.com/othneildrew/
 https://github.com/othneildrew/Best-README-Template/edit/master/README.md 
+Thanks dude :)
 -->
 
 
@@ -29,10 +30,10 @@ https://github.com/othneildrew/Best-README-Template/edit/master/README.md
   <p align="center">
     A tool to generate smart and powerful wordlists for targeted attacks
     <br />
-    <a href="https://github.com/r3nt0n/bopscrk"><strong>Explore the docs »</strong></a>
+    <a href="#usage"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/r3nt0n/bopscrk">View Demo</a>
+    <a href="#about-the-project">View Demo</a>
     ·
     <a href="https://github.com/r3nt0n/bopscrk">Report Bug</a>
     ·
@@ -44,16 +45,16 @@ https://github.com/othneildrew/Best-README-Template/edit/master/README.md
 
 <!-- TABLE OF CONTENTS -->
 <details>
-  <summary>Table of Contents</summary>
+  <summary>Table of contents</summary>
   <ol>
     <li>
-      <a href="#about-the-project">About The Project</a>
+      <a href="#about-the-project">About the Project</a>
       <ul>
-        <li><a href="#built-with">Built With</a></li>
+        <li><a href="#built-with">Built with</a></li>
       </ul>
     </li>
     <li>
-      <a href="#getting-started">Getting Started</a>
+      <a href="#getting-started">Getting started</a>
       <ul>
         <li><a href="#installation">Installation</a></li>
         <li><a href="#run-interactive-mode">Run interactive mode</a></li>
@@ -81,11 +82,12 @@ https://github.com/othneildrew/Best-README-Template/edit/master/README.md
 
 
 <!-- ABOUT THE PROJECT -->
-## About The Project
+## About the Project
 
 <p align="center"><img src="https://github.com/r3nt0n/bopscrk/blob/master/img/bopscrk-2.3.gif" /></p>  
 
-    
+
+
 + **Targeted-attack wordlist creator**: introduce personal info related to target, combines every word and transforms results into possible passwords. The *lyricpass* module allows to **search lyrics related to artists** and include them to the wordlists.
 + **Customizable case** and **leet transforms**: create **custom charsets** and **transforms patterns** trough a simple **config file**.
 + **Wordlists exclusion**: Exclude words from another wordlist (to avoid passwords that you have already tested).
@@ -96,7 +98,7 @@ https://github.com/othneildrew/Best-README-Template/edit/master/README.md
 
 
 
-### Built With
+### Built with
 
 + **Python 3** (secondary branch keeps Python 2.7 legacy support)
   + **requests**
@@ -107,7 +109,7 @@ https://github.com/othneildrew/Best-README-Template/edit/master/README.md
 
 
 <!-- GETTING STARTED -->
-## Getting Started
+## Getting started
 
 ### Installation
 
@@ -156,7 +158,7 @@ bopscrk -i
 
 ```
 
-_For more information, please refer to the [Advanced usage section](##advanced-usage)_
+_For more information, please refer to the [Advanced usage](#advanced-usage) section._
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
