@@ -22,7 +22,7 @@ Thanks dude :)
 <br />
 <div align="center">
   <a href="https://github.com/r3nt0n/bopscrk">
-    <img src="https://github.com/r3nt0n/bopscrk/blob/master/img/logo.png" alt="Logo" width="80" height="80">
+    <img src="https://github.com/r3nt0n/bopscrk/blob/master/img/logo_raster.svg" alt="Logo" width="80" height="80">
   </a>
 
   <h3 align="center">bopscrk</h3>
