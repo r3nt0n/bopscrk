@@ -5,3 +5,6 @@ bopscrk.egg-info
 dist/
 *.log
 *.bak
+*.xcf
+*.test.svg
+*_all.svg
