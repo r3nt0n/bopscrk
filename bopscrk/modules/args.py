@@ -60,10 +60,13 @@ class Arguments:
                             dest='cfg_file', default=self.DEFAULT_CFG_FILE,
                             help='specify config file to use (default: {})'.format(self.DEFAULT_CFG_FILE))
 
+        parser.add_argument('--version', action="store_true", help='print version and exit')
+
         self.parser = parser
         self.args = parser.parse_args()
         self.interactive = self.args.interactive
         self.cfg_file = self.args.cfg_file
+        self.print_version = self.args.version
 
     def set_interactive_options(self):
         while True:

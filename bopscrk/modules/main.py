@@ -20,8 +20,11 @@ def run(name, version):
     if sys.version_info < (3, 0): print('Python 3 is required'); sys.exit(1)
     # Print simple help and exit when runs without args
     if len(sys.argv) == 1: args.parser.print_help(sys.stdout); sys.exit(2)
+    # Print version and exit (when runs with -v)
+    if args.print_version: print(name + '_' + version); sys.exit(0)
+
     try:
-        # setting args
+        # setting args whter interactive or not
         if args.interactive:
             clear()
             banners.bopscrk_banner()
@@ -114,8 +117,6 @@ def run(name, version):
                 final_wordlist += combinator(base_wordlist, i)
                 print('  {}[*]{} {} words combined using {} words (words produced: {})'.format(color.CYAN,color.END,len(base_wordlist),i, len(final_wordlist)))
 
-
-
         # WORD COMBINATIONS (WITH COMMON SEPARATORS)
         if Config.EXTRA_COMBINATIONS:
             if Config.SEPARATORS_CHARSET:
@@ -125,7 +126,6 @@ def run(name, version):
                 print('  {}[*]{} Words produced: {}'.format(color.CYAN, color.END, len(final_wordlist)))
             else:
                 print('  {}[!]{} Any separators charset specified in {}{}'.format(color.ORANGE, color.END, args.cfg_file,color.END))
-
 
         # Remove words by min-max length range established
         print('  {}[-]{} Removing words by min and max length provided ({}-{})...'.format(color.PURPLE, color.END,args.min_length,args.max_length))
@@ -217,10 +217,10 @@ def run(name, version):
 
         # PRINT RESULTS
         ############################################################################
-        print('\n  {}[+]{} Time elapsed:\t{}'.format(color.GREEN, color.END, total_time))
+        print('\n  {}[+]{} Words generated:\t{}{}{}'.format(color.GREEN, color.END, color.RED, len(final_wordlist),color.END))
+        print('  {}[+]{} Time elapsed:\t{}'.format(color.GREEN, color.END, total_time))
         print('  {}[+]{} Output file:\t{}{}{}{}'.format(color.GREEN, color.END, color.BOLD, color.BLUE, args.outfile, color.END))
         #print('  {}[+]{} Words generated:\t{}{}{}\n'.format(color.GREEN, color.END, color.RED, str(sum(1 for line in open(args.outfile))), color.END))
-        print('  {}[+]{} Words generated:\t{}{}{}\n'.format(color.GREEN, color.END, color.RED,len(final_wordlist), color.END))
         sys.exit(0)
 
     except KeyboardInterrupt:
