@@ -100,18 +100,19 @@ Thanks dude :)
 + Included in **<a href="https://blackarch.org/">BlackArch Linux</a>** pentesting distribution and **<a href="https://inventory.raw.pm/">Rawsec's Cybersecurity Inventory</a>** since August 2019.
 
 
-### What's new
-
-Progress bar implemented!
-
-<p align="center"><img src="https://github.com/r3nt0n/bopscrk/blob/master/img/progressbar_example1.gif" /></p>
-<p align="center"><img src="https://github.com/r3nt0n/bopscrk/blob/master/img/progressbar_example2.gif" /></p>
-
 ### Built with
 
 + **Python 3** (secondary branch keeps Python 2.7 legacy support)
   + **requests**
   + **alive-progress**
+
+### What's new
+
+**2.4.5 RELEASED**: Progress bar with ETA implemented!
+
+[//]: # (<p align="center"><img src="https://github.com/r3nt0n/bopscrk/blob/master/img/progressbar_example1.gif" /></p>)
+
+[//]: # (<p align="center"><img src="https://github.com/r3nt0n/bopscrk/blob/master/img/progressbar_example2.gif" /></p>)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
