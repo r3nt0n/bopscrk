@@ -5,7 +5,7 @@
 # packages with python3 setup.py -v sdist
 
 from setuptools import setup, find_packages
-from bopscrk.bopscrk import __version__
+from bopscrk.bopscrk import __version__, desc
 
 # Read project description
 with open('README.md', 'r') as f:
@@ -13,16 +13,17 @@ with open('README.md', 'r') as f:
 
 setup(
     name='bopscrk',
+    version=__version__,
+    url='https://github.com/r3nt0n/bopscrk',
     author='r3nt0n',
     author_email='r3nt0n@protonmail.com',
-    url='https://github.com/r3nt0n/bopscrk',
-    version=__version__,
     license='GNU General Public License v3.0',
+    description=desc,
     long_description=long_desc,
     long_description_content_type="text/markdown",
     include_package_data=True,
     package_data={
-        # If any package contains *.ini files, include them
+        # If any package contains *.cfg files, include them
         '': ['*.cfg'],
     },
     #packages=['modules',],

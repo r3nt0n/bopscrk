@@ -3,24 +3,22 @@
 # https://github.com/r3nt0n/bopscrk
 # bopscrk - init script
 
-#import sys, os, datetime
-
-"""
-Before Outset PaSsword CRacKing is a tool to assist in the previous process of cracking passwords.
-"""
 
 name = 'bopscrk.py'
-__author__ = 'r3nt0n'
+desc = 'A tool to generate smart and powerful wordlists for targeted attacks'
 __version__ = '2.4.5'
+__author__ = 'r3nt0n'
 __status__ = 'Development'
 
 
 def start():
     try:
         from .modules import main
-    # catching except when running python3 bopscrk.py (sketchy, need some refactor)
     except ImportError:
+        # catching except when running python3 bopscrk.py
+        # (sketchy, need some refactor)
         from modules import main
+
     main.run(name, __version__)
 
 

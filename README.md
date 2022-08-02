@@ -340,6 +340,7 @@ Bopscrk: [https://github.com/r3nt0n/bopscrk](https://github.com/r3nt0n/bopscrk)
 ## Acknowledgments
 
 * lyricpass module is based on a [project](https://github.com/initstring/lyricpass) created by [initstring](https://github.com/initstring)
+* [Pixel Gothic font](https://dafonttop.com/pixel-gothic-font.font) by [Kajetan Andrzejak](https://dafonttop.com/tags.php?key=Kajetan%20Andrzejak)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
