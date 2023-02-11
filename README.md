@@ -28,7 +28,7 @@ Thanks dude :)
   <h3 align="center">bopscrk</h3>
 
   <p align="center">
-    A tool to generate smart and powerful wordlists for targeted attacks
+    Generate smart and powerful wordlists for targeted attacks
     <br />
     <a href="#usage"><strong>Explore the docs »</strong></a>
     <br />
@@ -108,7 +108,7 @@ Thanks dude :)
 
 ### What's new
 
-**2.4.5 RELEASED**: Progress bar with ETA implemented!
+**2.4.5 RELEASED**: Progress bar with ETA implemented
 
 [//]: # (<p align="center"><img src="https://github.com/r3nt0n/bopscrk/blob/master/img/progressbar_example1.gif" /></p>)
 
@@ -175,7 +175,7 @@ _For more information, please refer to the [Advanced usage](#advanced-usage) sec
 
 ### How it works
 + You have to **provide** some **words** which will act as a base.      
-+ The **lyricpass feature** allows to introduce **artists**. The tool will download all his **songs' lyrics** and each line will be added as a new word. By default, artist names and a word formed by the initial of word on each phrase, will be added too.
++ The **lyricpass feature** allow to introduce **artists**. The tool will download all his **songs' lyrics** and each line will be added as a new word. By default, artist names and a word formed by the initial of word on each phrase, will be added too.
 + The tool will generate **all possible combinations** between them.  
 + To generate more combinations, it will add some **common separators** (e.g. "-", "_", "."), **numbers** and **special chars** frequently used in passwords.
 + You can use **leet** and **case transforms** to increase your chances.  
@@ -184,7 +184,7 @@ _For more information, please refer to the [Advanced usage](#advanced-usage) sec
   
 ### Tips  
 + Fields can be left **empty**.
-+ You **can use accentuation** in your words.
++ You **can use accentuation** in your words and special chars (if you use the non-interactive mode, escape special chars like `'` and `"` with backslashes, e.g.: `bopscrk -w John,O\'hara,Doe,foo,bar`).
 + In the others field you can write **several words comma-separated**. *Example*: 2C,Flipper.
 + If you want to produce **all possible leet transformations**, enable the **recursive_leet option** in configuration file.
 + You can **select which transforms to apply on lyrics phrases** found through the **cfg file**.
@@ -218,7 +218,7 @@ It will retrieve all lyrics from all songs which belongs to artists that you pro
   + **lyric_space_replacement**: same with lyrics found
   + **space_replacement_chars**: characters to insert instead of spaces inside an artist name or a lyric phrase.  *Can be a single char or a string of chars, e.g.: `!?-/&(`*
   + **space_replacement_strings**: strings to insert instead of spaces inside an artist name or a lyric phrase.  *Can be a single string or a list of strings space-separated, e.g.: `123` `34!@`*
-+ Some transforms have extensive charsets preincluded. To use it instead of the basic, just uncomment the corresponding line.
++ Some transforms have extensive charsets preincluded. To use it instead of the basic, just **comment and uncomment** the corresponding lines (**If you dont comment the original it could gives an error**).
 
 + **Parameters configuration examples**
   + Combine all the words using dots as separator, and same using commas  
@@ -296,7 +296,7 @@ Thank you all!
   + Make the installation process easier enabling `pip install` method
   + Starting to implement better memory management (cached wordlists writing and reading i/o files), not working yet
   + Updating and fixing minor bugs related to dependencies
-  + **REMOVED FEATURE**: 'exclude from other wordlists', doesn't seem useful, there is other tools to do this specific work 
+  + **REMOVED FEATURE**: 'exclude from other wordlists', doesn't seem useful, there are other tools to do this specific work 
 
 + `2.3.1 version notes`
   + Fixing namespace bug (related to aux.py module, renamed to auxiliars.py) when running on windows systems
