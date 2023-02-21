@@ -190,8 +190,8 @@ _For more information, please refer to the [Advanced usage](#advanced-usage) sec
 + You can **select which transforms to apply on lyrics phrases** found through the **cfg file**.
 + Using the **non-interactive mode**, you should provide years in the long and short way (1970,70) to get the same result than the interactive mode.
 + You have to be careful with **-n** argument. If you set a big value, it could result in **too huge wordlists**. I recommend values between 2 and 5.
-+ To provide **several artist names** through command line you should provides it **comma-separated**. *Example*: `-a johndoe,johnsmith`
-+ To provide **artist names with spaces** through command line you should provides it **quotes-enclosed**. *Example*: `-a "john doe,john smith"`
++ To provide **several artist names** through command line you should provide it **comma-separated**. *Example*: `-a johndoe,johnsmith`
++ To provide **artist names with spaces** through command line you should provide it **quotes-enclosed**. *Example*: `-a "john doe,john smith"`
 
 ### Lyricpass 
 <p align="center"><img src="https://github.com/R3nt0n/bopscrk/blob/master/img/lyricpass_demo.png" /></p>  
