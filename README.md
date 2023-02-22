@@ -127,20 +127,16 @@ Thanks dude :)
 pip install bopscrk
 ```
 
-<!-- Download from Github and install requirements -->
-<!-- COMMENTED FOR NOW -->
-[//]: # (#### Option 2: Download last version published on Github &#40;more updated&#41;)
 
-[//]: # (```)
 
-[//]: # (git clone --recurse-submodules https://github.com/r3nt0n/bopscrk)
+*Alternatively, if you want to clone the repo from Github instead of install it from Pypi:*
 
-[//]: # (cd bopscrk)
+```
+git clone --recurse-submodules https://github.com/r3nt0n/bopscrk
+cd bopscrk
+pip install -r requirements.txt
+```
 
-[//]: # (pip install -r requirements.txt)
-
-[//]: # (```)
-<!-- END COMMENT -->
 
 ### Run interactive mode
 ```
