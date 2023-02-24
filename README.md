@@ -214,7 +214,7 @@ It will retrieve all lyrics from all songs which belongs to artists that you pro
   + **lyric_space_replacement**: same with lyrics found
   + **space_replacement_chars**: characters to insert instead of spaces inside an artist name or a lyric phrase.  *Can be a single char or a string of chars, e.g.: `!?-/&(`*
   + **space_replacement_strings**: strings to insert instead of spaces inside an artist name or a lyric phrase.  *Can be a single string or a list of strings space-separated, e.g.: `123` `34!@`*
-+ Some transforms have **extensive charsets** preincluded. To use it instead of the basic ones, just **comment and uncomment** the corresponding lines (It's important to comment the original one, if you let two lines with the same keyname uncommented, it will thrown an error: `AttributeError: 'bool' object has no attribute 'split'`).
++ Some transforms have **extensive charsets** preincluded. To use it instead of the basic ones, just **comment and uncomment** the corresponding lines (It's important to comment the original one, if you let two lines with the same keyname uncommented, it will throw an error: `AttributeError: 'bool' object has no attribute 'split'`).
 
 + **Parameters configuration examples**
   + Combine all the words using dots as separator, and same using commas  
