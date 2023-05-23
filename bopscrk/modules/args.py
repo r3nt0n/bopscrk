@@ -30,19 +30,41 @@ class Arguments:
         parser.add_argument('-w', action="store", metavar='', type=str, dest='words',
                             help='words to combine comma-separated (will be combined with all words)')
 
-        parser.add_argument('-m', '--min', action="store", metavar='', type=int, dest='min',
-                            default=self.DEFAULT_MIN, help='min length for the words to generate (default: {})'.format(self.DEFAULT_MIN))
+        parser.add_argument(
+            '-m',
+            '--min',
+            action="store",
+            metavar='',
+            type=int,
+            dest='min',
+            default=self.DEFAULT_MIN,
+            help=f'min length for the words to generate (default: {self.DEFAULT_MIN})',
+        )
 
-        parser.add_argument('-M', '--max', action="store", metavar='', type=int, dest='max',
-                            default=self.DEFAULT_MAX, help='max length for the words to generate (default: {})'.format(self.DEFAULT_MAX))
+        parser.add_argument(
+            '-M',
+            '--max',
+            action="store",
+            metavar='',
+            type=int,
+            dest='max',
+            default=self.DEFAULT_MAX,
+            help=f'max length for the words to generate (default: {self.DEFAULT_MAX})',
+        )
 
         parser.add_argument('-c', '--case', action="store_true", help='enable case transformations')
 
         parser.add_argument('-l', '--leet', action="store_true", help='enable leet transformations')
 
-        parser.add_argument('-n', action="store", metavar='', type=int, dest='n_words',
-                            default=self.DEFAULT_N_WORDS, help='max amount of words to combine each time '
-                                            '(default: {})'.format(self.DEFAULT_N_WORDS))
+        parser.add_argument(
+            '-n',
+            action="store",
+            metavar='',
+            type=int,
+            dest='n_words',
+            default=self.DEFAULT_N_WORDS,
+            help=f'max amount of words to combine each time (default: {self.DEFAULT_N_WORDS})',
+        )
         parser.add_argument('-a', '--artists', action="store", metavar='', type=str,
                             dest='artists', default=False,
                             help='artists to search song lyrics (comma-separated)')
@@ -52,13 +74,27 @@ class Arguments:
         #                     help='exclude all the words included in other wordlists '
         #                          '(several wordlists should be comma-separated)')
 
-        parser.add_argument('-o', '--output', action="store", metavar='', type=str,
-                            dest='outfile', default=self.DEFAULT_OUTPUT_FILE,
-                            help='output file to save the wordlist (default: {})'.format(self.DEFAULT_OUTPUT_FILE))
+        parser.add_argument(
+            '-o',
+            '--output',
+            action="store",
+            metavar='',
+            type=str,
+            dest='outfile',
+            default=self.DEFAULT_OUTPUT_FILE,
+            help=f'output file to save the wordlist (default: {self.DEFAULT_OUTPUT_FILE})',
+        )
 
-        parser.add_argument('-C', '--config', action="store", metavar='', type=str,
-                            dest='cfg_file', default=self.DEFAULT_CFG_FILE,
-                            help='specify config file to use (default: {})'.format(self.DEFAULT_CFG_FILE))
+        parser.add_argument(
+            '-C',
+            '--config',
+            action="store",
+            metavar='',
+            type=str,
+            dest='cfg_file',
+            default=self.DEFAULT_CFG_FILE,
+            help=f'specify config file to use (default: {self.DEFAULT_CFG_FILE})',
+        )
 
         parser.add_argument('--version', action="store_true", help='print version and exit')
 
@@ -70,7 +106,9 @@ class Arguments:
 
     def set_interactive_options(self):
         while True:
-            min_length = input('  {}[?]{} Passwords min length [{}] >>> '.format(color.BLUE, color.END, self.DEFAULT_MIN))
+            min_length = input(
+                f'  {color.BLUE}[?]{color.END} Passwords min length [{self.DEFAULT_MIN}] >>> '
+            )
             if is_empty(min_length):
                 self.min_length = self.DEFAULT_MIN; break
             else:
@@ -78,64 +116,68 @@ class Arguments:
                     self.min_length = int(min_length)
                     break
                 except ValueError:
-                    print('  {}[!]{} Min length should be an integer'.format(color.RED, color.END))
+                    print(f'  {color.RED}[!]{color.END} Min length should be an integer')
         while True:
-            max_length = input('  {}[?]{} Password\'s max length [{}] >>> '.format(color.BLUE, color.END, self.DEFAULT_MAX))
+            max_length = input(
+                f"  {color.BLUE}[?]{color.END} Password\'s max length [{self.DEFAULT_MAX}] >>> "
+            )
             if is_empty(max_length):
                 self.max_length = self.DEFAULT_MAX; break
             else:
                 try:
                     max_length = int(max_length)
                     if max_length < self.min_length:
-                        print('  {}[!]{} Max should be greater or equal than min'.format(color.RED, color.END))
+                        print(f'  {color.RED}[!]{color.END} Max should be greater or equal than min')
                     else:
                         self.max_length = max_length
                         break
                 except ValueError:
-                    print('  {}[!]{} Max length should be an integer'.format(color.RED, color.END))
+                    print(f'  {color.RED}[!]{color.END} Max length should be an integer')
 
-        firstname = input('  {}[?]{} First name >>> '.format(color.BLUE, color.END))
-        surname = input('  {}[?]{} Surname >>> '.format(color.BLUE, color.END))
-        lastname = input('  {}[?]{} Last name >>> '.format(color.BLUE, color.END))
+        firstname = input(f'  {color.BLUE}[?]{color.END} First name >>> ')
+        surname = input(f'  {color.BLUE}[?]{color.END} Surname >>> ')
+        lastname = input(f'  {color.BLUE}[?]{color.END} Last name >>> ')
 
         while True:
-            birth = input('  {}[?]{} Birth date (DD/MM/YYYY) >>> '.format(color.BLUE, color.END))
+            birth = input(f'  {color.BLUE}[?]{color.END} Birth date (DD/MM/YYYY) >>> ')
             if not is_empty(birth) and not is_valid_date(birth):
-                print('  {}[!]{} Birthdate wrong format'.format(color.RED, color.END))
+                print(f'  {color.RED}[!]{color.END} Birthdate wrong format')
             else:
                 break
 
-        self.artists = input('  {}[?]{} Artist names to search song lyrics (comma-separated) >>> '.format(color.BLUE, color.END))
-        if is_empty(self.artists):
-            self.artists = False
-        else:
-            self.artists = self.artists.split(',')
+        self.artists = input(
+            f'  {color.BLUE}[?]{color.END} Artist names to search song lyrics (comma-separated) >>> '
+        )
+        self.artists = False if is_empty(self.artists) else self.artists.split(',')
+        others = input(
+            f'  {color.BLUE}[?]{color.END} Some other relevant words (comma-separated) >>> '
+        )
 
-        others = input('  {}[?]{} Some other relevant words (comma-separated) >>> '.format(color.BLUE, color.END))
+        leet = input(
+            f'  {color.BLUE}[?]{color.END} Do yo want to make leet transforms? [y/n] >>> '
+        )
+        case = input(
+            f'  {color.BLUE}[?]{color.END} Do yo want to make case transforms? [y/n] >>> '
+        )
 
-        leet = input('  {}[?]{} Do yo want to make leet transforms? [y/n] >>> '.format(color.BLUE, color.END))
-        case = input('  {}[?]{} Do yo want to make case transforms? [y/n] >>> '.format(color.BLUE, color.END))
-
-        if leet.lower() == 'y': self.leet = True
-        else: self.leet = False
-
-        if case.lower() == 'y': self.case = True
-        else: self.case = False
-
+        self.leet = leet.lower() == 'y'
+        self.case = case.lower() == 'y'
         while True:
-            n_words = input('  {}[?]{} How much words do you want to combine at most [{}] >>> '.format(color.BLUE, color.END, self.DEFAULT_N_WORDS))
+            n_words = input(
+                f'  {color.BLUE}[?]{color.END} How much words do you want to combine at most [{self.DEFAULT_N_WORDS}] >>> '
+            )
             if is_empty(n_words):
                 self.n_words = self.DEFAULT_N_WORDS; break
             else:
                 try:
                     n_words = int(n_words)
                     if n_words < 1:
-                        print('  {}[!]{} Should be greater or equal than 1'.format(color.RED, color.END))
+                        print(f'  {color.RED}[!]{color.END} Should be greater or equal than 1')
                     else:
                         self.n_words = n_words
                         break
                 except ValueError:
-                    print('  {}[!]{} Should be an integer'.format(color.RED, color.END))
+                    print(f'  {color.RED}[!]{color.END} Should be an integer')
 
         # while True:
         #     exclude = input('  {}[?]{} Exclude words from other wordlists? >>> '.format(color.BLUE, color.END))
@@ -152,7 +194,9 @@ class Arguments:
         #             self.exclude_wordlists = exclude
         #             break
 
-        self.outfile = input('  {}[?]{} Output file [{}] >>> '.format(color.BLUE, color.END, self.DEFAULT_OUTPUT_FILE))
+        self.outfile = input(
+            f'  {color.BLUE}[?]{color.END} Output file [{self.DEFAULT_OUTPUT_FILE}] >>> '
+        )
         if is_empty(self.outfile): self.outfile = self.DEFAULT_OUTPUT_FILE
 
         print('')  # Print blank line after all questions
@@ -170,13 +214,11 @@ class Arguments:
             self.base_wordlist.append(lastname)
         if not is_empty(birth):
             birth = birth.split('/')
-            for i in birth:
-                self.base_wordlist.append(i)
+            self.base_wordlist.extend(iter(birth))
             self.base_wordlist.append((birth[2])[-2:])  # Also add two last digits of the year
         if not is_empty(others):
             others = others.split(',')
-            for i in others:
-                self.base_wordlist.append(i.lower())
+            self.base_wordlist.extend(i.lower() for i in others)
 
     def set_cli_options(self):
         self.base_wordlist = []

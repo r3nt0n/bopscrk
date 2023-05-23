@@ -14,10 +14,7 @@ def is_empty(variable):
     """
     Check if a variable (in a type convertible to string) is empty. Returns True or False
     """
-    empty = False
-    if len(str(variable)) == 0:
-        empty = True
-    return empty
+    return not str(variable)
 
 def is_valid_date(date_str):
     """
@@ -49,13 +46,12 @@ def append_wordlist_to_file(filepath, wordlist):
 
 def remove_duplicates_from_file(infile_path, outfile_path="temp.000000000.bopscrk"):
     lines_seen = set()  # holds lines already seen
-    outfile = open(outfile_path, "w")
-    infile = open(infile_path, "r")
-    for line in infile:
-        if line not in lines_seen:  # not a duplicate
-            outfile.write(line)
-            lines_seen.add(line)
-    outfile.close()
+    with open(outfile_path, "w") as outfile:
+        infile = open(infile_path, "r")
+        for line in infile:
+            if line not in lines_seen:  # not a duplicate
+                outfile.write(line)
+                lines_seen.add(line)
     infile.close()
     os.remove(infile_path)
     os.rename(outfile_path, infile_path)

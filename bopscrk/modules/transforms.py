@@ -27,8 +27,7 @@ def case_transforms(word):
     i=0
     new_word = ''
     for char in word:
-        if i % 2 == 0: new_word += char.upper()
-        else: new_word += char
+        new_word += char.upper() if i % 2 == 0 else char
         i += 1
     if new_word not in new_wordlist: new_wordlist.append(new_word)
 
@@ -36,24 +35,20 @@ def case_transforms(word):
     i=0
     new_word = ''
     for char in word:
-        if i % 2 != 0: new_word += char.upper()
-        else: new_word += char
+        new_word += char.upper() if i % 2 != 0 else char
         i += 1
     if new_word not in new_wordlist: new_wordlist.append(new_word)
 
     # Make consonants upper (hello => HeLLo)
     vowels = 'aeiou'
-    new_word = ''
-    for char in word:
-        if char.lower() not in vowels: new_word += char.upper()
-        else: new_word += char
+    new_word = ''.join(
+        char.upper() if char.lower() not in vowels else char for char in word
+    )
     if new_word not in new_wordlist: new_wordlist.append(new_word)
 
-    # Make vowels upper (hello => hEllO)
-    new_word = ''
-    for char in word:
-        if char.lower() in vowels: new_word += char.upper()
-        else: new_word += char
+    new_word = ''.join(
+        char.upper() if char.lower() in vowels else char for char in word
+    )
     if new_word not in new_wordlist: new_wordlist.append(new_word)
 
     # recursive call function (not working, maybe this option won't be even useful)
@@ -69,9 +64,8 @@ def case_transforms(word):
 def leet_transforms(word):
     new_wordlist = []
     original_size = len(new_wordlist)
-    i=0
     leet_charset = Config.LEET_CHARSET
-    for char in word:
+    for i, char in enumerate(word):
         for lchar in leet_charset:
             leeted_char = ''
             if lchar.startswith(char.lower()):
@@ -79,8 +73,6 @@ def leet_transforms(word):
                 new_word = word[:i] + leeted_char + word[i + 1:]
                 if new_word not in new_wordlist: new_wordlist.append(new_word)
                 # dont break to allow multiple transforms to a single char (e.g. a into 4 and @)
-        i += 1
-
     # MULTITHREAD RECURSIVE call function (doesn't seem efficient)
     # if Config.RECURSIVE_LEET and (len(new_wordlist) > original_size):
     #     new_wordlist += multithread_transforms(leet_transforms, new_wordlist)
@@ -115,9 +107,10 @@ def artist_space_transforms(word):
         new_wordlist.append(word.replace(' ', ''))
         # Replace spaces in artist name with all space replacements charset
         if (Config.ARTIST_SPACE_REPLACEMENT and Config.SPACE_REPLACEMENT_CHARSET):
-            for character in Config.SPACE_REPLACEMENT_CHARSET:
-                new_wordlist.append(word.replace(' ', character))
-
+            new_wordlist.extend(
+                word.replace(' ', character)
+                for character in Config.SPACE_REPLACEMENT_CHARSET
+            )
     return new_wordlist
 
 
@@ -131,8 +124,10 @@ def lyric_space_transforms(word):
         new_wordlist.append(word.replace(' ', ''))
         # Replace spaces in phrase with all space replacements charset
         if (Config.LYRIC_SPACE_REPLACEMENT and Config.SPACE_REPLACEMENT_CHARSET):
-            for character in Config.SPACE_REPLACEMENT_CHARSET:
-                new_wordlist.append(word.replace(' ', character))
+            new_wordlist.extend(
+                word.replace(' ', character)
+                for character in Config.SPACE_REPLACEMENT_CHARSET
+            )
     return new_wordlist
 
 

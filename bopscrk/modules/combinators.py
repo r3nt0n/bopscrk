@@ -17,9 +17,7 @@ def add_common_separators(wordlist):
     new_wordlist = []
     for word in words:
         for separator in Config.SEPARATORS_CHARSET:
-            new_wordlist.append(word + separator)
-            new_wordlist.append(separator + word)
-
+            new_wordlist.extend((word + separator, separator + word))
     base_wordlist_with_seps = new_wordlist[:]
 
     #with tqdm(total=len(words)) as progressbar:
@@ -27,8 +25,7 @@ def add_common_separators(wordlist):
         for word in words:
             for wordseparated in base_wordlist_with_seps:
                 if word not in wordseparated:
-                    new_wordlist.append(wordseparated + word)
-                    new_wordlist.append(word + wordseparated)
+                    new_wordlist.extend((wordseparated + word, word + wordseparated))
             #progressbar.update()
             progressbar()
 
@@ -44,10 +41,7 @@ def combinator(wordlist, nWords):
     #with tqdm(total=len(wlist_combined)) as progressbar:
     with alive_bar(total=len(wlist_combined), bar='bubbles', unknown='bubbles', spinner='bubbles',receipt=False) as progressbar:
         for combination in wlist_combined:
-            #progressbar.set_description("Processing %s" % combination)
-            word = ''
-            for i in combination:
-                word += i
+            word = ''.join(combination)
             if word not in new_wordlist: new_wordlist.append(word)
             #progressbar.update()
             progressbar()

@@ -30,9 +30,7 @@ class Config:
 
     def parse_booleans(self, value):
         try:
-            if value.lower() == 'true':
-                return True
-            return False
+            return value.lower() == 'true'
         except AttributeError:
             return None
 
