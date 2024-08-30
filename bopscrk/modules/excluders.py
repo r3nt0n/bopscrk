@@ -3,7 +3,7 @@
 # https://github.com/r3nt0n/bopscrk
 # bopscrk - transform functions module
 
-from multiprocessing.dummy import Pool as ThreadPool
+from multiprocessing import Pool, cpu_count
 from collections import OrderedDict
 
 from . import Config
@@ -15,7 +15,7 @@ def compare(word_to_exclude, word_in_wordlist):
 # Remove word to exclude from final_wordlist
 def multithread_exclude(word_to_exclude, wordlist):
     diff_wordlist = []
-    with ThreadPool(Config.THREADS) as pool:
+    with Pool(cpu_count()) as pool:
         #args = (word, words_to_exclude)
         diff_wordlist += pool.starmap(compare, [(word_to_exclude, word) for word in wordlist])
 

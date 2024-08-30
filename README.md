@@ -14,7 +14,7 @@ Thanks dude :)
 [![Packaging status](https://repology.org/badge/tiny-repos/bopscrk.svg)](https://repology.org/project/bopscrk/versions)
 ![[GPL-3.0 License](https://github.com/r3nt0n)](https://img.shields.io/badge/license-GPL%203.0-brightgreen.svg)
 ![[Python 3](https://github.com/r3nt0n)](http://img.shields.io/badge/python-3-blue.svg)
-![[Version 2.4.5](https://github.com/r3nt0n)](http://img.shields.io/badge/version-2.4.5-orange.svg)
+![[Version 2.4.6](https://github.com/r3nt0n)](http://img.shields.io/badge/version-2.4.6-orange.svg)
 
 
 
@@ -108,7 +108,7 @@ Thanks dude :)
 
 ### What's new
 
-**2.4.5 RELEASED**: Progress bar with ETA implemented
+**2.4.6 RELEASED** (30/08/2024): Speed and performance dramatically increased, real multiprocessing implementation.   
 
 [//]: # (<p align="center"><img src="https://github.com/r3nt0n/bopscrk/blob/master/img/progressbar_example1.gif" /></p>)
 
@@ -200,7 +200,6 @@ It will retrieve all lyrics from all songs which belongs to artists that you pro
 
 #### Customizing behaviour using .cfg file
 + In `bopscrk.cfg` file you can specify your own charsets and enable/disable options:
-  + **threads**: number of threads to use in multithreaded operations
   + **extra_combinations** (like `(john, doe) => 123john, john123, 123doe, doe123, john123doe doe123john`) are *enabled by default*. You can disable it in the configuration file in order to get more focused wordlists.  
   + **separators_chars**: characters to use in extra-combinations. *Can be a single char or a string of chars, e.g.: `!?-/&(`*  
   + **separators_strings**: strings  to use in extra-combinations. *Can be a single string or a list of strings space-separated, e.g.: `123` `34!@`*
@@ -214,7 +213,6 @@ It will retrieve all lyrics from all songs which belongs to artists that you pro
   + **lyric_space_replacement**: same with lyrics found
   + **space_replacement_chars**: characters to insert instead of spaces inside an artist name or a lyric phrase.  *Can be a single char or a string of chars, e.g.: `!?-/&(`*
   + **space_replacement_strings**: strings to insert instead of spaces inside an artist name or a lyric phrase.  *Can be a single string or a list of strings space-separated, e.g.: `123` `34!@`*
-+ Some transforms have **extensive charsets** preincluded. To use it instead of the basic ones, just **comment and uncomment** the corresponding lines (It's important to comment the original one, if you let two lines with the same keyname uncommented, it will throw an error: `AttributeError: 'bool' object has no attribute 'split'`).
 
 + **Parameters configuration examples**
   + Combine all the words using dots as separator, and same using commas  
@@ -232,11 +230,12 @@ It will retrieve all lyrics from all songs which belongs to artists that you pro
 - [ ] Improve **memory management**
     - [ ] Write wordlists into filesystem during execution and use it as cache (<a href="https://github.com/r3nt0n/bopscrk/issues">#12</a>)
 - [ ] Improve **performance**
-    - [ ] Refactor and improve threads and transforms logic
+    - [x] Improve parallelism logic
 - [ ] Extra features
     - [x] Implement **progress bar** to keep user informed of the execution state
     - [ ] Implement **session file** to keep track of the execution point and **be able to stop and resume sessions** (<a href="https://github.com/r3nt0n/bopscrk/issues">#12</a>)
     - [ ] Create **config options** for customized **case transforms** (e.g.: disable pair/odd transforms)
+    - [ ] Implement "pipable" output to allow integration with other tools (`-q` flag will just output final wordlist to sdout)
 
 See the [open issues](https://github.com/r3nt0n/bopscrk/issues) for a full list of proposed features (and known issues).
 
@@ -272,6 +271,11 @@ Thank you all!
 
 ## Changelist
 [//]: # (+ `last development version &#40;available on Github&#41;`)
++ `2.4.6 version notes (30/08/2024)`
+  + **Increasing parallelism performance** (real multiprocessing implementation)
+  + Better handling of config parser errors
+  + Fixing typos
+
 + `2.4.5 version notes (02/08/2022)`
   + **progress bar** implemented and working
   + `version` argument included

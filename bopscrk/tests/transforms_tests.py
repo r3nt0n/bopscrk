@@ -9,7 +9,7 @@ import sys
 from os import path
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
 
-from ..modules.transforms import case_transforms, leet_transforms, multithread_transforms, \
+from ..modules.transforms import case_transforms, leet_transforms, multiprocess_transforms, \
                            take_initials, artist_space_transforms, lyric_space_transforms
 
 
@@ -29,8 +29,8 @@ class TestTransforms(unittest.TestCase):
 
     def test_multithread_transform(self):
         wordlist = ['hello', 'world', 'lorem', 'ipsum']
-        self.assertEqual(33, len(multithread_transforms(case_transforms, wordlist)))
-        self.assertEqual(10, len(multithread_transforms(leet_transforms, wordlist)))
+        self.assertEqual(33, len(multiprocess_transforms(case_transforms, wordlist)))
+        self.assertEqual(10, len(multiprocess_transforms(leet_transforms, wordlist)))
 
     def test_take_initials(self):
         word = 'hello world lorem ipsum'

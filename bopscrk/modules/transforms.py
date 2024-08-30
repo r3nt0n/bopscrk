@@ -3,9 +3,8 @@
 # https://github.com/r3nt0n/bopscrk
 # bopscrk - transform functions module
 
-from multiprocessing.dummy import Pool as ThreadPool
+from multiprocessing import cpu_count, Pool
 
-#from tqdm import tqdm
 from alive_progress import alive_bar
 
 from . import Config
@@ -136,10 +135,10 @@ def lyric_space_transforms(word):
     return new_wordlist
 
 
-def multithread_transforms(transform_type, wordlist):
+def multiprocess_transforms(transform_type, wordlist):
     # process each word in their own thread and return the results
     new_wordlists = []
-    with ThreadPool(Config.THREADS) as pool:
+    with Pool(cpu_count()) as pool:
         with alive_bar(bar=None,spinner='bubbles', monitor=False,elapsed=False,stats=False,receipt=False) as progressbar:
             new_wordlists += pool.map(transform_type, wordlist)
             progressbar()
@@ -173,7 +172,7 @@ def transform_cached_wordlist_and_save(transform_type, filepath):
                 counter += 1
                 last_position = f.tell()  # save last_position
 
-        new_wordlist += multithread_transforms(transform_type, cached_wordlist)
+        new_wordlist += multiprocess_transforms(transform_type, cached_wordlist)
         #cached_wordlist += new_wordlist
         append_wordlist_to_file(filepath, new_wordlist)
 

@@ -10,13 +10,14 @@ import configparser
 class Config:
     def __init__(self, cfg_file):
         self.CFG_FILE = cfg_file
+        self.cfg = configparser.ConfigParser(strict=False)
 
     def read_config(self, category, field):
-        cfg = configparser.ConfigParser()
         try:
-            cfg.read([self.CFG_FILE])
-            value = cfg.get(category, field)
-        except:
+            self.cfg.read([self.CFG_FILE])
+            value = self.cfg.get(category, field)
+        except Exception as e:
+            print(e)
             value = False
         return value
 
@@ -36,12 +37,7 @@ class Config:
         except AttributeError:
             return None
 
-    def parse_threads(self, value):
-        try: value = int(value); return value
-        except ValueError: return 4  # default number of threads if error in config provided
-
     def setup(self):
-        self.THREADS = self.parse_threads(self.read_config('GENERAL', 'threads'))
         self.EXTRA_COMBINATIONS = self.parse_booleans(self.read_config('COMBINATIONS', 'extra_combinations'))
         self.SEPARATORS_CHARSET = self.merge_settings(self.read_config('COMBINATIONS', 'separators_chars'),
                                                       self.read_config('COMBINATIONS', 'separators_strings'))
