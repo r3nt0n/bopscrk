@@ -6,7 +6,7 @@
 
 name = 'bopscrk.py'
 desc = 'Generate smart and powerful wordlists'
-__version__ = '2.4.6'
+__version__ = '2.4.7'
 __author__ = 'r3nt0n'
 __status__ = 'Development'
 

@@ -35,9 +35,9 @@ Thanks dude :)
     <br />
     <a href="#about-the-project">View Demo</a>
     ·
-    <a href="https://github.com/r3nt0n/bopscrk">Report Bug</a>
+    <a href="https://github.com/r3nt0n/bopscrk/issues">Report Bug</a>
     ·
-    <a href="https://github.com/r3nt0n/bopscrk">Request Feature</a>
+    <a href="https://github.com/r3nt0n/bopscrk/issues">Request Feature</a>
   </p>
 </div>
 
@@ -66,8 +66,8 @@ Thanks dude :)
       <ul>
         <li><a href="#how-it-works">How it works</a></li>
         <li><a href="#tips">Tips</a></li>
-        <li><a href="#lyricpass">Lyricpass</a></li>
         <li><a href="#advanced-usage">Advanced usage</a></li>
+        <li><a href="#lyricpass">Lyricpass</a></li>
       </ul>
     </li>
     <li><a href="#roadmap">Roadmap</a></li>
@@ -90,7 +90,7 @@ Thanks dude :)
 <!-- ABOUT THE PROJECT -->
 ## About the Project
 
-<p align="center"><img src="https://github.com/r3nt0n/bopscrk/blob/master/img/bopscrk-2.4.5.gif" /></p>  
+<p align="center"><img src="https://github.com/r3nt0n/bopscrk/blob/master/img/bopscrk.gif" /></p>  
 
 
 
@@ -108,7 +108,7 @@ Thanks dude :)
 
 ### What's new
 
-**2.4.6 RELEASED** (30/08/2024): Speed and performance dramatically increased, real multiprocessing implementation.   
+- **2.4.7 RELEASED** (02/09/2024): Speed and performance dramatically increased. New extensive case transform mode allows to generate all possible case transforms.
 
 [//]: # (<p align="center"><img src="https://github.com/r3nt0n/bopscrk/blob/master/img/progressbar_example1.gif" /></p>)
 
@@ -183,18 +183,15 @@ _For more information, please refer to the [Advanced usage](#advanced-usage) sec
 + You **can use accentuation** in your words and special chars (if you use the non-interactive mode, escape special chars like `'` and `"` with backslashes, e.g.: `bopscrk -w John,O\'hara,Doe,foo,bar`).
 + In the others field you can write **several words comma-separated**. *Example*: 2C,Flipper.
 + If you want to produce **all possible leet transformations**, enable the **recursive_leet option** in configuration file.
++ If you want to produce **all possible case transformations**, enable the **extensive_case option** in configuration file.
 + You can **select which transforms to apply on lyrics phrases** found through the **cfg file**.
 + Using the **non-interactive mode**, you should provide years in the long and short way (1970,70) to get the same result than the interactive mode.
 + You have to be careful with **-n** argument. If you set a big value, it could result in **too huge wordlists**. I recommend values between 2 and 5.
 + To provide **several artist names** through command line you should provide it **comma-separated**. *Example*: `-a johndoe,johnsmith`
 + To provide **artist names with spaces** through command line you should provide it **quotes-enclosed**. *Example*: `-a "john doe,john smith"`
 
-### Lyricpass 
-<p align="center"><img src="https://github.com/R3nt0n/bopscrk/blob/master/img/lyricpass_demo.png" /></p>  
+<p align="right">(<a href="#top">back to top</a>)</p>
 
-This feature is based in a modified version of a [tool](https://github.com/initstring/lyricpass) developed originally by [initstring](https://github.com/initstring/). The changes are made to integrate input and output's tool with bopscrk.  
-
-It will retrieve all lyrics from all songs which belongs to artists that you provide. **By default it will store each artist, each phrase found with space substitution, each phrase found reduced to its initials** (which will be transformed later if you have activated leet and case transforms).
 
 ### Advanced usage
 
@@ -204,7 +201,8 @@ It will retrieve all lyrics from all songs which belongs to artists that you pro
   + **separators_chars**: characters to use in extra-combinations. *Can be a single char or a string of chars, e.g.: `!?-/&(`*  
   + **separators_strings**: strings  to use in extra-combinations. *Can be a single string or a list of strings space-separated, e.g.: `123` `34!@`*
   + **leet_charset**: characters to replace and correspondent substitute in leet transforms, *e.g.: `e:3 b:8 t:7 a:4`* 
-  + **recursive_leet**: enables a recursive call to leet_transforms() function to get all possible leet transforms (*disabled by default*). *WARNING*: enabled with huge --max parameters (e.g.: greater than 18) could take even days. *Can be true or false.* 
+  + **recursive_leet**: enables a recursive call to leet_transforms() function to get all possible leet transforms. *WARNING*: enabled with huge `--max` values (e.g.: greater than 18) could take a long time. *Can be true or false.*
+  + **extensive_case**: by default, bopscrk only applies the more common case transforms: all chars to lower, all chars to upper, each char to upper, all pairs to upper, all odds to upper, all consonants to upper and all vowels to upper. You can enable this option to obtain ALL possible case transforms, which can result in much larger wordlists, but might be useful in some scenarios. *Can be true or false.*
   + **remove_parenthesis**: remove all parenthesis in lyrics found before any transform  
   + **take_initials**: produce words based on initial of each word in lyric phrases found (if enabled with remove_parenthesis disabled, it can produce useless words)
   + **artist_split_by_word**: split artist names and add each word as a new one 
@@ -222,7 +220,14 @@ It will retrieve all lyrics from all songs which belongs to artists that you pro
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
+### Lyricpass 
+<p align="center"><img src="https://github.com/R3nt0n/bopscrk/blob/master/img/lyricpass_demo.png" /></p>  
 
+This feature is based in a modified version of a [tool](https://github.com/initstring/lyricpass) developed originally by [initstring](https://github.com/initstring/). The changes are made to integrate input and output's tool with bopscrk.  
+
+It will retrieve all lyrics from all songs which belongs to artists that you provide. **By default it will store each artist, each phrase found with space substitution, each phrase found reduced to its initials** (which will be transformed later if you have activated leet and case transforms).
+
+<p align="right">(<a href="#top">back to top</a>)</p>
 
 <!-- ROADMAP -->
 ## Roadmap
@@ -271,6 +276,12 @@ Thank you all!
 
 ## Changelist
 [//]: # (+ `last development version &#40;available on Github&#41;`)
++ `2.4.7 version notes (02/09/2024)` 
+  + Improving **case transform logic** (now it respects the case from the original word)
+  + Including **new basic case transform operations**
+  + Implementing **extensive case transform mode**
+  + Fixing typos
+
 + `2.4.6 version notes (30/08/2024)`
   + **Increasing parallelism performance** (real multiprocessing implementation)
   + Better handling of config parser errors
@@ -360,6 +371,7 @@ bopscrk: [Github](https://github.com/r3nt0n/bopscrk) - [Pypi](https://pypi.org/p
 
 * lyricpass module is based on a [project](https://github.com/initstring/lyricpass) created by [initstring](https://github.com/initstring).
 * [Pixel Gothic font](https://dafonttop.com/pixel-gothic-font.font) by [Kajetan Andrzejak](https://dafonttop.com/tags.php?key=Kajetan%20Andrzejak).
+* [Best-README-Template](https://github.com/othneildrew/Best-README-Template) by [othneildrew](https://github.com/othneildrew/).
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 

@@ -3,17 +3,27 @@
 # https://github.com/r3nt0n/bopscrk
 # bopscrk - transform functions module
 
+import itertools
 from multiprocessing import cpu_count, Pool
-
 from alive_progress import alive_bar
 
 from . import Config
 from .excluders import remove_duplicates
 from .auxiliars import append_wordlist_to_file
 
+# EXTENSIVE: generates all case transforms possibilities
+def case_transforms_extensive(word):
+    word = word.lower()
+    return [new_word for new_word in map(''.join, itertools.product(*zip(word.upper(), word.lower())))]
 
-def case_transforms(word):
+# BASIC: generates the more probable case transformations, but not all possibilities
+def case_transforms_basic(word):
+    word = word.lower()
     new_wordlist = []
+
+    # Include all chars to lower and all chars to upper
+    new_wordlist.append(word)
+    new_wordlist.append(word.upper())
 
     # Make each one upper (hello => Hello, hEllo, heLlo, helLo, hellO)
     i=0
@@ -55,15 +65,12 @@ def case_transforms(word):
         else: new_word += char
     if new_word not in new_wordlist: new_wordlist.append(new_word)
 
-    # recursive call function (not working, maybe this option won't be even useful)
-    # for new_word in new_wordlist:
-    #     original_size = len(new_wordlist)
-    #     new_wordlist.extend(case_transforms(new_word))
-    #     if len(new_wordlist) == original_size:
-    #         break  # breaking recursive call
-
     return new_wordlist
 
+def case_transforms(word):
+    if Config.EXTENSIVE_CASE:
+        return case_transforms_extensive(word)
+    return case_transforms_basic(word)
 
 def leet_transforms(word):
     new_wordlist = []
@@ -77,14 +84,9 @@ def leet_transforms(word):
                 leeted_char = lchar[-1:]
                 new_word = word[:i] + leeted_char + word[i + 1:]
                 if new_word not in new_wordlist: new_wordlist.append(new_word)
-                # dont break to allow multiple transforms to a single char (e.g. a into 4 and @)
+                # don't break to allow multiple transforms to a single char (e.g. a into 4 and @)
         i += 1
 
-    # MULTITHREAD RECURSIVE call function (doesn't seem efficient)
-    # if Config.RECURSIVE_LEET and (len(new_wordlist) > original_size):
-    #     new_wordlist += multithread_transforms(leet_transforms, new_wordlist)
-
-    # UNITHREAD RECURSIVE call function
     if Config.RECURSIVE_LEET:
         for new_word in new_wordlist:
             original_size = len(new_wordlist)
@@ -182,6 +184,3 @@ def transform_cached_wordlist_and_save(transform_type, filepath):
             line = f.readline()
             if not line:
                 break
-
-
-

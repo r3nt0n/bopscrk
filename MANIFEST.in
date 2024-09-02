@@ -10,3 +10,8 @@ prune */__pycache__
 prune build
 prune dist
 prune bopscrk/tests
+prune img
+prune .gitignore
+prune .gitmodules
+prune build_package.sh
+prune requirements.txt

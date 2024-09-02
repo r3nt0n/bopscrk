@@ -155,7 +155,7 @@ def run(name, version):
         # LEET TRANSFORMS
         if args.leet:
             if not Config.LEET_CHARSET:
-                print('  {}[!]{} Any leet charset specified in {}'.format(color.ORANGE, color.END, args.cfg_file))
+                print('  {}[!]{} No leet charset specified in {}'.format(color.ORANGE, color.END, args.cfg_file))
                 print('  {}[!]{} Skipping leet transforms...'.format(color.ORANGE, color.END, args.cfg_file))
             else:
                 recursive_msg = ''
@@ -176,7 +176,10 @@ def run(name, version):
 
         # CASE TRANSFORMS
         if args.case:
-            print('  {}[+]{} Applying case transforms to {} words...'.format(color.BLUE, color.END,len(final_wordlist)))
+            extensive_msg = ''
+            if Config.EXTENSIVE_CASE:
+                extensive_msg = '{}extensive{} '.format(color.ORANGE, color.END)
+            print('  {}[+]{} Applying {}case transforms to {} words...'.format(color.BLUE, color.END, extensive_msg, len(final_wordlist)))
 
             # transform_cached_wordlist_and_save(case_transforms, args.outfile) # not working yet, infinite loop ?¿?¿
 

@@ -43,6 +43,7 @@ class Config:
                                                       self.read_config('COMBINATIONS', 'separators_strings'))
         self.LEET_CHARSET = (self.read_config('TRANSFORMS', 'leet_charset')).split()
         self.RECURSIVE_LEET = self.parse_booleans(self.read_config('TRANSFORMS', 'recursive_leet'))
+        self.EXTENSIVE_CASE = self.parse_booleans(self.read_config('TRANSFORMS', 'extensive_case'))
         self.REMOVE_PARENTHESIS = self.parse_booleans(self.read_config('LYRICS', 'remove_parenthesis'))
         self.TAKE_INITIALS = self.parse_booleans(self.read_config('LYRICS', 'take_initials'))
         self.ARTIST_SPLIT_BY_WORD = self.parse_booleans(self.read_config('LYRICS', 'artist_split_by_word'))

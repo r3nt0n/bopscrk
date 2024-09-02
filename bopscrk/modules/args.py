@@ -160,13 +160,13 @@ class Arguments:
         self.base_wordlist = []
         # here I can select on which wordlist include each info by their weight (to implement)
         if not is_empty(firstname):
-            firstname = firstname.lower()
+            firstname = firstname
             self.base_wordlist.append(firstname)
         if not is_empty(surname):
-            surname = surname.lower()
+            surname = surname
             self.base_wordlist.append(surname)
         if not is_empty(lastname):
-            lastname = lastname.lower()
+            lastname = lastname
             self.base_wordlist.append(lastname)
         if not is_empty(birth):
             birth = birth.split('/')
@@ -176,12 +176,12 @@ class Arguments:
         if not is_empty(others):
             others = others.split(',')
             for i in others:
-                self.base_wordlist.append(i.lower())
+                self.base_wordlist.append(i)
 
     def set_cli_options(self):
         self.base_wordlist = []
         if self.args.words:
-            [self.base_wordlist.append(word.lower()) for word in ((self.args.words).split(','))]
+            [self.base_wordlist.append(word) for word in ((self.args.words).split(','))]
         self.min_length = self.args.min
         self.max_length = self.args.max
         self.leet = self.args.leet
