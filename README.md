@@ -14,7 +14,7 @@ Thanks dude :)
 [![Packaging status](https://repology.org/badge/tiny-repos/bopscrk.svg)](https://repology.org/project/bopscrk/versions)
 ![[GPL-3.0 License](https://github.com/r3nt0n)](https://img.shields.io/badge/license-GPL%203.0-brightgreen.svg)
 ![[Python 3](https://github.com/r3nt0n)](http://img.shields.io/badge/python-3-blue.svg)
-![[Version 2.4.6](https://github.com/r3nt0n)](http://img.shields.io/badge/version-2.4.6-orange.svg)
+![[Version 2.4.7](https://github.com/r3nt0n)](http://img.shields.io/badge/version-2.4.7-orange.svg)
 
 
 
