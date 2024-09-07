@@ -240,7 +240,7 @@ It will retrieve all lyrics from all songs which belongs to artists that you pro
     - [x] Implement **progress bar** to keep user informed of the execution state
     - [ ] Implement **session file** to keep track of the execution point and **be able to stop and resume sessions** (<a href="https://github.com/r3nt0n/bopscrk/issues">#12</a>)
     - [ ] Create **config options** for customized **case transforms** (e.g.: disable pair/odd transforms)
-    - [ ] Implement "pipable" output to allow integration with other tools (`-q` flag will just output final wordlist to sdout)
+    - [ ] Implement "pipable" output to allow integration with other tools (`-q` flag will just output final wordlist to stdout)
 
 See the [open issues](https://github.com/r3nt0n/bopscrk/issues) for a full list of proposed features (and known issues).
 
