@@ -9,4 +9,4 @@ from .config import Config
 
 args = Arguments()
 Config = Config(args.cfg_file)
-#Config.setup()
+Config.setup()
