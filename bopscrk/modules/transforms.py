@@ -127,66 +127,6 @@ def leet_transforms(word: str) -> List[str]:
     return remove_duplicates_fast(new_words)
 
 
-# OPTIMIZED: Take initials using list comprehension
-def take_initials(word: str) -> str:
-    """Optimized initials extraction"""
-    return "".join([part[0] for part in word.split(" ") if part])
-
-
-# OPTIMIZED: Artist space transforms with better string operations
-def artist_space_transforms(word: str) -> List[str]:
-    """Optimized artist space transforms"""
-    if " " not in word:
-        return []
-
-    results = []
-
-    # Split by word if enabled
-    if Config.ARTIST_SPLIT_BY_WORD:
-        results.extend(word.split(" "))
-
-    # Remove spaces
-    no_spaces = word.replace(" ", "")
-    if no_spaces not in results:
-        results.append(no_spaces)
-
-    # Replace with charset
-    if Config.ARTIST_SPACE_REPLACEMENT and Config.SPACE_REPLACEMENT_CHARSET:
-        for char in Config.SPACE_REPLACEMENT_CHARSET:
-            replaced = word.replace(" ", char)
-            if replaced not in results:
-                results.append(replaced)
-
-    return results
-
-
-# OPTIMIZED: Lyric space transforms
-def lyric_space_transforms(word: str) -> List[str]:
-    """Optimized lyric space transforms"""
-    if " " not in word:
-        return []
-
-    results = []
-
-    # Split by word if enabled
-    if Config.LYRIC_SPLIT_BY_WORD:
-        results.extend(word.split(" "))
-
-    # Remove spaces
-    no_spaces = word.replace(" ", "")
-    if no_spaces not in results:
-        results.append(no_spaces)
-
-    # Replace with charset
-    if Config.LYRIC_SPACE_REPLACEMENT and Config.SPACE_REPLACEMENT_CHARSET:
-        for char in Config.SPACE_REPLACEMENT_CHARSET:
-            replaced = word.replace(" ", char)
-            if replaced not in results:
-                results.append(replaced)
-
-    return results
-
-
 # OPTIMIZED: Get physical CPU cores for better performance
 def get_physical_cores() -> int:
     """Get the number of physical CPU cores"""

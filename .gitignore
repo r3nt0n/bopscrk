@@ -2,7 +2,9 @@
 *.pyc
 *tmp*
 bopscrk.egg-info
+bopfast.egg-info
 dist/
+build/
 *.log
 *.bak
 *.xcf

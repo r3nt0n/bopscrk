@@ -4,11 +4,11 @@
 # bopscrk - init script
 
 
-name = 'bopscrk.py'
-desc = 'Generate smart and powerful wordlists'
-__version__ = '2.4.7'
-__author__ = 'r3nt0n'
-__status__ = 'Development'
+name = "bopfast"
+desc = "Faster bopscrk, Generate smart and powerful wordlists"
+__version__ = "0.1.1"
+__author__ = "JG"
+__status__ = "Development"
 
 
 def start():
@@ -22,5 +22,5 @@ def start():
     main.run(name, __version__)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     start()

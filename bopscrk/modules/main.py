@@ -16,11 +16,8 @@ from .color import color
 from .transforms import (
     leet_transforms,
     case_transforms,
-    artist_space_transforms,
-    lyric_space_transforms,
     multiprocess_transforms,
     parallel_batch_processor,
-    take_initials,
     transform_cached_wordlist_and_save,
 )
 from .combinators import combinator, add_common_separators
@@ -191,145 +188,6 @@ def run(name: str, version: str) -> None:
                 color.BLUE, color.END, len(base_wordlist)
             )
         )
-
-        # SEARCH FOR LYRICS - OPTIMIZED
-        if args.artists:
-            print(
-                "  {}[+]{} Appending artist names (base wordlist length: {})...".format(
-                    color.BLUE, color.END, len(final_words_set)
-                )
-            )
-
-            for artist in args.artists:
-                # Add artist name to base and final
-                base_wordlist.append(artist)
-                final_words_set.add(artist)
-
-                # Artist space transforms
-                if not (
-                    Config.SPACE_REPLACEMENT_CHARSET and Config.ARTIST_SPACE_REPLACEMENT
-                ):
-                    print(
-                        "  {}[!]{} Any space-replacement charset specified in {}".format(
-                            color.ORANGE, color.END, args.cfg_file
-                        )
-                    )
-                    print(
-                        "  {}[!]{} Spaces inside artists names won't be replaced\n".format(
-                            color.ORANGE, color.END
-                        )
-                    )
-                elif Config.ARTIST_SPACE_REPLACEMENT:
-                    print(
-                        "  {}[+]{} Producing new words replacing spaces in {}...".format(
-                            color.BLUE, color.END, artist
-                        )
-                    )
-                    artist_transforms = artist_space_transforms(artist)
-                    final_words_set.update(artist_transforms)
-
-                # Search lyrics
-                try:
-                    from .lyricpass import lyricpass
-
-                    print(
-                        "\n{}     -- Starting lyricpass module --\n".format(color.GREY)
-                    )
-                    print(
-                        "  {}[*]{} Looking for {}'s lyrics...".format(
-                            color.CYAN, color.END, artist.title()
-                        )
-                    )
-                    lyrics = lyricpass.lyricpass(artist)
-                    print(
-                        "\n  {}[*] {}{}{} phrases found".format(
-                            color.CYAN, color.GREEN, len(lyrics), color.END
-                        )
-                    )
-                    print(
-                        "\n{}     -- Stopping lyricpass module --\n".format(color.GREY)
-                    )
-
-                    # Remove parenthesis if enabled - OPTIMIZED
-                    if Config.REMOVE_PARENTHESIS:
-                        lyrics = [s.replace("(", "").replace(")", "") for s in lyrics]
-
-                    # Filter by length and add - OPTIMIZED
-                    filtered_lyrics = remove_by_lengths_fast(
-                        lyrics, args.min_length, args.max_length
-                    )
-                    print(
-                        "  {}[+]{} Adding raw phrases filtering by min and max length range ({} phrases remain)...".format(
-                            color.BLUE, color.END, len(filtered_lyrics)
-                        )
-                    )
-                    final_words_set.update(filtered_lyrics)
-
-                    # Take initials - OPTIMIZED
-                    if Config.TAKE_INITIALS:
-                        # Process initials in parallel for large lyric sets
-                        if len(filtered_lyrics) > 5000:
-                            initials_list = multiprocess_transforms(
-                                take_initials, filtered_lyrics
-                            )
-                            final_words_set.update(
-                                [initial for initial in initials_list if initial]
-                            )
-                        else:
-                            initials = [
-                                take_initials(lyric)
-                                for lyric in filtered_lyrics
-                                if take_initials(lyric)
-                            ]
-                            final_words_set.update(initials)
-
-                    # Space transforms for lyrics - OPTIMIZED
-                    if not (
-                        Config.SPACE_REPLACEMENT_CHARSET
-                        and Config.LYRIC_SPACE_REPLACEMENT
-                    ):
-                        print(
-                            "  {}[!]{} Any spaces-replacement charset specified in {}".format(
-                                color.ORANGE, color.END, args.cfg_file
-                            )
-                        )
-                        print(
-                            "  {}[!]{} Spaces inside lyrics won't be replaced\n".format(
-                                color.ORANGE, color.END
-                            )
-                        )
-                    elif Config.LYRIC_SPACE_REPLACEMENT:
-                        print(
-                            "  {}[+]{} Producing new words replacing spaces in {} phrases...".format(
-                                color.BLUE, color.END, len(filtered_lyrics)
-                            )
-                        )
-
-                        # Use parallel processing for large lyric sets
-                        if len(filtered_lyrics) > 2000:
-                            space_transforms = parallel_batch_processor(
-                                lyric_space_transforms, filtered_lyrics
-                            )
-                        else:
-                            # Process in chunks to manage memory
-                            space_transforms = []
-                            for chunk in process_wordlist_generator(
-                                filtered_lyrics, chunk_size=1000
-                            ):
-                                chunk_transforms = multiprocess_transforms(
-                                    lyric_space_transforms, chunk
-                                )
-                                space_transforms.extend(chunk_transforms)
-
-                        final_words_set.update(space_transforms)
-                        gc.collect()
-
-                except ImportError:
-                    print(
-                        "  {}[!]{} missing dependencies, only artist names will be added and transformed".format(
-                            color.RED, color.END
-                        )
-                    )
 
         # WORD COMBINATIONS - OPTIMIZED
         if args.n_words > 1:
