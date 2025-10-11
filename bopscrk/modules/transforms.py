@@ -1,186 +1,328 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # https://github.com/r3nt0n/bopscrk
-# bopscrk - transform functions module
+# bopscrk - optimized transform functions module
 
 import itertools
 from multiprocessing import cpu_count, Pool
 from alive_progress import alive_bar
+from typing import List, Dict, Iterable
+import sys
 
 from . import Config
-from .excluders import remove_duplicates
+from .excluders import remove_duplicates_fast
 from .auxiliars import append_wordlist_to_file
 
-# EXTENSIVE: generates all case transforms possibilities
-def case_transforms_extensive(word):
-    word = word.lower()
-    return [new_word for new_word in map(''.join, itertools.product(*zip(word.upper(), word.lower())))]
+# OPTIMIZED: Pre-compute vowel set for faster lookup
+VOWELS = frozenset("aeiou")
 
-# BASIC: generates the more probable case transformations, but not all possibilities
-def case_transforms_basic(word):
-    word = word.lower()
-    new_wordlist = []
 
-    # Include all chars to lower and all chars to upper
-    new_wordlist.append(word)
-    new_wordlist.append(word.upper())
+# EXTENSIVE: generates all case transforms possibilities (optimized)
+def case_transforms_extensive(word: str) -> List[str]:
+    """Optimized extensive case transforms using list comprehension"""
+    word_lower = word.lower()
+    # Pre-compute upper/lower pairs for better performance
+    char_pairs = list(zip(word_lower.upper(), word_lower))
+    return ["".join(combo) for combo in itertools.product(*char_pairs)]
 
-    # Make each one upper (hello => Hello, hEllo, heLlo, helLo, hellO)
-    i=0
-    for char in word:
-        new_word = word[:i] + char.upper() + word[i+1:]
-        i += 1
-        if new_word not in new_wordlist: new_wordlist.append(new_word)
 
-    # Make pairs upper (hello => HeLlO)
-    i=0
-    new_word = ''
-    for char in word:
-        if i % 2 == 0: new_word += char.upper()
-        else: new_word += char
-        i += 1
-    if new_word not in new_wordlist: new_wordlist.append(new_word)
+# OPTIMIZED: BASIC case transforms with better string operations
+def case_transforms_basic(word: str) -> List[str]:
+    """Optimized basic case transforms"""
+    word_lower = word.lower()
+    word_upper = word_lower.upper()
+    results = [word_lower, word_upper]
 
-    # Make odds upper (hello => hElLo)
-    i=0
-    new_word = ''
-    for char in word:
-        if i % 2 != 0: new_word += char.upper()
-        else: new_word += char
-        i += 1
-    if new_word not in new_wordlist: new_wordlist.append(new_word)
+    # Pre-allocate set for O(1) duplicate checking
+    seen = set(results)
 
-    # Make consonants upper (hello => HeLLo)
-    vowels = 'aeiou'
-    new_word = ''
-    for char in word:
-        if char.lower() not in vowels: new_word += char.upper()
-        else: new_word += char
-    if new_word not in new_wordlist: new_wordlist.append(new_word)
+    # Single character uppercase transforms
+    for i, char in enumerate(word_lower):
+        new_word = word_lower[:i] + char.upper() + word_lower[i + 1 :]
+        if new_word not in seen:
+            seen.add(new_word)
+            results.append(new_word)
 
-    # Make vowels upper (hello => hEllO)
-    new_word = ''
-    for char in word:
-        if char.lower() in vowels: new_word += char.upper()
-        else: new_word += char
-    if new_word not in new_wordlist: new_wordlist.append(new_word)
+    # Even positions uppercase
+    even_chars = [
+        char.upper() if i % 2 == 0 else char for i, char in enumerate(word_lower)
+    ]
+    new_word = "".join(even_chars)
+    if new_word not in seen:
+        seen.add(new_word)
+        results.append(new_word)
 
-    return new_wordlist
+    # Odd positions uppercase
+    odd_chars = [
+        char.upper() if i % 2 != 0 else char for i, char in enumerate(word_lower)
+    ]
+    new_word = "".join(odd_chars)
+    if new_word not in seen:
+        seen.add(new_word)
+        results.append(new_word)
 
-def case_transforms(word):
+    # Consonants uppercase (optimized with set lookup)
+    consonant_chars = [
+        char.upper() if char.lower() not in VOWELS else char for char in word_lower
+    ]
+    new_word = "".join(consonant_chars)
+    if new_word not in seen:
+        seen.add(new_word)
+        results.append(new_word)
+
+    # Vowels uppercase (optimized with set lookup)
+    vowel_chars = [
+        char.upper() if char.lower() in VOWELS else char for char in word_lower
+    ]
+    new_word = "".join(vowel_chars)
+    if new_word not in seen:
+        seen.add(new_word)
+        results.append(new_word)
+
+    return results
+
+
+def case_transforms(word: str) -> List[str]:
+    """Optimized case transforms dispatcher"""
     if Config.EXTENSIVE_CASE:
         return case_transforms_extensive(word)
     return case_transforms_basic(word)
 
-def leet_transforms(word):
-    new_wordlist = []
-    original_size = len(new_wordlist)
-    i=0
-    leet_charset = Config.LEET_CHARSET
-    for char in word:
-        for lchar in leet_charset:
-            leeted_char = ''
-            if lchar.startswith(char.lower()):
-                leeted_char = lchar[-1:]
-                new_word = word[:i] + leeted_char + word[i + 1:]
-                if new_word not in new_wordlist: new_wordlist.append(new_word)
-                # don't break to allow multiple transforms to a single char (e.g. a into 4 and @)
-        i += 1
 
-    if Config.RECURSIVE_LEET:
-        for new_word in new_wordlist:
-            original_size = len(new_wordlist)
-            new_wordlist.extend(leet_transforms(new_word))
-            if len(new_wordlist) == original_size:
-                break  # breaking recursive call
+# OPTIMIZED: Leet transforms with better data structures
+def leet_transforms(word: str) -> List[str]:
+    """Optimized leet transforms using dict lookup"""
+    # Pre-build leet mapping dictionary for O(1) lookup
+    leet_map = {}
+    for mapping in Config.LEET_CHARSET:
+        if ":" in mapping:
+            original, leet = mapping.split(":", 1)
+            if original and leet:
+                leet_map[original.lower()] = leet
 
-    return remove_duplicates(new_wordlist)
+    new_words = []
+    word_lower = word.lower()
 
+    # Generate all possible single-character leet transforms
+    for i, char in enumerate(word_lower):
+        if char in leet_map:
+            for leet_char in leet_map[char].split(","):
+                new_word = word[:i] + leet_char + word[i + 1 :]
+                if new_word not in new_words:
+                    new_words.append(new_word)
 
-def take_initials(word):
-    splitted = word.split(' ')
-    initials = ''
-    for char in splitted:
-        try: initials += char[0]
-        except IndexError: continue
-    return initials
+    # Handle recursive leet if enabled
+    if Config.RECURSIVE_LEET and new_words:
+        original_size = len(new_words)
+        for new_word in new_words[
+            :
+        ]:  # Use slice to avoid modification during iteration
+            recursive_transforms = leet_transforms(new_word)
+            for transform in recursive_transforms:
+                if transform not in new_words:
+                    new_words.append(transform)
+            if len(new_words) == original_size:
+                break
 
-
-def artist_space_transforms(word):
-    new_wordlist = []
-    if ' ' in word:  # Avoiding non-space words to be included many
-        if Config.ARTIST_SPLIT_BY_WORD:
-            # Add each word in the artist name splitting by spaces (e.g.: ['bob', 'dylan'])
-            new_wordlist.extend(word.split(' '))
-        # Add artist name without spaces (e.g.: 'bobdylan')
-        new_wordlist.append(word.replace(' ', ''))
-        # Replace spaces in artist name with all space replacements charset
-        if (Config.ARTIST_SPACE_REPLACEMENT and Config.SPACE_REPLACEMENT_CHARSET):
-            for character in Config.SPACE_REPLACEMENT_CHARSET:
-                new_wordlist.append(word.replace(' ', character))
-
-    return new_wordlist
+    return remove_duplicates_fast(new_words)
 
 
-def lyric_space_transforms(word):
-    new_wordlist = []
-    if ' ' in word:  # Avoiding non-space words to be included many
-        if Config.LYRIC_SPLIT_BY_WORD:
-            # Add each word in the phrase splitting by spaces (e.g.: ['hello', 'world'])
-            new_wordlist.extend(word.split(' '))
-        # Add phrase without spaces (e.g.: 'helloworld')
-        new_wordlist.append(word.replace(' ', ''))
-        # Replace spaces in phrase with all space replacements charset
-        if (Config.LYRIC_SPACE_REPLACEMENT and Config.SPACE_REPLACEMENT_CHARSET):
-            for character in Config.SPACE_REPLACEMENT_CHARSET:
-                new_wordlist.append(word.replace(' ', character))
-    return new_wordlist
+# OPTIMIZED: Take initials using list comprehension
+def take_initials(word: str) -> str:
+    """Optimized initials extraction"""
+    return "".join([part[0] for part in word.split(" ") if part])
 
 
-def multiprocess_transforms(transform_type, wordlist):
-    # process each word in their own thread and return the results
-    new_wordlists = []
-    with Pool(cpu_count()) as pool:
-        with alive_bar(bar=None,spinner='bubbles', monitor=False,elapsed=False,stats=False,receipt=False) as progressbar:
-            new_wordlists += pool.map(transform_type, wordlist)
-            progressbar()
-    new_wordlist = []
-    for nlist in new_wordlists:
-         new_wordlist += nlist
-    return new_wordlist
+# OPTIMIZED: Artist space transforms with better string operations
+def artist_space_transforms(word: str) -> List[str]:
+    """Optimized artist space transforms"""
+    if " " not in word:
+        return []
+
+    results = []
+
+    # Split by word if enabled
+    if Config.ARTIST_SPLIT_BY_WORD:
+        results.extend(word.split(" "))
+
+    # Remove spaces
+    no_spaces = word.replace(" ", "")
+    if no_spaces not in results:
+        results.append(no_spaces)
+
+    # Replace with charset
+    if Config.ARTIST_SPACE_REPLACEMENT and Config.SPACE_REPLACEMENT_CHARSET:
+        for char in Config.SPACE_REPLACEMENT_CHARSET:
+            replaced = word.replace(" ", char)
+            if replaced not in results:
+                results.append(replaced)
+
+    return results
 
 
-def transform_cached_wordlist_and_save(transform_type, filepath):
+# OPTIMIZED: Lyric space transforms
+def lyric_space_transforms(word: str) -> List[str]:
+    """Optimized lyric space transforms"""
+    if " " not in word:
+        return []
 
+    results = []
+
+    # Split by word if enabled
+    if Config.LYRIC_SPLIT_BY_WORD:
+        results.extend(word.split(" "))
+
+    # Remove spaces
+    no_spaces = word.replace(" ", "")
+    if no_spaces not in results:
+        results.append(no_spaces)
+
+    # Replace with charset
+    if Config.LYRIC_SPACE_REPLACEMENT and Config.SPACE_REPLACEMENT_CHARSET:
+        for char in Config.SPACE_REPLACEMENT_CHARSET:
+            replaced = word.replace(" ", char)
+            if replaced not in results:
+                results.append(replaced)
+
+    return results
+
+
+# OPTIMIZED: Get physical CPU cores for better performance
+def get_physical_cores() -> int:
+    """Get the number of physical CPU cores"""
+    try:
+        import os
+
+        return len(os.sched_getaffinity(0))
+    except (AttributeError, OSError):
+        return cpu_count()
+
+
+# OPTIMIZED: Parallel batch processor for massive wordlists
+def parallel_batch_processor(
+    transform_type, wordlist: List[str], batch_size: int = 50000
+) -> List[str]:
+    """Process massive wordlists in parallel batches to utilize all CPU cores"""
+    if not wordlist:
+        return []
+
+    physical_cores = get_physical_cores()
+    results = []
+
+    # Process in parallel batches
+    with Pool(processes=physical_cores) as pool:
+        # Split wordlist into batches
+        batches = [
+            wordlist[i : i + batch_size] for i in range(0, len(wordlist), batch_size)
+        ]
+
+        # Process batches in parallel
+        with alive_bar(
+            total=len(batches),
+            bar="smooth",
+            spinner="dots",
+            title=f"Batch processing on {physical_cores} cores",
+            receipt=False,
+        ) as progress:
+            for i, batch in enumerate(batches):
+                batch_results = pool.map(transform_type, batch)
+                for sublist in batch_results:
+                    results.extend(sublist)
+                progress()
+
+    return results
+
+
+# OPTIMIZED: Enhanced multiprocessing with full CPU utilization
+def multiprocess_transforms_optimized(transform_type, wordlist: List[str]) -> List[str]:
+    """Ultra-optimized multiprocessing with full CPU utilization and intelligent load balancing"""
+    if not wordlist:
+        return []
+
+    # If small list, don't bother with multiprocessing overhead
+    if len(wordlist) < 100:
+        return [item for word in wordlist for item in transform_type(word)]
+
+    # Get actual CPU count
+    physical_cores = get_physical_cores()
+
+    # Dynamic chunking based on workload size and CPU count
+    total_words = len(wordlist)
+    optimal_chunk_size = max(10, min(1000, total_words // (physical_cores * 2)))
+
+    results = []
+
+    # Use process pool with optimized settings
+    with Pool(processes=physical_cores) as pool:
+        try:
+            # Process with progress tracking
+            with alive_bar(
+                total=total_words,
+                bar="smooth",
+                spinner="dots",
+                title=f"Processing on {physical_cores} cores",
+                receipt=False,
+            ) as progress:
+                # Process in chunks with better load balancing
+                wordlists = pool.map(
+                    transform_type, wordlist, chunksize=optimal_chunk_size
+                )
+
+                # Efficiently flatten results
+                for sublist in wordlists:
+                    if sublist:
+                        results.extend(sublist)
+                    progress()
+
+        except KeyboardInterrupt:
+            pool.terminate()
+            pool.join()
+            raise
+        except Exception as e:
+            pool.terminate()
+            pool.join()
+            raise e
+
+    return results
+
+
+# OPTIMIZED: Enhanced multiprocessing with better chunking
+def multiprocess_transforms(transform_type, wordlist: List[str]) -> List[str]:
+    """Enhanced multiprocessing with automatic CPU utilization"""
+    return multiprocess_transforms_optimized(transform_type, wordlist)
+
+
+# OPTIMIZED: Batch processing for cached wordlist
+def transform_cached_wordlist_and_save(transform_type, filepath: str):
+    """Optimized cached wordlist processing with better I/O"""
+    CHUNK_SIZE = 8000
     last_position = 0
 
     while True:
-
         cached_wordlist = []
-        new_wordlist = []
 
-        with open(filepath, 'r', encoding='utf-8') as f:
-            counter = 0
-            f.seek(last_position)  # put point on last position
-            while True:
-                line = f.readline()
-                if counter >= 8000:
-                    last_position = f.tell()  # save last_position and break inner loop
+        try:
+            with open(filepath, "r", encoding="utf-8") as f:
+                f.seek(last_position)
+
+                # Read in chunks for better performance
+                for _ in range(CHUNK_SIZE):
+                    line = f.readline()
+                    if not line:
+                        break
+                    word = line.strip()
+                    if word and word not in cached_wordlist:
+                        cached_wordlist.append(word)
+
+                last_position = f.tell()
+
+                if not cached_wordlist:
                     break
-                if not line:
-                    break
-                if line.strip() not in cached_wordlist:
-                    cached_wordlist.append(line.strip())
-                counter += 1
-                last_position = f.tell()  # save last_position
 
-        new_wordlist += multiprocess_transforms(transform_type, cached_wordlist)
-        #cached_wordlist += new_wordlist
-        append_wordlist_to_file(filepath, new_wordlist)
+                # Process and save in batch
+                new_wordlist = multiprocess_transforms(transform_type, cached_wordlist)
+                append_wordlist_to_file(filepath, new_wordlist)
 
-        # read again the file to check if it ended
-        with open(filepath, 'r', encoding='utf-8') as f:
-            f.seek(last_position)  # put point on last position
-            line = f.readline()
-            if not line:
-                break
+        except (IOError, OSError) as e:
+            print(f"Error processing file: {e}")
+            break

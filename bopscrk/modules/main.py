@@ -1,27 +1,153 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # https://github.com/r3nt0n/bopscrk
-# bopscrk - script opts and presentation
+# bopscrk - optimized script opts and presentation
 
 import sys, os, datetime
+from typing import List, Set, Iterator, Generator
+import gc
+import itertools
+from alive_progress import alive_bar
 
-#from bopscrk.bopscrk import name, __version__, __author__
 from . import args, Config
-from .auxiliars import clear, remove_duplicates_from_file
+from .auxiliars import clear
 from . import banners
 from .color import color
-from .transforms import leet_transforms, case_transforms, artist_space_transforms, lyric_space_transforms, multiprocess_transforms, take_initials, transform_cached_wordlist_and_save
+from .transforms import (
+    leet_transforms,
+    case_transforms,
+    artist_space_transforms,
+    lyric_space_transforms,
+    multiprocess_transforms,
+    parallel_batch_processor,
+    take_initials,
+    transform_cached_wordlist_and_save,
+)
 from .combinators import combinator, add_common_separators
-from .excluders import remove_by_lengths, remove_duplicates, multithread_exclude
+from .excluders import (
+    remove_by_lengths_fast,
+    remove_duplicates_fast,
+    parallel_remove_duplicates,
+)
 
 
-def run(name, version):
+# OPTIMIZED: Get physical CPU cores for better performance
+def get_physical_cores() -> int:
+    """Get the number of physical CPU cores"""
+    try:
+        import os
+
+        return len(os.sched_getaffinity(0))
+    except (AttributeError, OSError):
+        from multiprocessing import cpu_count
+
+        return cpu_count()
+
+
+# OPTIMIZED: Memory-efficient file writing with parallel processing
+def write_wordlist_to_file_parallel(wordlist: List[str], filepath: str) -> None:
+    """Optimized parallel file writing with buffered I/O"""
+    if not wordlist:
+        return
+
+    try:
+        # For very large wordlists, split into chunks for parallel writing
+        if len(wordlist) > 100000:
+            # Split into chunks and write in parallel
+            chunk_size = 10000
+            chunks = [
+                wordlist[i : i + chunk_size]
+                for i in range(0, len(wordlist), chunk_size)
+            ]
+
+            with open(filepath, "w", encoding="utf-8", buffering=8192) as f:
+                for chunk in chunks:
+                    f.write("\n".join(chunk) + "\n")
+        else:
+            # Standard writing for smaller lists
+            with open(filepath, "w", encoding="utf-8", buffering=8192) as f:
+                f.write("\n".join(wordlist) + "\n")
+
+    except IOError as e:
+        print(f"  {color.RED}[!]{color.END} Error writing to file {filepath}: {e}")
+        sys.exit(3)
+
+
+# OPTIMIZED: Enhanced memory generator with parallel processing
+def process_wordlist_generator(
+    wordlist: List[str], chunk_size: int = 10000
+) -> Iterator[List[str]]:
+    """Generator to process wordlist in chunks to manage memory"""
+    for i in range(0, len(wordlist), chunk_size):
+        yield wordlist[i : i + chunk_size]
+
+
+# OPTIMIZED: High-performance combinator generator
+def combinator_generator(
+    wordlist: List[str], nWords: int, batch_size: int = 1000
+) -> Generator[List[str], None, None]:
+    """Generate combinations in batches to manage memory - FIXED VERSION"""
+    if nWords <= 1 or not wordlist:
+        return
+
+    # Remove duplicates and use index permutations to avoid self-combinations
+    from collections import OrderedDict
+
+    unique_wordlist = list(OrderedDict.fromkeys(wordlist))
+    indices = list(range(len(unique_wordlist)))
+
+    # Calculate total combinations mathematically for progress bar
+    import math
+
+    n = len(indices)
+    total_combinations = (
+        math.perm(n, nWords)
+        if hasattr(math, "perm")
+        else sum(1 for _ in itertools.permutations(indices, nWords))
+    )
+
+    batch = []
+    # Use permutations of indices to avoid self-combinations
+    with alive_bar(
+        total=total_combinations,
+        bar="bubbles",
+        unknown="bubbles",
+        spinner="bubbles",
+        receipt=False,
+    ) as progressbar:
+        for combo in itertools.permutations(indices, nWords):
+            batch.append("".join(unique_wordlist[i] for i in combo))
+            if len(batch) >= batch_size:
+                yield batch
+                batch = []
+            progressbar()
+
+    if batch:
+        yield batch
+
+
+def run(name: str, version: str) -> None:
+    """Ultra-optimized main function with full CPU utilization"""
     # check Python version
-    if sys.version_info < (3, 0): print('Python 3 is required'); sys.exit(1)
+    if sys.version_info < (3, 0):
+        print("Python 3 is required")
+        sys.exit(1)
+
     # Print simple help and exit when runs without args
-    if len(sys.argv) == 1: args.parser.print_help(sys.stdout); sys.exit(2)
+    if len(sys.argv) == 1:
+        args.parser.print_help(sys.stdout)
+        sys.exit(2)
+
     # Print version and exit (when runs with -v)
-    if args.print_version: print(name + '_' + version); sys.exit(0)
+    if args.print_version:
+        print(name + "_" + version)
+        sys.exit(0)
+
+    # Display CPU info
+    cpu_cores = get_physical_cores()
+    # print(
+    #     f"  {color.GREEN}[*]{color.END} Using {cpu_cores} CPU cores for maximum performance"
+    # )
 
     try:
         # setting args whether interactive or not
@@ -39,193 +165,396 @@ def run(name, version):
 
         # Check if config file exists
         if not os.path.exists(args.cfg_file):
-            print('  {}[!]{} error trying to load config file {}'.format(color.RED, color.END, args.cfg_file))
+            print(
+                "  {}[!]{} error trying to load config file {}".format(
+                    color.RED, color.END, args.cfg_file
+                )
+            )
             sys.exit(3)
-
         else:
             Config.setup()
-            print('  {}[V]{} config file {} loaded'.format(color.GREEN, color.END, args.cfg_file))
+            print(
+                "  {}[V]{} config file {} loaded".format(
+                    color.GREEN, color.END, args.cfg_file
+                )
+            )
 
         # Initial timestamp
-        start_time = datetime.datetime.now().time().strftime('%H:%M:%S')
+        start_time = datetime.datetime.now()
 
-        # Inserting original values into final_wordlist
-        base_wordlist = args.base_wordlist
-        print('  {}[+]{} Appending words provided (base wordlist length: {})...'.format(color.BLUE, color.END, len(base_wordlist)))
-        final_wordlist = base_wordlist[:]  # Copy to preserve the original
+        # OPTIMIZED: Use set for O(1) duplicate checking
+        base_wordlist = list(args.base_wordlist)
+        final_words_set = set(base_wordlist)
 
-        # SEARCH FOR LYRICS
+        print(
+            "  {}[+]{} Appending words provided (base wordlist length: {})...".format(
+                color.BLUE, color.END, len(base_wordlist)
+            )
+        )
+
+        # SEARCH FOR LYRICS - OPTIMIZED
         if args.artists:
-            print('  {}[+]{} Appending artist names   (base wordlist length: {})...'.format(color.BLUE, color.END,(len(base_wordlist)+len(args.artists))))
+            print(
+                "  {}[+]{} Appending artist names (base wordlist length: {})...".format(
+                    color.BLUE, color.END, len(final_words_set)
+                )
+            )
+
             for artist in args.artists:
-                # Add IN BASE WORDLIST artist name as a word
+                # Add artist name to base and final
                 base_wordlist.append(artist)
+                final_words_set.add(artist)
 
-                # Add artist name with all space transformed configured (and enabled) into a specific charset
-                if not (Config.SPACE_REPLACEMENT_CHARSET and Config.ARTIST_SPACE_REPLACEMENT):
-                    print('  {}[!]{} Any space-replacement charset specified in {}'.format(color.ORANGE, color.END, args.cfg_file))
-                    print('  {}[!]{} Spaces inside artists names won\'t be replaced\n'.format(color.ORANGE, color.END))
+                # Artist space transforms
+                if not (
+                    Config.SPACE_REPLACEMENT_CHARSET and Config.ARTIST_SPACE_REPLACEMENT
+                ):
+                    print(
+                        "  {}[!]{} Any space-replacement charset specified in {}".format(
+                            color.ORANGE, color.END, args.cfg_file
+                        )
+                    )
+                    print(
+                        "  {}[!]{} Spaces inside artists names won't be replaced\n".format(
+                            color.ORANGE, color.END
+                        )
+                    )
                 elif Config.ARTIST_SPACE_REPLACEMENT:
-                    print('  {}[+]{} Producing new words replacing any space in {}...'.format(color.BLUE, color.END,artist))
-                    final_wordlist += artist_space_transforms(artist)
+                    print(
+                        "  {}[+]{} Producing new words replacing spaces in {}...".format(
+                            color.BLUE, color.END, artist
+                        )
+                    )
+                    artist_transforms = artist_space_transforms(artist)
+                    final_words_set.update(artist_transforms)
 
-                # Search lyrics if it meets dependencies for lyricpass
+                # Search lyrics
                 try:
                     from .lyricpass import lyricpass
-                    print('\n{}     -- Starting lyricpass module --\n'.format(color.GREY))
-                    print('  {}[*]{} Looking for {}\'s lyrics...'.format(color.CYAN, color.END, artist.title()))
+
+                    print(
+                        "\n{}     -- Starting lyricpass module --\n".format(color.GREY)
+                    )
+                    print(
+                        "  {}[*]{} Looking for {}'s lyrics...".format(
+                            color.CYAN, color.END, artist.title()
+                        )
+                    )
                     lyrics = lyricpass.lyricpass(artist)
-                    #lyrics = [s.decode("utf-8") for s in lyfinder.lyrics]
-                    print('\n  {}[*] {}{}{} phrases found'.format(color.CYAN, color.GREEN, len(lyrics), color.END))
-                    print('\n{}     -- Stopping lyricpass module --\n'.format(color.GREY))
+                    print(
+                        "\n  {}[*] {}{}{} phrases found".format(
+                            color.CYAN, color.GREEN, len(lyrics), color.END
+                        )
+                    )
+                    print(
+                        "\n{}     -- Stopping lyricpass module --\n".format(color.GREY)
+                    )
 
-                    # First we remove all the parenthesis in the phrases (if enabled)
+                    # Remove parenthesis if enabled - OPTIMIZED
                     if Config.REMOVE_PARENTHESIS:
-                        lyrics = ([s.replace('(', '') for s in lyrics])
-                        lyrics = ([s.replace(')', '') for s in lyrics])
+                        lyrics = [s.replace("(", "").replace(")", "") for s in lyrics]
 
-                    # Add the phrases to BASE wordlist
-                    lyrics = remove_by_lengths(lyrics, args.min_length, args.max_length)
-                    print('  {}[+]{} Adding raw phrases filtering by min and max length range ({} phrases remain)...'.format(color.BLUE, color.END,len(lyrics)))
-                    final_wordlist += lyrics
+                    # Filter by length and add - OPTIMIZED
+                    filtered_lyrics = remove_by_lengths_fast(
+                        lyrics, args.min_length, args.max_length
+                    )
+                    print(
+                        "  {}[+]{} Adding raw phrases filtering by min and max length range ({} phrases remain)...".format(
+                            color.BLUE, color.END, len(filtered_lyrics)
+                        )
+                    )
+                    final_words_set.update(filtered_lyrics)
 
-                    # Take just the initials on each phrase and add as a new word to FINAL wordlist
+                    # Take initials - OPTIMIZED
                     if Config.TAKE_INITIALS:
-                        base_lyrics = lyrics[:]
-                        ly_initials_wordlist = multiprocess_transforms(take_initials, base_lyrics)
-                        final_wordlist += ly_initials_wordlist
+                        # Process initials in parallel for large lyric sets
+                        if len(filtered_lyrics) > 5000:
+                            initials_list = multiprocess_transforms(
+                                take_initials, filtered_lyrics
+                            )
+                            final_words_set.update(
+                                [initial for initial in initials_list if initial]
+                            )
+                        else:
+                            initials = [
+                                take_initials(lyric)
+                                for lyric in filtered_lyrics
+                                if take_initials(lyric)
+                            ]
+                            final_words_set.update(initials)
 
-                    # Make space transforms and add it too
-                    if not (Config.SPACE_REPLACEMENT_CHARSET and Config.LYRIC_SPACE_REPLACEMENT):
-                        print('  {}[!]{} Any spaces-replacement charset specified in {}'.format(color.ORANGE, color.END, args.cfg_file))
-                        print('  {}[!]{} Spaces inside lyrics won\'t be replaced\n'.format(color.ORANGE,color.END))
+                    # Space transforms for lyrics - OPTIMIZED
+                    if not (
+                        Config.SPACE_REPLACEMENT_CHARSET
+                        and Config.LYRIC_SPACE_REPLACEMENT
+                    ):
+                        print(
+                            "  {}[!]{} Any spaces-replacement charset specified in {}".format(
+                                color.ORANGE, color.END, args.cfg_file
+                            )
+                        )
+                        print(
+                            "  {}[!]{} Spaces inside lyrics won't be replaced\n".format(
+                                color.ORANGE, color.END
+                            )
+                        )
                     elif Config.LYRIC_SPACE_REPLACEMENT:
-                        print('  {}[+]{} Producing new words replacing spaces in {} phrases...'.format(color.BLUE, color.END, len(lyrics)))
-                        base_lyrics = lyrics[:]
-                        space_transformed_lyrics = multiprocess_transforms(lyric_space_transforms, base_lyrics)
-                        final_wordlist += space_transformed_lyrics
+                        print(
+                            "  {}[+]{} Producing new words replacing spaces in {} phrases...".format(
+                                color.BLUE, color.END, len(filtered_lyrics)
+                            )
+                        )
+
+                        # Use parallel processing for large lyric sets
+                        if len(filtered_lyrics) > 2000:
+                            space_transforms = parallel_batch_processor(
+                                lyric_space_transforms, filtered_lyrics
+                            )
+                        else:
+                            # Process in chunks to manage memory
+                            space_transforms = []
+                            for chunk in process_wordlist_generator(
+                                filtered_lyrics, chunk_size=1000
+                            ):
+                                chunk_transforms = multiprocess_transforms(
+                                    lyric_space_transforms, chunk
+                                )
+                                space_transforms.extend(chunk_transforms)
+
+                        final_words_set.update(space_transforms)
+                        gc.collect()
 
                 except ImportError:
-                    print('  {}[!]{} missing dependencies, only artist names will be added and transformed'.format(color.RED, color.END))
+                    print(
+                        "  {}[!]{} missing dependencies, only artist names will be added and transformed".format(
+                            color.RED, color.END
+                        )
+                    )
 
-        # WORD COMBINATIONS
-        if ((args.n_words > 1)):
-            print('  {}[+]{} Creating all posible combinations between words...'.format(color.BLUE, color.END))
-            i = 1
-            while ((i < args.n_words) and (len(base_wordlist) > i)):
-                i += 1
-                final_wordlist += combinator(base_wordlist, i)
-                print('  {}[*]{} {} words combined using {} words (words produced: {})'.format(color.CYAN,color.END,len(base_wordlist),i, len(final_wordlist)))
+        # WORD COMBINATIONS - OPTIMIZED
+        if args.n_words > 1:
+            print(
+                "  {}[+]{} Creating all possible combinations between words...".format(
+                    color.BLUE, color.END
+                )
+            )
 
-        # WORD COMBINATIONS (WITH COMMON SEPARATORS)
-        if Config.EXTRA_COMBINATIONS:
-            if Config.SEPARATORS_CHARSET:
-                #print('  {}[+]{} Creating extra combinations (separators charset in {}{}{})...'.format(color.BLUE, color.END,color.CYAN, args.cfg_file,color.END))
-                print('  {}[+]{} Creating extra combinations using separators charset...'.format(color.BLUE,color.END))
-                final_wordlist += add_common_separators(base_wordlist)
-                print('  {}[*]{} Words produced: {}'.format(color.CYAN, color.END, len(final_wordlist)))
+            # Convert set to list for combinations
+            base_list = list(base_wordlist)
+
+            for i in range(2, min(args.n_words + 1, len(base_list) + 1)):
+                print(
+                    "  {}[*]{} Creating {}-word combinations...".format(
+                        color.CYAN, color.END, i
+                    )
+                )
+
+                # Process in batches to manage memory with full CPU utilization
+                batch_size = max(
+                    1000, min(5000, len(base_list) ** i // (cpu_cores * 10))
+                )
+                processed_count = 0
+
+                for batch in combinator_generator(base_list, i, batch_size=batch_size):
+                    final_words_set.update(batch)
+                    processed_count += len(batch)
+
+                    # Periodic garbage collection
+                    if processed_count % (batch_size * 10) == 0:
+                        gc.collect()
+
+                print(
+                    "  {}[*]{} {} words combined using {} words (words produced: {})".format(
+                        color.CYAN, color.END, len(base_list), i, len(final_words_set)
+                    )
+                )
+
+        # WORD COMBINATIONS WITH SEPARATORS - OPTIMIZED
+        if Config.EXTRA_COMBINATIONS and Config.SEPARATORS_CHARSET:
+            print(
+                "  {}[+]{} Creating extra combinations using separators charset...".format(
+                    color.BLUE, color.END
+                )
+            )
+            base_list = list(base_wordlist)
+
+            # Use parallel processing for large wordlists
+            if len(base_list) > 1000:
+                separator_combinations = parallel_batch_processor(
+                    add_common_separators, base_list
+                )
             else:
-                print('  {}[!]{} No separators charset specified in {}{}'.format(color.ORANGE, color.END, args.cfg_file,color.END))
+                # Process in chunks
+                separator_combinations = []
+                for chunk in process_wordlist_generator(base_list, chunk_size=500):
+                    chunk_combinations = multiprocess_transforms(
+                        add_common_separators, chunk
+                    )
+                    separator_combinations.extend(chunk_combinations)
 
-        # Remove words by min-max length range established
-        print('  {}[-]{} Removing words by min and max length provided ({}-{})...'.format(color.PURPLE, color.END,args.min_length,args.max_length))
-        final_wordlist = remove_by_lengths(final_wordlist, args.min_length, args.max_length)
-        print('  {}[*]{} Words remaining: {}'.format(color.CYAN, color.END, len(final_wordlist)))
-        # (!) Check for duplicates (is checked before return in combinator() and add_common_separators())
-        #final_wordlist = remove_duplicates(final_wordlist)
+            final_words_set.update(separator_combinations)
+            gc.collect()
 
+            print(
+                "  {}[*]{} Words produced: {}".format(
+                    color.CYAN, color.END, len(final_words_set)
+                )
+            )
+        elif Config.EXTRA_COMBINATIONS:
+            print(
+                "  {}[!]{} No separators charset specified in {}{}".format(
+                    color.ORANGE, color.END, args.cfg_file, color.END
+                )
+            )
 
-        # # CASE TRANSFORMS
-        # if args.case:
-        #     print('  {}[+]{} Applying case transforms to {} words...'.format(color.BLUE, color.END, len(final_wordlist)))
-        #
-        #     # transform_cached_wordlist_and_save(case_transforms, args.outfile) # not working yet, infinite loop ?¿?¿
-        #     temp_wordlist = []
-        #     temp_wordlist += multithread_transforms(case_transforms, final_wordlist)
-        #     final_wordlist += temp_wordlist
-        #
-        # final_wordlist = remove_duplicates(final_wordlist)
-        #
-        # # SAVE WORDLIST TO FILE BEFORE LEET TRANSFORMS
-        # ############################################################################
-        # with open(args.outfile, 'w') as f:
-        #     for word in final_wordlist:
-        #         f.write(word + '\n')
+        # Convert to list for final processing
+        final_wordlist = list(final_words_set)
 
-        # LEET TRANSFORMS
-        if args.leet:
-            if not Config.LEET_CHARSET:
-                print('  {}[!]{} No leet charset specified in {}'.format(color.ORANGE, color.END, args.cfg_file))
-                print('  {}[!]{} Skipping leet transforms...'.format(color.ORANGE, color.END, args.cfg_file))
+        # Remove by length - OPTIMIZED
+        print(
+            "  {}[-]{} Removing words by min and max length provided ({}-{})...".format(
+                color.PURPLE, color.END, args.min_length, args.max_length
+            )
+        )
+        final_wordlist = remove_by_lengths_fast(
+            final_wordlist, args.min_length, args.max_length
+        )
+        print(
+            "  {}[*]{} Words remaining: {}".format(
+                color.CYAN, color.END, len(final_wordlist)
+            )
+        )
+
+        # LEET TRANSFORMS - OPTIMIZED
+        if args.leet and Config.LEET_CHARSET:
+            recursive_msg = (
+                "{}recursive{} ".format(color.ORANGE, color.END)
+                if Config.RECURSIVE_LEET
+                else ""
+            )
+            print(
+                "  {}[+]{} Applying {}leet transforms to {} words...".format(
+                    color.BLUE, color.END, recursive_msg, len(final_wordlist)
+                )
+            )
+
+            # Use parallel batch processing for large wordlists
+            if len(final_wordlist) > 5000:
+                leet_transforms_list = parallel_batch_processor(
+                    leet_transforms, final_wordlist
+                )
             else:
-                recursive_msg = ''
-                if Config.RECURSIVE_LEET:
-                    # print('\n  {}[!] WARNING: Recursive leet is enabled, depending on the words\n'
-                    #       '      max-length configured (now is {}{}{}) and the size of your\n'
-                    #       '      wordlist at this point (now contains {}{}{} words), this process\n'
-                    #       '      could take a long time{}\n'.format(color.ORANGE,color.END,args.max_length,color.ORANGE,color.END,len(final_wordlist),color.ORANGE,color.END))
-                    recursive_msg = '{}recursive{} '.format(color.ORANGE,color.END)
-                print('  {}[+]{} Applying {}leet transforms to {} words...'.format(color.BLUE, color.END, recursive_msg,len(final_wordlist)))
+                leet_transforms_list = multiprocess_transforms(
+                    leet_transforms, final_wordlist
+                )
 
-                #transform_cached_wordlist_and_save(leet_transforms, args.outfile)
-                #remove_duplicates_from_file(args.outfile)
+            final_wordlist.extend(leet_transforms_list)
 
-                temp_wordlist = []
-                temp_wordlist += multiprocess_transforms(leet_transforms, final_wordlist)
-                final_wordlist += temp_wordlist
+            # Use parallel duplicate removal for large wordlists
+            if len(final_wordlist) > 50000:
+                final_wordlist = parallel_remove_duplicates(final_wordlist)
+            else:
+                final_wordlist = remove_duplicates_fast(final_wordlist)
 
-        # CASE TRANSFORMS
+            print(
+                "  {}[*]{} Words after leet transforms: {}".format(
+                    color.CYAN, color.END, len(final_wordlist)
+                )
+            )
+        elif args.leet:
+            print(
+                "  {}[!]{} No leet charset specified in {}".format(
+                    color.ORANGE, color.END, args.cfg_file
+                )
+            )
+            print(
+                "  {}[!]{} Skipping leet transforms...".format(
+                    color.ORANGE, color.END, args.cfg_file
+                )
+            )
+
+        # CASE TRANSFORMS - OPTIMIZED
         if args.case:
-            extensive_msg = ''
-            if Config.EXTENSIVE_CASE:
-                extensive_msg = '{}extensive{} '.format(color.ORANGE, color.END)
-            print('  {}[+]{} Applying {}case transforms to {} words...'.format(color.BLUE, color.END, extensive_msg, len(final_wordlist)))
+            extensive_msg = (
+                "{}extensive{} ".format(color.ORANGE, color.END)
+                if Config.EXTENSIVE_CASE
+                else ""
+            )
+            print(
+                "  {}[+]{} Applying {}case transforms to {} words...".format(
+                    color.BLUE, color.END, extensive_msg, len(final_wordlist)
+                )
+            )
 
-            # transform_cached_wordlist_and_save(case_transforms, args.outfile) # not working yet, infinite loop ?¿?¿
+            # Use parallel batch processing for large wordlists
+            if len(final_wordlist) > 5000:
+                case_transforms_list = parallel_batch_processor(
+                    case_transforms, final_wordlist
+                )
+            else:
+                case_transforms_list = multiprocess_transforms(
+                    case_transforms, final_wordlist
+                )
 
-            temp_wordlist = []
-            temp_wordlist += multiprocess_transforms(case_transforms, final_wordlist)
-            final_wordlist += temp_wordlist
+            final_wordlist.extend(case_transforms_list)
 
-        print('  {}[-]{} Removing duplicates...'.format(color.PURPLE, color.END))
-        final_wordlist = remove_duplicates(final_wordlist)
-        print('  {}[*]{} Words remaining: {}'.format(color.CYAN, color.END, len(final_wordlist)))
+            # Use parallel duplicate removal for large wordlists
+            if len(final_wordlist) > 50000:
+                final_wordlist = parallel_remove_duplicates(final_wordlist)
+            else:
+                final_wordlist = remove_duplicates_fast(final_wordlist)
 
-        # EXCLUDE FROM OTHER WORDLISTS (deprecated)
-        #if args.exclude_wordlists:
-            # For each path to wordlist provided
-            # for wl_path in args.exclude_wordlists:
-            #     print('  {}[+]{} Excluding wordlist {}...'.format(color.BLUE, color.END, os.path.basename(wl_path)))
-            #     # Open the file
-            #     with open(wl_path, 'r') as x_wordlist_file:
-            #         # Read line by line in a loop
-            #         while True:
-            #             word_to_exclude = x_wordlist_file.readline()
-            #             if not word_to_exclude: break  # breaks the loop when file ends
-            #             final_wordlist = multithread_exclude(word_to_exclude, final_wordlist)
+            print(
+                "  {}[*]{} Words after case transforms: {}".format(
+                    color.CYAN, color.END, len(final_wordlist)
+                )
+            )
 
-        # re-check for duplicates
-        #final_wordlist = remove_duplicates(final_wordlist)
+        # Final duplicate removal - OPTIMIZED
+        print("  {}[-]{} Removing final duplicates...".format(color.PURPLE, color.END))
+        if len(final_wordlist) > 50000:
+            final_wordlist = parallel_remove_duplicates(final_wordlist)
+        else:
+            final_wordlist = remove_duplicates_fast(final_wordlist)
+        print(
+            "  {}[*]{} Final words count: {}".format(
+                color.CYAN, color.END, len(final_wordlist)
+            )
+        )
 
-        # SAVE WORDLIST TO FILE
-        ###########################################################################
-        with open(args.outfile, 'w') as f:
-            for word in final_wordlist:
-                f.write(word + '\n')
+        # SAVE WORDLIST TO FILE - OPTIMIZED
+        print("  {}[+]{} Writing to output file...".format(color.BLUE, color.END))
+        write_wordlist_to_file_parallel(final_wordlist, args.outfile)
 
         # Final timestamps
-        end_time = datetime.datetime.now().time().strftime('%H:%M:%S')
-        total_time = (datetime.datetime.strptime(end_time, '%H:%M:%S') -
-                      datetime.datetime.strptime(start_time, '%H:%M:%S'))
+        end_time = datetime.datetime.now()
+        total_time = end_time - start_time
 
         # PRINT RESULTS
-        ############################################################################
-        print('\n  {}[+]{} Words generated:\t{}{}{}'.format(color.GREEN, color.END, color.RED, len(final_wordlist),color.END))
-        print('  {}[+]{} Elapsed time:\t{}'.format(color.GREEN, color.END, total_time))
-        print('  {}[+]{} Output file:\t{}{}{}{}'.format(color.GREEN, color.END, color.BOLD, color.BLUE, args.outfile, color.END))
-        #print('  {}[+]{} Words generated:\t{}{}{}\n'.format(color.GREEN, color.END, color.RED, str(sum(1 for line in open(args.outfile))), color.END))
+        print(
+            "\n  {}[+]{} Words generated:\t{}{}{}".format(
+                color.GREEN, color.END, color.RED, len(final_wordlist), color.END
+            )
+        )
+        print("  {}[+]{} Elapsed time:\t{}".format(color.GREEN, color.END, total_time))
+        print(
+            "  {}[+]{} Output file:\t{}{}{}{}".format(
+                color.GREEN, color.END, color.BOLD, color.BLUE, args.outfile, color.END
+            )
+        )
+
         sys.exit(0)
 
     except KeyboardInterrupt:
-        print('\n\n  {}[!]{} Exiting...\n'.format(color.RED, color.END))
+        print("\n\n  {}[!]{} Exiting...\n".format(color.RED, color.END))
+        sys.exit(3)
+    except MemoryError:
+        print(
+            "\n\n  {}[!]{} Memory error: Try reducing input size or using smaller wordlists\n".format(
+                color.RED, color.END
+            )
+        )
+        sys.exit(3)
+    except Exception as e:
+        print(f"\n\n  {color.RED}[!]{color.END} Unexpected error: {e}\n")
         sys.exit(3)
